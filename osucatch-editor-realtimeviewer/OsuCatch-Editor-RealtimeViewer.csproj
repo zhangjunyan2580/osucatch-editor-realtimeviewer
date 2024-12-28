@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RootNamespace>OsuCatch-Editor-RealtimeViewer</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="EditorReader\EditorReaderExample.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="EditorReader\EditorReaderExample.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EditorReader">
+      <HintPath>EditorReader\EditorReader.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="EditorReader\EditorReader.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
