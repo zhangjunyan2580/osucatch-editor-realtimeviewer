@@ -1,6 +1,9 @@
 using Editor_Reader;
 using Microsoft.Win32;
+using osu.Framework.Graphics.Lines;
+using osu.Framework.Graphics.Primitives;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace osucatch_editor_realtimeviewer
@@ -14,7 +17,10 @@ namespace osucatch_editor_realtimeviewer
         string osu_path = "";
         string beatmap_path = "";
         string newBeatmap = "";
-        readonly string tmpFilePath = Environment.CurrentDirectory;
+
+        public static string Path_Img_Hitcircle = @"img/fruit-apple.png";
+        public static string Path_Img_Drop = @"img/fruit-drop.png";
+        public static string Path_Img_Banana = @"img/fruit-bananas.png";
 
         public Form1()
         {
@@ -31,7 +37,7 @@ namespace osucatch_editor_realtimeviewer
             if (path == DialogResult.OK)
             {
                 //check if osu!.exe is present
-                if (!File.Exists(Path.Combine(folder.SelectedPath, "osu!.exe")))
+                if (!File.Exists(System.IO.Path.Combine(folder.SelectedPath, "osu!.exe")))
                 {
                     MessageBox.Show("选择的文件夹不包含osu!.exe", "错误", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return Select_Osu_Path();
@@ -47,6 +53,8 @@ namespace osucatch_editor_realtimeviewer
 
             reader_timer.Interval = 1000;
             reader_timer.Start();
+
+            this.Canvas.Init();
             /*
             reader.FetchAll();
             Console.WriteLine(reader.ContainingFolder);
@@ -108,14 +116,17 @@ namespace osucatch_editor_realtimeviewer
         {
             try
             {
-                if (!Is_Osu_Running || reader.ProcessNeedsReload()) {
+                if (!Is_Osu_Running || reader.ProcessNeedsReload())
+                {
                     try
                     {
                         reader.SetProcess();
                         Is_Osu_Running = true;
                     }
-                    catch {
+                    catch
+                    {
                         this.Text = "Osu!.exe未运行";
+                        reader_timer.Interval = 1000;
                         Is_Osu_Running = false;
                         Is_Editor_Running = false;
                         beatmap_path = "";
@@ -126,6 +137,7 @@ namespace osucatch_editor_realtimeviewer
                 if (title == "")
                 {
                     this.Text = "Osu!.exe未运行";
+                    reader_timer.Interval = 1000;
                     Is_Osu_Running = false;
                     Is_Editor_Running = false;
                     beatmap_path = "";
@@ -142,6 +154,7 @@ namespace osucatch_editor_realtimeviewer
                     catch
                     {
                         this.Text = "Editor未运行";
+                        reader_timer.Interval = 1000;
                         Is_Editor_Running = false;
                         beatmap_path = "";
                         return;
@@ -151,30 +164,35 @@ namespace osucatch_editor_realtimeviewer
                 {
                     this.Text = title;
                     Is_Editor_Running = true;
+                    reader_timer.Interval = 20;
                 }
                 reader.FetchAll();
 
-                string newpath = Path.Combine(osu_path, "Songs", reader.ContainingFolder, reader.Filename);
-                
+                string newpath = System.IO.Path.Combine(osu_path, "Songs", reader.ContainingFolder, reader.Filename);
+
                 // 新文件
-                if (beatmap_path != newpath)
+                if (beatmap_path != newpath || newBeatmap == "")
                 {
                     beatmap_path = newpath;
-                    newBeatmap = BuildNewBeatmap(beatmap_path);
-                    File.WriteAllText(Path.Combine(tmpFilePath, "temp.osu"), newBeatmap);
+                    newBeatmap = BuildNewBeatmapFromFilepath(beatmap_path);
                 }
                 else
                 {
                     // 检查和上一tick的谱面文件有无区别
-                    string _newBeatmap = BuildNewBeatmap(beatmap_path);
-                    if(!String.Equals(_newBeatmap.Length,newBeatmap.Length))
+                    string _newBeatmap = BuildNewBeatmapFromString(newBeatmap);
+                    if (!String.Equals(_newBeatmap, newBeatmap))
                     {
                         newBeatmap = _newBeatmap;
-                        File.WriteAllText(Path.Combine(tmpFilePath, "temp.osu"), newBeatmap);
                     }
                 }
-
-                this.Text = reader.hitObjects.Count.ToString();
+                // 使用官方库分析新谱面
+                int mods = 0;
+                //if (HRRadioButton.Checked) mods = (1 << 4);
+                //else if (EZRadioButton.Checked) mods = (1 << 1);
+                if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(newBeatmap, false, mods);
+                else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
+                this.Canvas.viewerManager.currentTime = reader.EditorTime();
+                this.Canvas.Canvas_Paint(sender, null);
             }
             catch (Exception ex)
             {
@@ -199,55 +217,72 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private string BuildNewBeatmap(string orgpath)
+        private string BuildNewBeatmapFromString(string orgbeatmap)
+        {
+            byte[] byteArray = Encoding.UTF8.GetBytes(orgbeatmap);
+            MemoryStream stream = new MemoryStream(byteArray);
+            StreamReader file = new StreamReader(stream);
+            return BuildNewBeatmap(file);
+        }
+        private string BuildNewBeatmapFromFilepath(string orgpath)
+        {
+            StreamReader file = File.OpenText(orgpath);
+            return BuildNewBeatmap(file);
+        }
+        private string BuildNewBeatmap(StreamReader file)
         {
             string newfile = "";
-            using (StreamReader file = File.OpenText(orgpath))
+            string line;
+            bool isMultiLine = false;
+            while ((line = file.ReadLine()) != null)
             {
-                string line;
-                bool isMultiLine = false;
-                while ((line = file.ReadLine()) != null)
+                if (isMultiLine)
                 {
-                    if (isMultiLine) {
-                        if (Regex.IsMatch(line, @"^\[")) {
-                            isMultiLine = false;
-                        }
-                        else continue;
-                    }
-
-                    // 只替换必要的东西
-                    if (Regex.IsMatch(line, "^PreviewTime:")) newfile += "PreviewTime: " + reader.PreviewTime + "\r\n";
-                    else if(Regex.IsMatch(line, "^StackLeniency:")) newfile += "StackLeniency: " + reader.StackLeniency + "\r\n";
-
-                    // 强制CTB模式
-                    // if (Regex.IsMatch(line, "^Mode:")) newfile += "Mode: 2" + "\r\n";
-
-                    else if (Regex.IsMatch(line, "^HPDrainRate:")) newfile += "HPDrainRate: " + reader.HPDrainRate + "\r\n";
-                    else if (Regex.IsMatch(line, "^CircleSize:")) newfile += "CircleSize: " + reader.CircleSize + "\r\n";
-                    else if (Regex.IsMatch(line, "^OverallDifficulty:")) newfile += "OverallDifficulty: " + reader.OverallDifficulty + "\r\n";
-                    else if (Regex.IsMatch(line, "^ApproachRate:")) newfile += "ApproachRate: " + reader.ApproachRate + "\r\n";
-
-                    else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile += "SliderMultiplier: " + reader.SliderMultiplier + "\r\n";
-                    else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile += "SliderTickRate: " + reader.SliderTickRate + "\r\n";
-
-                    else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
+                    if (Regex.IsMatch(line, @"^\["))
                     {
-                        newfile += "[TimingPoints]" + "\r\n";
-                        newfile += String.Join("\r\n", reader.controlPoints) + "\r\n";
-                        newfile += "\r\n";
-                        isMultiLine = true;
+                        isMultiLine = false;
                     }
-                    else if (Regex.IsMatch(line, @"^\[HitObjects\]"))
-                    {
-                        newfile += "[HitObjects]" + "\r\n";
-                        newfile += String.Join("\r\n", reader.hitObjects) + "\r\n";
-                        newfile += "\r\n";
-                        isMultiLine = true;
-                    }
-                    else newfile += line + "\r\n";
+                    else continue;
                 }
-                return newfile;
+
+                // 只替换必要的东西
+                if (Regex.IsMatch(line, "^PreviewTime:")) newfile += "PreviewTime: " + reader.PreviewTime + "\r\n";
+                else if (Regex.IsMatch(line, "^StackLeniency:")) newfile += "StackLeniency: " + reader.StackLeniency + "\r\n";
+
+                // 强制CTB模式
+                // if (Regex.IsMatch(line, "^Mode:")) newfile += "Mode: 2" + "\r\n";
+
+                else if (Regex.IsMatch(line, "^HPDrainRate:")) newfile += "HPDrainRate: " + reader.HPDrainRate + "\r\n";
+                else if (Regex.IsMatch(line, "^CircleSize:")) newfile += "CircleSize: " + reader.CircleSize + "\r\n";
+                else if (Regex.IsMatch(line, "^OverallDifficulty:")) newfile += "OverallDifficulty: " + reader.OverallDifficulty + "\r\n";
+                else if (Regex.IsMatch(line, "^ApproachRate:")) newfile += "ApproachRate: " + reader.ApproachRate + "\r\n";
+
+                else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile += "SliderMultiplier: " + reader.SliderMultiplier + "\r\n";
+                else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile += "SliderTickRate: " + reader.SliderTickRate + "\r\n";
+
+                else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
+                {
+                    newfile += "[TimingPoints]" + "\r\n";
+                    newfile += String.Join("\r\n", reader.controlPoints) + "\r\n";
+                    newfile += "\r\n";
+                    isMultiLine = true;
+                }
+                else if (Regex.IsMatch(line, @"^\[HitObjects\]"))
+                {
+                    newfile += "[HitObjects]" + "\r\n";
+                    newfile += String.Join("\r\n", reader.hitObjects) + "\r\n";
+                    newfile += "\r\n";
+                    isMultiLine = true;
+                }
+                else newfile += line + "\r\n";
             }
+            return newfile;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            reader_timer.Stop();
         }
     }
+
 }
