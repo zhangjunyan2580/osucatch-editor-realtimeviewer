@@ -32,14 +32,14 @@ namespace osucatch_editor_realtimeviewer
             FolderBrowserDialog folder = new FolderBrowserDialog();
             folder.ShowNewFolderButton = false;
             folder.RootFolder = Environment.SpecialFolder.MyComputer;
-            folder.Description = "请选择osu!.exe所在文件夹";
+            folder.Description = "Select osu! Folder";
             DialogResult path = folder.ShowDialog();
             if (path == DialogResult.OK)
             {
                 //check if osu!.exe is present
                 if (!File.Exists(System.IO.Path.Combine(folder.SelectedPath, "osu!.exe")))
                 {
-                    MessageBox.Show("选择的文件夹不包含osu!.exe", "错误", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("No osu!.exe in this folder!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return Select_Osu_Path();
                 }
             }
@@ -125,7 +125,7 @@ namespace osucatch_editor_realtimeviewer
                     }
                     catch
                     {
-                        this.Text = "Osu!.exe未运行";
+                        this.Text = "Osu!.exe is not running";
                         reader_timer.Interval = 1000;
                         Is_Osu_Running = false;
                         Is_Editor_Running = false;
@@ -136,7 +136,7 @@ namespace osucatch_editor_realtimeviewer
                 string title = reader.ProcessTitle();
                 if (title == "")
                 {
-                    this.Text = "Osu!.exe未运行";
+                    this.Text = "Osu!.exe is not running";
                     reader_timer.Interval = 1000;
                     Is_Osu_Running = false;
                     Is_Editor_Running = false;
@@ -153,7 +153,7 @@ namespace osucatch_editor_realtimeviewer
                     }
                     catch
                     {
-                        this.Text = "Editor未运行";
+                        this.Text = "Editor is not running";
                         reader_timer.Interval = 1000;
                         Is_Editor_Running = false;
                         beatmap_path = "";
@@ -187,8 +187,8 @@ namespace osucatch_editor_realtimeviewer
                 }
                 // 使用官方库分析新谱面
                 int mods = 0;
-                //if (HRRadioButton.Checked) mods = (1 << 4);
-                //else if (EZRadioButton.Checked) mods = (1 << 1);
+                if (hRToolStripMenuItem.Checked) mods = (1 << 4);
+                else if (eZToolStripMenuItem.Checked) mods = (1 << 1);
                 if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(newBeatmap, false, mods);
                 else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
                 this.Canvas.viewerManager.currentTime = reader.EditorTime();
@@ -282,6 +282,27 @@ namespace osucatch_editor_realtimeviewer
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             reader_timer.Stop();
+        }
+
+        private void noneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            noneToolStripMenuItem.Checked = true;
+            hRToolStripMenuItem.Checked = false;
+            eZToolStripMenuItem.Checked = false;
+        }
+
+        private void hRToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            noneToolStripMenuItem.Checked = false;
+            hRToolStripMenuItem.Checked = true;
+            eZToolStripMenuItem.Checked = false;
+        }
+
+        private void eZToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            noneToolStripMenuItem.Checked = false;
+            hRToolStripMenuItem.Checked = false;
+            eZToolStripMenuItem.Checked = true;
         }
     }
 
