@@ -9,15 +9,11 @@ namespace osucatch_editor_realtimeviewer
 
     public class Canvas : OpenTK.GLControl
     {
-        public static Color[] Color_Cursor = new Color[7] { Color.Red, Color.Cyan, Color.Lime, Color.Yellow, Color.Magenta, new Color(128, 128, 255, 255), Color.Honeydew };
         public ViewerManager viewerManager;
 
         public float CatcherAreaHeight { get; set; }
 
-        private Texture2D? nodeTexture;
-        private Texture2D? cursorTexture;
         private Texture2D? hitCircleTexture;
-        private Texture2D? helpTexture;
         private Texture2D? DropTexture;
         private Texture2D? BananaTexture;
 
@@ -101,19 +97,6 @@ namespace osucatch_editor_realtimeviewer
         }
 
 
-
-        private void MulFlipMatrix()
-        {
-            double[] flipMatrix = {
-                1.0, 0.0, 0.0, 0.0,
-                0.0, -1.0, 0.0, 384.0,
-                0.0, 0.0, 1.0, 0.0,
-                0.0, 0.0, 0.0, 1.0,
-            };
-            GL.MultTransposeMatrix(flipMatrix);
-        }
-
-
         public void Draw()
         {
             int circleDiameter = (int)(108.848 - viewerManager.Beatmap.Difficulty.CircleSize * 8.9646);
@@ -134,18 +117,6 @@ namespace osucatch_editor_realtimeviewer
         }
 
 
-        public void DrawHelp()
-        {
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.PushMatrix();
-            GL.LoadIdentity();
-            GL.Ortho(0.0, 1.0, 1.0, 0.0, 0.0, 1.0);
-            helpTexture.Draw(Vector2.Zero, 1.0f, 1.0f, Vector2.Zero, Color.White);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.PopMatrix();
-        }
-
-
 
         private void DrawLine(Vector2 start, Vector2 end, Color color)
         {
@@ -161,7 +132,6 @@ namespace osucatch_editor_realtimeviewer
         private void DrawHitcircle(PalpableCatchHitObject palpableCatchHitObject, float alpha, int circleDiameter)
         {
             PalpableCatchHitObject hitObject = palpableCatchHitObject;
-            Color color = new Color(1, 1, 1, 1);
             Vector2 pos = new Vector2(hitObject.EffectiveX, 384 * alpha - this.CatcherAreaHeight + 640);
             if (hitObject is TinyDroplet)
             {

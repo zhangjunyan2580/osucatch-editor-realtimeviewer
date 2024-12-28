@@ -143,7 +143,15 @@ namespace osucatch_editor_realtimeviewer
                     beatmap_path = "";
                     return;
                 }
-                if (!title.EndsWith(".osu") || reader.EditorNeedsReload())
+                if (!title.EndsWith(".osu"))
+                {
+                    this.Text = "Editor is not running";
+                    reader_timer.Interval = 1000;
+                    Is_Editor_Running = false;
+                    beatmap_path = "";
+                    return;
+                }
+                if (reader.EditorNeedsReload())
                 {
                     try
                     {

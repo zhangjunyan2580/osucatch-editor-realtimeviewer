@@ -30,12 +30,6 @@ namespace osucatch_editor_realtimeviewer
             LoadBeatmap(beatmap, modsWhenOnlyBeatmap);
         }
 
-        public void AfterLoad()
-        {
-            int FirstHitObjectTime = (int)CatchHitObjects[0].StartTime;
-            BuildNearby();
-        }
-
         public void LoadBeatmap(string beatmap, int mods = 0)
         {
 
@@ -47,7 +41,6 @@ namespace osucatch_editor_realtimeviewer
             float moddedCS = Beatmap.Difficulty.CircleSize;
             CircleDiameter = (int)(108.848 - moddedCS * 8.9646);
 
-            AfterLoad();
         }
 
 
