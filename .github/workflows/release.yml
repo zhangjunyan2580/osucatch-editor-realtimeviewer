@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - "master"
+      
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore osucatch-editor-realtimeviewer
+      
+    - name: Build x64
+      run: dotnet build osucatch-editor-realtimeviewer -c Release /p:Platform=x64 --no-restore
+
+    - name: Create x64 release.zip
+      uses: thedoctor0/zip-release@master
+      with:
+        type: 'zip'
+        filename: 'release.zip'
+        directory: 'osucatch-editor-realtimeviewer/bin/x64/Release/net6.0-windows/win-x64/'
+
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: false
+        automatic_release_tag: "latest"
+        title: release
+        files: |
+          osucatch-editor-realtimeviewer/bin/x64/Release/net6.0-windows/win-x64/release.zip
