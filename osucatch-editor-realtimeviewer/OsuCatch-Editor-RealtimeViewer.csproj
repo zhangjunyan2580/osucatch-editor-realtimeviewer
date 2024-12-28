@@ -13,11 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="EditorReader\EditorReaderExample.cs" />
+    <Compile Remove="EditorReader\\EditorReaderExample.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="EditorReader\EditorReaderExample.cs" />
+    <None Include="EditorReader\\EditorReaderExample.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,22 +28,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include=".\EditorReader\EditorReader.dll">
+    <Reference Include=".\\EditorReader\\EditorReader.dll">
        <Private>true</Private>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="EditorReader\EditorReader.dll">
+    <None Update="EditorReader\\EditorReader.dll">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="img\fruit-apple.png">
+    <None Update="img\\fruit-apple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="img\fruit-bananas.png">
+    <None Update="img\\fruit-bananas.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="img\fruit-drop.png">
+    <None Update="img\\fruit-drop.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
