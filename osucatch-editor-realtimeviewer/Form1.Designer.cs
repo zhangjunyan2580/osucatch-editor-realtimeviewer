@@ -36,6 +36,11 @@
             noneToolStripMenuItem = new ToolStripMenuItem();
             hRToolStripMenuItem = new ToolStripMenuItem();
             eZToolStripMenuItem = new ToolStripMenuItem();
+            settingsToolStripMenuItem = new ToolStripMenuItem();
+            openSettingsFileToolStripMenuItem = new ToolStripMenuItem();
+            githubToolStripMenuItem = new ToolStripMenuItem();
+            githubToolStripMenuItem1 = new ToolStripMenuItem();
+            backup_timer = new System.Windows.Forms.Timer(components);
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -49,17 +54,16 @@
             Canvas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Canvas.BackColor = Color.Black;
             Canvas.CatcherAreaHeight = 0F;
-            Canvas.Location = new Point(13, 29);
+            Canvas.Location = new Point(0, 28);
             Canvas.Margin = new Padding(4, 5, 4, 5);
             Canvas.Name = "Canvas";
-            Canvas.ShowHelp = 0;
-            Canvas.Size = new Size(209, 669);
+            Canvas.Size = new Size(234, 683);
             Canvas.TabIndex = 33;
             Canvas.VSync = false;
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { modToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { modToolStripMenuItem, settingsToolStripMenuItem, githubToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(234, 25);
@@ -78,23 +82,56 @@
             noneToolStripMenuItem.Checked = true;
             noneToolStripMenuItem.CheckState = CheckState.Checked;
             noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            noneToolStripMenuItem.Size = new Size(180, 22);
+            noneToolStripMenuItem.Size = new Size(108, 22);
             noneToolStripMenuItem.Text = "None";
             noneToolStripMenuItem.Click += noneToolStripMenuItem_Click;
             // 
             // hRToolStripMenuItem
             // 
             hRToolStripMenuItem.Name = "hRToolStripMenuItem";
-            hRToolStripMenuItem.Size = new Size(180, 22);
+            hRToolStripMenuItem.Size = new Size(108, 22);
             hRToolStripMenuItem.Text = "HR";
             hRToolStripMenuItem.Click += hRToolStripMenuItem_Click;
             // 
             // eZToolStripMenuItem
             // 
             eZToolStripMenuItem.Name = "eZToolStripMenuItem";
-            eZToolStripMenuItem.Size = new Size(180, 22);
+            eZToolStripMenuItem.Size = new Size(108, 22);
             eZToolStripMenuItem.Text = "EZ";
             eZToolStripMenuItem.Click += eZToolStripMenuItem_Click;
+            // 
+            // settingsToolStripMenuItem
+            // 
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openSettingsFileToolStripMenuItem });
+            settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            settingsToolStripMenuItem.Size = new Size(66, 21);
+            settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // openSettingsFileToolStripMenuItem
+            // 
+            openSettingsFileToolStripMenuItem.Name = "openSettingsFileToolStripMenuItem";
+            openSettingsFileToolStripMenuItem.Size = new Size(181, 22);
+            openSettingsFileToolStripMenuItem.Text = "Open Settings File";
+            openSettingsFileToolStripMenuItem.Click += openSettingsFileToolStripMenuItem_Click;
+            // 
+            // githubToolStripMenuItem
+            // 
+            githubToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { githubToolStripMenuItem1 });
+            githubToolStripMenuItem.Name = "githubToolStripMenuItem";
+            githubToolStripMenuItem.Size = new Size(55, 21);
+            githubToolStripMenuItem.Text = "About";
+            // 
+            // githubToolStripMenuItem1
+            // 
+            githubToolStripMenuItem1.Name = "githubToolStripMenuItem1";
+            githubToolStripMenuItem1.Size = new Size(114, 22);
+            githubToolStripMenuItem1.Text = "Github";
+            githubToolStripMenuItem1.Click += githubToolStripMenuItem1_Click;
+            // 
+            // backup_timer
+            // 
+            backup_timer.Interval = 60000;
+            backup_timer.Tick += backup_timer_Tick;
             // 
             // Form1
             // 
@@ -123,5 +160,10 @@
         private ToolStripMenuItem noneToolStripMenuItem;
         private ToolStripMenuItem hRToolStripMenuItem;
         private ToolStripMenuItem eZToolStripMenuItem;
+        private ToolStripMenuItem githubToolStripMenuItem;
+        private ToolStripMenuItem githubToolStripMenuItem1;
+        private ToolStripMenuItem settingsToolStripMenuItem;
+        private ToolStripMenuItem openSettingsFileToolStripMenuItem;
+        private System.Windows.Forms.Timer backup_timer;
     }
 }

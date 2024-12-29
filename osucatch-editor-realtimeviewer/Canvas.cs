@@ -16,9 +16,6 @@ namespace osucatch_editor_realtimeviewer
         private Texture2D? DropTexture;
         private Texture2D? BananaTexture;
 
-        public byte ShowHelp { get; set; }
-
-
         public Canvas()
             : base()
         {

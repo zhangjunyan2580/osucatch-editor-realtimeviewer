@@ -1,5 +1,8 @@
 using Editor_Reader;
 using Microsoft.Win32;
+using SharpCompress.Common;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,21 +10,81 @@ namespace osucatch_editor_realtimeviewer
 {
     public partial class Form1 : Form
     {
+        public static string Path_Settings = "settings.txt";
+
+        public static int Window_Width = 250;
+        public static int Window_Height = 750;
+        public static string osu_path = "";
+        public static int Backup_Enabled = 0;
+        public static string Backup_Folder = "";
+        public static int Backup_Interval = 60000;
+        public static int Idle_Interval = 1000;
+        public static int Drawing_Interval = 20;
+
         EditorReader reader = new EditorReader();
         bool Is_Osu_Running = false;
         bool Is_Editor_Running = false;
         bool Is_Editor_CTB = false;
-        string osu_path = "";
         string beatmap_path = "";
         string newBeatmap = "";
+        bool Need_Backup = false;
 
         public static string Path_Img_Hitcircle = @"img/fruit-apple.png";
         public static string Path_Img_Drop = @"img/fruit-drop.png";
         public static string Path_Img_Banana = @"img/fruit-bananas.png";
 
-        public Form1()
+        public Form1(string[] settings)
         {
             InitializeComponent();
+
+            Window_Width = int.Parse(settings[0]);
+            if (Window_Width < 10) Window_Width = 250;
+            Window_Height = int.Parse(settings[1]);
+            if (Window_Height < 10) Window_Height = 750;
+            osu_path = settings[2];
+            Backup_Enabled = int.Parse(settings[3]);
+            Backup_Folder = settings[4];
+            Backup_Interval = int.Parse(settings[5]);
+            if (Backup_Interval < 1000) Backup_Interval = 1000;
+            Idle_Interval = int.Parse(settings[6]);
+            if (Idle_Interval < 1) Idle_Interval = 1;
+            Drawing_Interval = int.Parse(settings[7]);
+            if (Drawing_Interval < 1) Drawing_Interval = 1;
+        }
+
+        public void SaveSettings()
+        {
+            string[] settingsFile = new string[]
+            {
+                    @"# Lines starting with a # are ignored",
+                    @"# Do not change the order of the settings",
+                    @"",
+                    @"# window width",
+                    Window_Width.ToString(),
+                    @"",
+                    @"# window height",
+                    Window_Height.ToString(),
+                    @"",
+                    @"# osu path",
+                    osu_path,
+                    @"",
+                    @"# backup enabled",
+                    Backup_Enabled.ToString(),
+                    @"",
+                    @"# backup folder",
+                    Backup_Folder,
+                    @"",
+                    @"# backup interval",
+                    Backup_Interval.ToString(),
+                    @"",
+                    @"# idle interval",
+                    Idle_Interval.ToString(),
+                    @"",
+                    @"# drawing interval",
+                    Drawing_Interval.ToString(),
+                    @"",
+            };
+            File.WriteAllLines(Form1.Path_Settings, settingsFile);
         }
 
         private string Select_Osu_Path()
@@ -43,15 +106,33 @@ namespace osucatch_editor_realtimeviewer
             return folder.SelectedPath;
         }
 
+        public static void ErrorMessage(string msg)
+        {
+            MessageBox.Show(msg, "Error");
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            osu_path = GetOsuPath();
-            if (osu_path == "") osu_path = Select_Osu_Path();
+            this.Width = Window_Width;
+            this.Height = Window_Height;
+            SizeChanged += Form1_SizeChanged;
 
-            reader_timer.Interval = 1000;
+            if (osu_path == "")
+            {
+                osu_path = Select_Osu_Path();
+                SaveSettings();
+            }
+
+            reader_timer.Interval = Idle_Interval;
             reader_timer.Start();
 
             this.Canvas.Init();
+
+            if (Backup_Enabled >= 1)
+            {
+                backup_timer.Interval = Backup_Interval;
+                backup_timer.Start();
+            }
         }
 
         private void reader_timer_Tick(object sender, EventArgs e)
@@ -68,7 +149,7 @@ namespace osucatch_editor_realtimeviewer
                     catch
                     {
                         this.Text = "Osu!.exe is not running";
-                        reader_timer.Interval = 1000;
+                        reader_timer.Interval = Idle_Interval;
                         Is_Osu_Running = false;
                         Is_Editor_Running = false;
                         beatmap_path = "";
@@ -79,7 +160,7 @@ namespace osucatch_editor_realtimeviewer
                 if (title == "")
                 {
                     this.Text = "Osu!.exe is not running";
-                    reader_timer.Interval = 1000;
+                    reader_timer.Interval = Idle_Interval;
                     Is_Osu_Running = false;
                     Is_Editor_Running = false;
                     beatmap_path = "";
@@ -88,7 +169,7 @@ namespace osucatch_editor_realtimeviewer
                 if (!title.EndsWith(".osu"))
                 {
                     this.Text = "Editor is not running";
-                    reader_timer.Interval = 1000;
+                    reader_timer.Interval = Idle_Interval;
                     Is_Editor_Running = false;
                     beatmap_path = "";
                     return;
@@ -104,7 +185,7 @@ namespace osucatch_editor_realtimeviewer
                     catch
                     {
                         this.Text = "Editor is not running";
-                        reader_timer.Interval = 1000;
+                        reader_timer.Interval = Idle_Interval;
                         Is_Editor_Running = false;
                         beatmap_path = "";
                         return;
@@ -114,7 +195,7 @@ namespace osucatch_editor_realtimeviewer
                 {
                     this.Text = title;
                     Is_Editor_Running = true;
-                    reader_timer.Interval = 20;
+                    reader_timer.Interval = Drawing_Interval;
                 }
                 reader.FetchAll();
 
@@ -130,6 +211,18 @@ namespace osucatch_editor_realtimeviewer
                 else
                 {
                     newBeatmap = BuildNewBeatmapFromString(newBeatmap);
+                }
+                // Backup
+                if (Need_Backup)
+                {
+                    if (Is_Editor_Running && newBeatmap != "")
+                    {
+                        string backupFilePath = Path.Combine(Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + reader.Filename);
+                        string directoryPath = Path.GetDirectoryName(backupFilePath);
+                        Directory.CreateDirectory(directoryPath);
+                        File.WriteAllText(backupFilePath, newBeatmap);
+                        Need_Backup = false;
+                    }
                 }
                 // 使用官方库分析新谱面
                 int mods = 0;
@@ -148,20 +241,6 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private static string GetOsuPath()
-        {
-            using (RegistryKey osureg = Registry.ClassesRoot.OpenSubKey("osu\\DefaultIcon"))
-            {
-                if (osureg != null)
-                {
-                    string osukey = osureg.GetValue(null).ToString();
-                    string osupath = osukey.Remove(0, 1);
-                    osupath = osupath.Remove(osupath.Length - 11);
-                    return osupath;
-                }
-                else return "";
-            }
-        }
 
         private string BuildNewBeatmapFromString(string orgbeatmap)
         {
@@ -229,6 +308,8 @@ namespace osucatch_editor_realtimeviewer
                 else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile.AppendLine("SliderMultiplier: " + reader.SliderMultiplier);
                 else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile.AppendLine("SliderTickRate: " + reader.SliderTickRate);
 
+                else if (Regex.IsMatch(line, "^Bookmarks:")) newfile.AppendLine("Bookmarks: " + String.Join(",", reader.bookmarks));
+
                 else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
                 {
                     newfile.AppendLine("[TimingPoints]");
@@ -252,6 +333,7 @@ namespace osucatch_editor_realtimeviewer
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             reader_timer.Stop();
+            backup_timer.Stop();
         }
 
         private void noneToolStripMenuItem_Click(object sender, EventArgs e)
@@ -273,6 +355,28 @@ namespace osucatch_editor_realtimeviewer
             noneToolStripMenuItem.Checked = false;
             hRToolStripMenuItem.Checked = false;
             eZToolStripMenuItem.Checked = true;
+        }
+
+        private void githubToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(@"https://github.com/Exsper/osucatch-editor-realtimeviewer") { UseShellExecute = true });
+        }
+
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            Window_Width = this.Width;
+            Window_Height = this.Height;
+            SaveSettings();
+        }
+
+        private void openSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Program.OpenSettings();
+        }
+
+        private void backup_timer_Tick(object sender, EventArgs e)
+        {
+            Need_Backup = true;
         }
     }
 
