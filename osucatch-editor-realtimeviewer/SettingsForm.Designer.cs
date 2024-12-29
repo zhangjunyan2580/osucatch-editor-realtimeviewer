@@ -58,6 +58,8 @@
             button_backupFolder_select = new Button();
             button_apply = new Button();
             button_cancel = new Button();
+            groupBox5 = new GroupBox();
+            checkBox_withColor = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_height).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_width).BeginInit();
@@ -67,6 +69,7 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown_drawingInterval).BeginInit();
             groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_backupInterval).BeginInit();
+            groupBox5.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
@@ -358,7 +361,7 @@
             // 
             // button_apply
             // 
-            button_apply.Location = new Point(491, 233);
+            button_apply.Location = new Point(495, 256);
             button_apply.Name = "button_apply";
             button_apply.Size = new Size(102, 33);
             button_apply.TabIndex = 4;
@@ -368,7 +371,7 @@
             // 
             // button_cancel
             // 
-            button_cancel.Location = new Point(608, 233);
+            button_cancel.Location = new Point(623, 256);
             button_cancel.Name = "button_cancel";
             button_cancel.Size = new Size(102, 33);
             button_cancel.TabIndex = 5;
@@ -376,11 +379,32 @@
             button_cancel.UseVisualStyleBackColor = true;
             button_cancel.Click += button_cancel_Click;
             // 
+            // groupBox5
+            // 
+            groupBox5.Controls.Add(checkBox_withColor);
+            groupBox5.Location = new Point(12, 233);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new Size(239, 56);
+            groupBox5.TabIndex = 6;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Hit Objects";
+            // 
+            // checkBox_withColor
+            // 
+            checkBox_withColor.AutoSize = true;
+            checkBox_withColor.Location = new Point(6, 22);
+            checkBox_withColor.Name = "checkBox_withColor";
+            checkBox_withColor.Size = new Size(89, 21);
+            checkBox_withColor.TabIndex = 0;
+            checkBox_withColor.Text = "With Color";
+            checkBox_withColor.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(737, 275);
+            ClientSize = new Size(737, 300);
+            Controls.Add(groupBox5);
             Controls.Add(button_cancel);
             Controls.Add(button_apply);
             Controls.Add(groupBox4);
@@ -404,6 +428,8 @@
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_backupInterval).EndInit();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -439,5 +465,7 @@
         private Label label7;
         private Button button_apply;
         private Button button_cancel;
+        private GroupBox groupBox5;
+        private CheckBox checkBox_withColor;
     }
 }

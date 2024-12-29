@@ -118,5 +118,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Drawing_Interval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Combo_Colour {
+            get {
+                return ((bool)(this["Combo_Colour"]));
+            }
+            set {
+                this["Combo_Colour"] = value;
+            }
+        }
     }
 }

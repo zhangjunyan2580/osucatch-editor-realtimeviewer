@@ -16,6 +16,20 @@ namespace osucatch_editor_realtimeviewer
         private Texture2D? DropTexture;
         private Texture2D? BananaTexture;
 
+        public static Color[] Default_Colors = new Color[8] {
+            // Rainbow! >_<
+            new Color(255, 191, 191, 255),
+            new Color(255, 210, 128, 255),
+            new Color(255, 255, 128, 255),
+            new Color(128, 255, 128, 255),
+            new Color(128, 255, 255, 255),
+            new Color(128, 191, 255, 255),
+            new Color(191, 128, 255, 255),
+            new Color(255, 128, 255, 255),
+        };
+
+        public static Color[] Combo_Colors = new Color[8] { Default_Colors[1], Default_Colors[3], Default_Colors[5], Default_Colors[7], Default_Colors[0], Default_Colors[2], Default_Colors[4], Default_Colors[6] };
+
         public Canvas()
             : base()
         {
@@ -129,36 +143,68 @@ namespace osucatch_editor_realtimeviewer
         {
             PalpableCatchHitObject hitObject = palpableCatchHitObject;
             Vector2 pos = new Vector2(hitObject.EffectiveX, 384 * alpha - this.CatcherAreaHeight + 640);
-            if (hitObject is TinyDroplet)
+            if (Form1.Combo_Colour)
             {
-                if (hitObject.HyperDash)
-                    this.DrawHitcircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale / 2), new Color(1.0f, 0f, 0f, 1.0f));
-                else
-                    this.DrawHitcircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale / 2), new Color(1.0f, 1.0f, 1.0f, 1.0f));
+                int comboColorIndex = (hitObject.ComboIndex - 1) % 8;
+                Color color = Combo_Colors[comboColorIndex];
+                if (hitObject is TinyDroplet)
+                {
+                    if (hitObject.HyperDash) this.DrawHyperDashCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale / 2));
+                    this.DrawCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale / 2), color);
+                }
+                else if (hitObject is Droplet)
+                {
+                    if (hitObject.HyperDash) this.DrawHyperDashCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale));
+                    this.DrawCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale), color);
+                }
+                else if (hitObject is Fruit)
+                {
+                    if (hitObject.HyperDash) this.DrawHyperDashCircle(hitCircleTexture, pos, circleDiameter);
+                    this.DrawCircle(hitCircleTexture, pos, circleDiameter, color);
+                }
+                else if (hitObject is Banana)
+                {
+                    this.DrawCircle(BananaTexture, pos, circleDiameter, Color.Yellow);
+                }
             }
-            else if (hitObject is Droplet)
+            else
             {
-                if (hitObject.HyperDash)
-                    this.DrawHitcircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale), new Color(1.0f, 0f, 0f, 1.0f));
-                else
-                    this.DrawHitcircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale), new Color(1.0f, 1.0f, 1.0f, 1.0f));
-            }
-            else if (hitObject is Fruit)
-            {
-                if (hitObject.HyperDash)
-                    this.DrawHitcircle(hitCircleTexture, pos, circleDiameter, new Color(1.0f, 0f, 0f, 1.0f));
-                else
-                    this.DrawHitcircle(hitCircleTexture, pos, circleDiameter, new Color(1.0f, 1.0f, 1.0f, 1.0f));
-            }
-            else if (hitObject is Banana)
-            {
-                this.DrawHitcircle(BananaTexture, pos, circleDiameter, Color.Yellow);
+                if (hitObject is TinyDroplet)
+                {
+                    if (hitObject.HyperDash)
+                        this.DrawCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale / 2), new Color(1.0f, 0f, 0f, 1.0f));
+                    else
+                        this.DrawCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale / 2), new Color(1.0f, 1.0f, 1.0f, 1.0f));
+                }
+                else if (hitObject is Droplet)
+                {
+                    if (hitObject.HyperDash)
+                        this.DrawCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale), new Color(1.0f, 0f, 0f, 1.0f));
+                    else
+                        this.DrawCircle(DropTexture, pos, (int)(circleDiameter * hitObject.Scale), new Color(1.0f, 1.0f, 1.0f, 1.0f));
+                }
+                else if (hitObject is Fruit)
+                {
+                    if (hitObject.HyperDash)
+                        this.DrawCircle(hitCircleTexture, pos, circleDiameter, new Color(1.0f, 0f, 0f, 1.0f));
+                    else
+                        this.DrawCircle(hitCircleTexture, pos, circleDiameter, new Color(1.0f, 1.0f, 1.0f, 1.0f));
+                }
+                else if (hitObject is Banana)
+                {
+                    this.DrawCircle(BananaTexture, pos, circleDiameter, Color.Yellow);
+                }
             }
         }
 
-        private void DrawHitcircle(Texture2D texture, Vector2 pos, int diameter, Color color)
+        private void DrawCircle(Texture2D texture, Vector2 pos, int diameter, Color color)
         {
             texture.Draw(pos, diameter, diameter, new Vector2(diameter * 0.5f), color);
+        }
+
+        private void DrawHyperDashCircle(Texture2D texture, Vector2 pos, int diameter)
+        {
+            texture.Draw(pos, diameter * 1.4f, diameter * 1.4f, new Vector2(diameter * 1.4f * 0.5f), Color.Red);
         }
 
         private void DrawJudgementLine()

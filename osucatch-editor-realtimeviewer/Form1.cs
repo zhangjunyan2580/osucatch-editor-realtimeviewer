@@ -20,6 +20,7 @@ namespace osucatch_editor_realtimeviewer
         public static int Backup_Interval = app.Default.Backup_Interval;
         public static int Idle_Interval = app.Default.Idle_Interval;
         public static int Drawing_Interval = app.Default.Drawing_Interval;
+        public static bool Combo_Colour = app.Default.Combo_Colour;
 
         EditorReader reader = new EditorReader();
         bool Is_Osu_Running = false;
