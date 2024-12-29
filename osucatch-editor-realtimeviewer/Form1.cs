@@ -149,10 +149,12 @@ namespace osucatch_editor_realtimeviewer
                     catch
                     {
                         this.Text = "Osu!.exe is not running";
+                        reader_timer.Stop();
                         reader_timer.Interval = Idle_Interval;
                         Is_Osu_Running = false;
                         Is_Editor_Running = false;
                         beatmap_path = "";
+                        reader_timer.Start();
                         return;
                     }
                 }
@@ -160,34 +162,40 @@ namespace osucatch_editor_realtimeviewer
                 if (title == "")
                 {
                     this.Text = "Osu!.exe is not running";
+                    reader_timer.Stop();
                     reader_timer.Interval = Idle_Interval;
                     Is_Osu_Running = false;
                     Is_Editor_Running = false;
                     beatmap_path = "";
+                    reader_timer.Start();
                     return;
                 }
                 if (!title.EndsWith(".osu"))
                 {
                     this.Text = "Editor is not running";
+                    reader_timer.Stop();
                     reader_timer.Interval = Idle_Interval;
                     Is_Editor_Running = false;
                     beatmap_path = "";
+                    reader_timer.Start();
                     return;
                 }
                 if (reader.EditorNeedsReload())
                 {
                     try
                     {
-                        reader.SetEditor();
+                        reader.FetchEditor();
                         Is_Osu_Running = true;
                         Is_Editor_Running = true;
                     }
                     catch
                     {
                         this.Text = "Editor is not running";
+                        reader_timer.Stop();
                         reader_timer.Interval = Idle_Interval;
                         Is_Editor_Running = false;
                         beatmap_path = "";
+                        reader_timer.Start();
                         return;
                     }
                 }
@@ -195,9 +203,20 @@ namespace osucatch_editor_realtimeviewer
                 {
                     this.Text = title;
                     Is_Editor_Running = true;
+                    reader_timer.Stop();
                     reader_timer.Interval = Drawing_Interval;
+                    reader_timer.Start();
                 }
                 reader.FetchAll();
+
+                // Fix Editor Reader
+                // Modified from Mapping_Tools
+                // https://github.com/OliBomby/Mapping_Tools/tree/master/Mapping_Tools/Classes/ToolHelpers/EditorReaderStuff.cs
+                // Under MIT Licnece https://github.com/OliBomby/Mapping_Tools/blob/master/LICENCE
+                reader.hitObjects.RemoveAll(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
+                readerHitObject.SegmentCount > 9000 || readerHitObject.Type == 0 || readerHitObject.SampleSet > 1000 ||
+                readerHitObject.SampleSetAdditions > 1000 || readerHitObject.SampleVolume > 1000);
+                // -----------------------
 
                 string newpath = System.IO.Path.Combine(osu_path, "Songs", reader.ContainingFolder, reader.Filename);
                 float readerTime = reader.EditorTime();
