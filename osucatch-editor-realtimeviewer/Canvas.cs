@@ -1,6 +1,5 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 using osu.Game.Rulesets.Catch.Objects;
 using Color = OpenTK.Graphics.Color4;
 

@@ -1,18 +1,12 @@
 ﻿using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Catch.Objects;
-using osucatch_editor_realtimeviewer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace osucatch_editor_realtimeviewer
 {
 
     public class ViewerManager
     {
-        public float currentTime {  get; set; }
+        public float currentTime { get; set; }
         public IBeatmap Beatmap { get; set; }
         public List<PalpableCatchHitObject> CatchHitObjects { get; set; }
         public List<PalpableCatchHitObject> NearbyHitObjects { get; set; }
@@ -21,7 +15,7 @@ namespace osucatch_editor_realtimeviewer
         public float State_ARMul { get; set; }
 
 
-        public ViewerManager(string beatmap, bool isReplay, int modsWhenOnlyBeatmap = 0)
+        public ViewerManager(string beatmap, int modsWhenOnlyBeatmap = 0)
         {
             currentTime = 0;
             NearbyHitObjects = new List<PalpableCatchHitObject>();

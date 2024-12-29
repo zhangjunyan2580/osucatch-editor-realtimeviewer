@@ -1,75 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using osu.Framework.Audio.Track;
-using osu.Framework.Graphics.Textures;
-using osu.Game.Beatmaps;
-using osu.Game.Beatmaps.Formats;
+﻿using osu.Game.Beatmaps;
 using osu.Game.IO;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Catch;
 using osu.Game.Rulesets.Catch.Objects;
 using osu.Game.Rulesets.Mods;
-using osu.Game.Rulesets.Objects;
-using osu.Game.Skinning;
-using static osu.Game.Graphics.UserInterface.StarCounter;
-using Color = OpenTK.Graphics.Color4;
+using System.Text;
 
 namespace osucatch_editor_realtimeviewer
 {
-    public class ProcessorWorkingBeatmap : WorkingBeatmap
+
+    public class CatchBeatmapAPI
     {
-        private readonly Beatmap beatmap;
-
-
-
-        /// <summary>
-        /// Constructs a new <see cref="ProcessorWorkingBeatmap"/> from a .osu file.
-        /// </summary>
-        /// <param name="file">The .osu file.</param>
-        /// <param name="beatmapId">An optional beatmap ID (for cases where .osu file doesn't have one).</param>
-        public ProcessorWorkingBeatmap(string file, int? beatmapId = null)
-            : this(readFromFile(file), beatmapId)
-        {
-        }
-
-        private ProcessorWorkingBeatmap(Beatmap beatmap, int? beatmapId = null)
-    : base(beatmap.BeatmapInfo, null)
-        {
-            this.beatmap = beatmap;
-
-            //beatmap.BeatmapInfo.Ruleset = LegacyHelper.GetRulesetFromLegacyID(beatmap.BeatmapInfo.Ruleset.OnlineID).RulesetInfo;
-
-            //if (beatmapId.HasValue)
-            //    beatmap.BeatmapInfo.OnlineID = beatmapId.Value;
-        }
-
+        public static Ruleset catchRulest => new CatchRuleset();
         private static Beatmap readFromFile(string file)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes(file);
             MemoryStream stream = new MemoryStream(byteArray);
             using (var reader = new LineBufferedReader(stream))
                 return osu.Game.Beatmaps.Formats.Decoder.GetDecoder<Beatmap>(reader).Decode(reader);
-            /*
-            using (var stream = File.OpenRead(filename))
-            using (var reader = new LineBufferedReader(stream))
-                return Decoder.GetDecoder<Beatmap>(reader).Decode(reader);
-            */
         }
-
-        protected override IBeatmap GetBeatmap() => beatmap;
-        public override Texture GetBackground() => null;
-        protected override Track GetBeatmapTrack() => null;
-        protected override ISkin GetSkin() => null;
-        public override Stream GetStream(string storagePath) => null;
-    }
-
-    public class CatchBeatmapAPI
-    {
-        public static Ruleset catchRulest => new CatchRuleset();
 
         static Mod[] GetMods(string[] Mods, Ruleset ruleset)
         {
@@ -129,7 +78,8 @@ namespace osucatch_editor_realtimeviewer
         public static IBeatmap Execute(string file, Mod[] mods)
         {
             Ruleset ruleset = catchRulest;
-            ProcessorWorkingBeatmap workingBeatmap = new ProcessorWorkingBeatmap(file);
+            Beatmap beatmap = readFromFile(file);
+            FlatWorkingBeatmap workingBeatmap = new FlatWorkingBeatmap(beatmap);
             IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(ruleset.RulesetInfo, mods);
             if (playableBeatmap == null) throw new Exception("该谱面有错误或无法游玩接水果模式。");
             return playableBeatmap;
