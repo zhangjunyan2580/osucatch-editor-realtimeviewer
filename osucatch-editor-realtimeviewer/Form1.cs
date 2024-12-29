@@ -108,7 +108,7 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private void reader_timer_Tick(object sender, EventArgs e)
+        private async void reader_timer_Tick(object sender, EventArgs e)
         {
             if (NeedReapplySettings)
             {
@@ -198,7 +198,26 @@ namespace osucatch_editor_realtimeviewer
                     reader_timer.Interval = Drawing_Interval;
                     reader_timer.Start();
                 }
-                reader.FetchAll();
+
+                try
+                {
+                    await TimeoutCheck.DoOperationWithTimeout(() =>
+                    {
+                        try
+                        {
+                            reader.FetchAll();
+                        }
+                        catch (Exception e)
+                        {
+                            return;
+                        }
+                    }, TimeSpan.FromSeconds(4));
+                }
+                catch (TimeoutException ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    return;
+                }
 
                 // Fix Editor Reader
                 // Modified from Mapping_Tools
@@ -318,12 +337,17 @@ namespace osucatch_editor_realtimeviewer
                 else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile.AppendLine("SliderMultiplier: " + reader.SliderMultiplier);
                 else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile.AppendLine("SliderTickRate: " + reader.SliderTickRate);
 
-                else if (Regex.IsMatch(line, "^Bookmarks:")) newfile.AppendLine("Bookmarks: " + String.Join(",", reader.bookmarks));
+                else if (Regex.IsMatch(line, "^Bookmarks:"))
+                {
+                    var bookmarks_copy = reader.bookmarks.ToList();
+                    newfile.AppendLine("Bookmarks: " + String.Join(",", bookmarks_copy));
+                }
 
                 else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
                 {
                     newfile.AppendLine("[TimingPoints]");
-                    newfile.AppendLine(String.Join("\r\n", reader.controlPoints));
+                    var controlPoints_copy = reader.controlPoints.ToList();
+                    newfile.AppendLine(String.Join("\r\n", controlPoints_copy));
                     newfile.AppendLine();
                     isMultiLine = true;
                 }
@@ -331,7 +355,8 @@ namespace osucatch_editor_realtimeviewer
                 {
                     newfile.AppendLine("[HitObjects]");
                     // newfile.AppendLine(String.Join("\r\n", FilterNearbyHitObjects(reader.hitObjects, editorTime)));
-                    newfile.AppendLine(String.Join("\r\n", reader.hitObjects));
+                    var hitObjects_copy = reader.hitObjects.ToList();
+                    newfile.AppendLine(String.Join("\r\n", hitObjects_copy));
                     newfile.AppendLine();
                     isMultiLine = true;
                 }
