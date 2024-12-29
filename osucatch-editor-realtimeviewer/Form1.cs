@@ -12,14 +12,14 @@ namespace osucatch_editor_realtimeviewer
     {
         public static string Path_Settings = "settings.txt";
 
-        public static int Window_Width = 250;
-        public static int Window_Height = 750;
-        public static string osu_path = "";
-        public static int Backup_Enabled = 0;
-        public static string Backup_Folder = "";
-        public static int Backup_Interval = 60000;
-        public static int Idle_Interval = 1000;
-        public static int Drawing_Interval = 20;
+        public static int Window_Width = app.Default.Window_Width;
+        public static int Window_Height = app.Default.Window_Height;
+        public static string osu_path = app.Default.osu_path;
+        public static bool Backup_Enabled = app.Default.Backup_Enabled;
+        public static string Backup_Folder = app.Default.Backup_Folder;
+        public static int Backup_Interval = app.Default.Backup_Interval;
+        public static int Idle_Interval = app.Default.Idle_Interval;
+        public static int Drawing_Interval = app.Default.Drawing_Interval;
 
         EditorReader reader = new EditorReader();
         bool Is_Osu_Running = false;
@@ -33,58 +33,11 @@ namespace osucatch_editor_realtimeviewer
         public static string Path_Img_Drop = @"img/fruit-drop.png";
         public static string Path_Img_Banana = @"img/fruit-bananas.png";
 
-        public Form1(string[] settings)
+        public static bool NeedReapplySettings = false;
+
+        public Form1()
         {
             InitializeComponent();
-
-            Window_Width = int.Parse(settings[0]);
-            if (Window_Width < 10) Window_Width = 250;
-            Window_Height = int.Parse(settings[1]);
-            if (Window_Height < 10) Window_Height = 750;
-            osu_path = settings[2];
-            Backup_Enabled = int.Parse(settings[3]);
-            Backup_Folder = settings[4];
-            Backup_Interval = int.Parse(settings[5]);
-            if (Backup_Interval < 1000) Backup_Interval = 1000;
-            Idle_Interval = int.Parse(settings[6]);
-            if (Idle_Interval < 1) Idle_Interval = 1;
-            Drawing_Interval = int.Parse(settings[7]);
-            if (Drawing_Interval < 1) Drawing_Interval = 1;
-        }
-
-        public void SaveSettings()
-        {
-            string[] settingsFile = new string[]
-            {
-                    @"# Lines starting with a # are ignored",
-                    @"# Do not change the order of the settings",
-                    @"",
-                    @"# window width",
-                    Window_Width.ToString(),
-                    @"",
-                    @"# window height",
-                    Window_Height.ToString(),
-                    @"",
-                    @"# osu path",
-                    osu_path,
-                    @"",
-                    @"# backup enabled",
-                    Backup_Enabled.ToString(),
-                    @"",
-                    @"# backup folder",
-                    Backup_Folder,
-                    @"",
-                    @"# backup interval",
-                    Backup_Interval.ToString(),
-                    @"",
-                    @"# idle interval",
-                    Idle_Interval.ToString(),
-                    @"",
-                    @"# drawing interval",
-                    Drawing_Interval.ToString(),
-                    @"",
-            };
-            File.WriteAllLines(Form1.Path_Settings, settingsFile);
         }
 
         private string Select_Osu_Path()
@@ -111,6 +64,21 @@ namespace osucatch_editor_realtimeviewer
             MessageBox.Show(msg, "Error");
         }
 
+        public static string GetOsuPath()
+        {
+            using (RegistryKey osureg = Registry.ClassesRoot.OpenSubKey("osu\\DefaultIcon"))
+            {
+                if (osureg != null)
+                {
+                    string osukey = osureg.GetValue(null).ToString();
+                    string osupath = osukey.Remove(0, 1);
+                    osupath = osupath.Remove(osupath.Length - 11);
+                    return osupath;
+                }
+                else return "";
+            }
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Width = Window_Width;
@@ -119,8 +87,13 @@ namespace osucatch_editor_realtimeviewer
 
             if (osu_path == "")
             {
-                osu_path = Select_Osu_Path();
-                SaveSettings();
+                osu_path = GetOsuPath();
+                if (osu_path == "")
+                {
+                    osu_path = Select_Osu_Path();
+                }
+                app.Default.osu_path = osu_path;
+                app.Default.Save();
             }
 
             reader_timer.Interval = Idle_Interval;
@@ -128,7 +101,7 @@ namespace osucatch_editor_realtimeviewer
 
             this.Canvas.Init();
 
-            if (Backup_Enabled >= 1)
+            if (Backup_Enabled == true)
             {
                 backup_timer.Interval = Backup_Interval;
                 backup_timer.Start();
@@ -137,6 +110,24 @@ namespace osucatch_editor_realtimeviewer
 
         private void reader_timer_Tick(object sender, EventArgs e)
         {
+            if (NeedReapplySettings)
+            {
+                this.Width = Window_Width;
+                this.Height = Window_Height;
+
+                if (Backup_Enabled && !backup_timer.Enabled)
+                {
+                    backup_timer.Interval = Backup_Interval;
+                    backup_timer.Start();
+                }
+                else if (!Backup_Enabled && backup_timer.Enabled)
+                {
+                    backup_timer.Stop();
+                }
+
+                NeedReapplySettings = false;
+            }
+
             try
             {
                 if (!Is_Osu_Running || reader.ProcessNeedsReload())
@@ -385,12 +376,15 @@ namespace osucatch_editor_realtimeviewer
         {
             Window_Width = this.Width;
             Window_Height = this.Height;
-            SaveSettings();
+            app.Default.Window_Width = Window_Width;
+            app.Default.Window_Height = Window_Height;
+            app.Default.Save();
         }
 
         private void openSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Program.OpenSettings();
+            SettingsForm sf = new SettingsForm();
+            sf.ShowDialog();
         }
 
         private void backup_timer_Tick(object sender, EventArgs e)

@@ -82,21 +82,21 @@
             noneToolStripMenuItem.Checked = true;
             noneToolStripMenuItem.CheckState = CheckState.Checked;
             noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            noneToolStripMenuItem.Size = new Size(108, 22);
+            noneToolStripMenuItem.Size = new Size(180, 22);
             noneToolStripMenuItem.Text = "None";
             noneToolStripMenuItem.Click += noneToolStripMenuItem_Click;
             // 
             // hRToolStripMenuItem
             // 
             hRToolStripMenuItem.Name = "hRToolStripMenuItem";
-            hRToolStripMenuItem.Size = new Size(108, 22);
+            hRToolStripMenuItem.Size = new Size(180, 22);
             hRToolStripMenuItem.Text = "HR";
             hRToolStripMenuItem.Click += hRToolStripMenuItem_Click;
             // 
             // eZToolStripMenuItem
             // 
             eZToolStripMenuItem.Name = "eZToolStripMenuItem";
-            eZToolStripMenuItem.Size = new Size(108, 22);
+            eZToolStripMenuItem.Size = new Size(180, 22);
             eZToolStripMenuItem.Text = "EZ";
             eZToolStripMenuItem.Click += eZToolStripMenuItem_Click;
             // 
@@ -110,8 +110,8 @@
             // openSettingsFileToolStripMenuItem
             // 
             openSettingsFileToolStripMenuItem.Name = "openSettingsFileToolStripMenuItem";
-            openSettingsFileToolStripMenuItem.Size = new Size(181, 22);
-            openSettingsFileToolStripMenuItem.Text = "Open Settings File";
+            openSettingsFileToolStripMenuItem.Size = new Size(180, 22);
+            openSettingsFileToolStripMenuItem.Text = "Open Settings";
             openSettingsFileToolStripMenuItem.Click += openSettingsFileToolStripMenuItem_Click;
             // 
             // githubToolStripMenuItem
