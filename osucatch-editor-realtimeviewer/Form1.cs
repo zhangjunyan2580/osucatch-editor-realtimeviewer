@@ -119,6 +119,7 @@ namespace osucatch_editor_realtimeviewer
                 reader.FetchAll();
 
                 string newpath = System.IO.Path.Combine(osu_path, "Songs", reader.ContainingFolder, reader.Filename);
+                float readerTime = reader.EditorTime();
 
                 // 新文件
                 if (beatmap_path != newpath || newBeatmap == "")
@@ -128,12 +129,7 @@ namespace osucatch_editor_realtimeviewer
                 }
                 else
                 {
-                    // 检查和上一tick的谱面文件有无区别
-                    string _newBeatmap = BuildNewBeatmapFromString(newBeatmap);
-                    if (!String.Equals(_newBeatmap, newBeatmap))
-                    {
-                        newBeatmap = _newBeatmap;
-                    }
+                    newBeatmap = BuildNewBeatmapFromString(newBeatmap);
                 }
                 // 使用官方库分析新谱面
                 int mods = 0;
@@ -141,7 +137,7 @@ namespace osucatch_editor_realtimeviewer
                 else if (eZToolStripMenuItem.Checked) mods = (1 << 1);
                 if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(newBeatmap, mods);
                 else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
-                this.Canvas.viewerManager.currentTime = reader.EditorTime();
+                this.Canvas.viewerManager.currentTime = readerTime;
                 this.Canvas.Canvas_Paint(sender, null);
             }
             catch (Exception ex)
@@ -179,16 +175,39 @@ namespace osucatch_editor_realtimeviewer
             StreamReader file = File.OpenText(orgpath);
             return BuildNewBeatmap(file);
         }
+
+        /*
+         * MUCH BOOST BUT IT CAUSE RANDOM ERROR >_<
+         * 
+        private List<HitObject> FilterNearbyHitObjects(List<HitObject> hitObject, float? editorTime)
+        {
+            if (editorTime == null) return hitObject;
+            double halfDuring = 10 * 1000;
+            if (hRToolStripMenuItem.Checked) halfDuring /= 1.5;
+            else if (eZToolStripMenuItem.Checked) halfDuring *= 2;
+            return hitObject.Where(ho =>
+            {
+                // 保留当前滑条和spin
+                if (editorTime - ho.StartTime >= 0 && ho.EndTime - editorTime >= 0) return true;
+                // 只保留Endtime距当前时间小于10秒前的物件，或者StartTime距当前时间小于10秒后的物件
+                if (editorTime - ho.EndTime >= 0 && editorTime - ho.EndTime <= halfDuring) return true;
+                else if (ho.StartTime - editorTime >= 0 && ho.StartTime - editorTime <= halfDuring) return true;
+                else return false;
+            }).ToList();
+        }
+        */
+
+
         private string BuildNewBeatmap(StreamReader file)
         {
-            string newfile = "";
+            StringBuilder newfile = new StringBuilder();
             string line;
             bool isMultiLine = false;
             while ((line = file.ReadLine()) != null)
             {
                 if (isMultiLine)
                 {
-                    if (Regex.IsMatch(line, @"^\["))
+                    if (line.StartsWith("["))
                     {
                         isMultiLine = false;
                     }
@@ -196,37 +215,38 @@ namespace osucatch_editor_realtimeviewer
                 }
 
                 // 只替换必要的东西
-                if (Regex.IsMatch(line, "^PreviewTime:")) newfile += "PreviewTime: " + reader.PreviewTime + "\r\n";
-                else if (Regex.IsMatch(line, "^StackLeniency:")) newfile += "StackLeniency: " + reader.StackLeniency + "\r\n";
+                if (Regex.IsMatch(line, "^PreviewTime:")) newfile.AppendLine("PreviewTime: " + reader.PreviewTime);
+                else if (Regex.IsMatch(line, "^StackLeniency:")) newfile.AppendLine("StackLeniency: " + reader.StackLeniency);
 
                 // 强制CTB模式
                 // if (Regex.IsMatch(line, "^Mode:")) newfile += "Mode: 2" + "\r\n";
 
-                else if (Regex.IsMatch(line, "^HPDrainRate:")) newfile += "HPDrainRate: " + reader.HPDrainRate + "\r\n";
-                else if (Regex.IsMatch(line, "^CircleSize:")) newfile += "CircleSize: " + reader.CircleSize + "\r\n";
-                else if (Regex.IsMatch(line, "^OverallDifficulty:")) newfile += "OverallDifficulty: " + reader.OverallDifficulty + "\r\n";
-                else if (Regex.IsMatch(line, "^ApproachRate:")) newfile += "ApproachRate: " + reader.ApproachRate + "\r\n";
+                else if (Regex.IsMatch(line, "^HPDrainRate:")) newfile.AppendLine("HPDrainRate: " + reader.HPDrainRate);
+                else if (Regex.IsMatch(line, "^CircleSize:")) newfile.AppendLine("CircleSize: " + reader.CircleSize);
+                else if (Regex.IsMatch(line, "^OverallDifficulty:")) newfile.AppendLine("OverallDifficulty: " + reader.OverallDifficulty);
+                else if (Regex.IsMatch(line, "^ApproachRate:")) newfile.AppendLine("ApproachRate: " + reader.ApproachRate);
 
-                else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile += "SliderMultiplier: " + reader.SliderMultiplier + "\r\n";
-                else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile += "SliderTickRate: " + reader.SliderTickRate + "\r\n";
+                else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile.AppendLine("SliderMultiplier: " + reader.SliderMultiplier);
+                else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile.AppendLine("SliderTickRate: " + reader.SliderTickRate);
 
                 else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
                 {
-                    newfile += "[TimingPoints]" + "\r\n";
-                    newfile += String.Join("\r\n", reader.controlPoints) + "\r\n";
-                    newfile += "\r\n";
+                    newfile.AppendLine("[TimingPoints]");
+                    newfile.AppendLine(String.Join("\r\n", reader.controlPoints));
+                    newfile.AppendLine();
                     isMultiLine = true;
                 }
                 else if (Regex.IsMatch(line, @"^\[HitObjects\]"))
                 {
-                    newfile += "[HitObjects]" + "\r\n";
-                    newfile += String.Join("\r\n", reader.hitObjects) + "\r\n";
-                    newfile += "\r\n";
+                    newfile.AppendLine("[HitObjects]");
+                    // newfile.AppendLine(String.Join("\r\n", FilterNearbyHitObjects(reader.hitObjects, editorTime)));
+                    newfile.AppendLine(String.Join("\r\n", reader.hitObjects));
+                    newfile.AppendLine();
                     isMultiLine = true;
                 }
-                else newfile += line + "\r\n";
+                else newfile.AppendLine(line);
             }
-            return newfile;
+            return newfile.ToString();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
