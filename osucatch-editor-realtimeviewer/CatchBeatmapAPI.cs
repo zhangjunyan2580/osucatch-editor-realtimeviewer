@@ -129,17 +129,5 @@ namespace osucatch_editor_realtimeviewer
             return palpableObjects;
         }
 
-        public static string GetBeatmapTitle(IBeatmap beatmap)
-        {
-            // TODO
-            return beatmap.BeatmapInfo.Metadata.Title;
-        }
-
-        public static BeatmapDifficulty GetBeatmapDifficulty(IBeatmap beatmap)
-        {
-            // mod加成后的四维
-            return beatmap.Difficulty;
-        }
-
     }
 }
