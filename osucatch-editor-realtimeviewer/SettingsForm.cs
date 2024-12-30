@@ -41,6 +41,7 @@ namespace osucatch_editor_realtimeviewer
             checkBox_Log_Backup.Checked = app.Default.Log_Backup;
             checkBox_Log_Timer.Checked = app.Default.Log_Timer;
             comboBox_Log_Level.SelectedIndex = app.Default.Log_Level;
+            comboBox_Log_Level.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
