@@ -1,11 +1,21 @@
 using Microsoft.Win32;
 using NuGet.Configuration;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 
 namespace osucatch_editor_realtimeviewer
 {
     internal static class Program
     {
+        [DllImport("kernel32.dll")]
+        private static extern bool AllocConsole();
+
+        public static void ShowConsole()
+        {
+            AllocConsole();
+        }
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>

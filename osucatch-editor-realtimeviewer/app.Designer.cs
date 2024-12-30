@@ -130,5 +130,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Combo_Colour"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Show_Console {
+            get {
+                return ((bool)(this["Show_Console"]));
+            }
+            set {
+                this["Show_Console"] = value;
+            }
+        }
     }
 }

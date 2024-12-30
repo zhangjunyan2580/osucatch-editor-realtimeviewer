@@ -32,6 +32,8 @@ namespace osucatch_editor_realtimeviewer
             }
             checkBox_enableBackup.Checked = Form1.Backup_Enabled;
             checkBox_withColor.Checked = Form1.Combo_Colour;
+
+            checkBox_showConsole.Checked = app.Default.Show_Console;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
@@ -100,6 +102,8 @@ namespace osucatch_editor_realtimeviewer
             app.Default.Backup_Enabled = Form1.Backup_Enabled;
             Form1.Combo_Colour = checkBox_withColor.Checked;
             app.Default.Combo_Colour = Form1.Combo_Colour;
+
+            app.Default.Show_Console = checkBox_showConsole.Checked;
 
             app.Default.Save();
 

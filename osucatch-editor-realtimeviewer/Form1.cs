@@ -29,6 +29,7 @@ namespace osucatch_editor_realtimeviewer
         string beatmap_path = "";
         string newBeatmap = "";
         bool Need_Backup = false;
+        Int64 LastDrawingTimeStamp = DateTime.Now.Ticks;
 
         public static string Path_Img_Hitcircle = @"img/fruit-apple.png";
         public static string Path_Img_Drop = @"img/fruit-drop.png";
@@ -82,6 +83,8 @@ namespace osucatch_editor_realtimeviewer
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (app.Default.Show_Console) Program.ShowConsole();
+
             this.Width = Window_Width;
             this.Height = Window_Height;
             SizeChanged += Form1_SizeChanged;
@@ -210,6 +213,7 @@ namespace osucatch_editor_realtimeviewer
                         }
                         catch (Exception e)
                         {
+                            Console.WriteLine(e.ToString());
                             return;
                         }
                     }, TimeSpan.FromSeconds(4));
@@ -254,6 +258,14 @@ namespace osucatch_editor_realtimeviewer
                         Need_Backup = false;
                     }
                 }
+
+                // 丢弃旧帧
+                if (DateTime.Now.Ticks <= LastDrawingTimeStamp)
+                {
+                    Console.WriteLine("Drop a frame.");
+                    return;
+                }
+
                 // 使用官方库分析新谱面
                 int mods = 0;
                 if (hRToolStripMenuItem.Checked) mods = (1 << 4);
@@ -269,6 +281,8 @@ namespace osucatch_editor_realtimeviewer
                 Is_Osu_Running = false;
                 Is_Editor_Running = false;
             }
+
+            if (DateTime.Now.Ticks > LastDrawingTimeStamp) LastDrawingTimeStamp = DateTime.Now.Ticks;
         }
 
 

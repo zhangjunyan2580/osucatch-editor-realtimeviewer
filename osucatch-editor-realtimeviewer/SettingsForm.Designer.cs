@@ -60,6 +60,8 @@
             button_cancel = new Button();
             groupBox5 = new GroupBox();
             checkBox_withColor = new CheckBox();
+            groupBox6 = new GroupBox();
+            checkBox_showConsole = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_height).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_width).BeginInit();
@@ -70,6 +72,7 @@
             groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_backupInterval).BeginInit();
             groupBox5.SuspendLayout();
+            groupBox6.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
@@ -151,9 +154,9 @@
             groupBox2.Controls.Add(button_osuFolder_select);
             groupBox2.Controls.Add(textBox_osuFolder);
             groupBox2.Controls.Add(label3);
-            groupBox2.Location = new Point(194, 12);
+            groupBox2.Location = new Point(197, 12);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(531, 99);
+            groupBox2.Size = new Size(528, 99);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "osu! Folder";
@@ -361,7 +364,7 @@
             // 
             // button_apply
             // 
-            button_apply.Location = new Point(495, 256);
+            button_apply.Location = new Point(495, 338);
             button_apply.Name = "button_apply";
             button_apply.Size = new Size(102, 33);
             button_apply.TabIndex = 4;
@@ -371,7 +374,7 @@
             // 
             // button_cancel
             // 
-            button_cancel.Location = new Point(623, 256);
+            button_cancel.Location = new Point(623, 338);
             button_cancel.Name = "button_cancel";
             button_cancel.Size = new Size(102, 33);
             button_cancel.TabIndex = 5;
@@ -399,11 +402,32 @@
             checkBox_withColor.Text = "With Color";
             checkBox_withColor.UseVisualStyleBackColor = true;
             // 
+            // groupBox6
+            // 
+            groupBox6.Controls.Add(checkBox_showConsole);
+            groupBox6.Location = new Point(260, 233);
+            groupBox6.Name = "groupBox6";
+            groupBox6.Size = new Size(465, 56);
+            groupBox6.TabIndex = 7;
+            groupBox6.TabStop = false;
+            groupBox6.Text = "Debug";
+            // 
+            // checkBox_showConsole
+            // 
+            checkBox_showConsole.AutoSize = true;
+            checkBox_showConsole.Location = new Point(6, 22);
+            checkBox_showConsole.Name = "checkBox_showConsole";
+            checkBox_showConsole.Size = new Size(177, 21);
+            checkBox_showConsole.TabIndex = 0;
+            checkBox_showConsole.Text = "Show Console When Start";
+            checkBox_showConsole.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(737, 300);
+            ClientSize = new Size(737, 383);
+            Controls.Add(groupBox6);
             Controls.Add(groupBox5);
             Controls.Add(button_cancel);
             Controls.Add(button_apply);
@@ -430,6 +454,8 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown_backupInterval).EndInit();
             groupBox5.ResumeLayout(false);
             groupBox5.PerformLayout();
+            groupBox6.ResumeLayout(false);
+            groupBox6.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -467,5 +493,7 @@
         private Button button_cancel;
         private GroupBox groupBox5;
         private CheckBox checkBox_withColor;
+        private GroupBox groupBox6;
+        private CheckBox checkBox_showConsole;
     }
 }
