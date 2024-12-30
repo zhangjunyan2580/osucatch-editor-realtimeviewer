@@ -23,6 +23,8 @@ namespace osucatch_editor_realtimeviewer
         public static bool Combo_Colour = app.Default.Combo_Colour;
 
         EditorReader reader = new EditorReader();
+        bool Is_Doing_SetProcess = false;
+        bool Is_Doing_FetchEditor = false;
         bool Is_Osu_Running = false;
         bool Is_Editor_Running = false;
         bool Is_Editor_CTB = false;
@@ -64,6 +66,22 @@ namespace osucatch_editor_realtimeviewer
         public static void ErrorMessage(string msg)
         {
             MessageBox.Show(msg, "Error");
+        }
+
+        public enum LogType
+        {
+            Default,
+            Porgram,
+            EditorReader,
+            BeatmapParser,
+            Grawing,
+        }
+
+        // public enum LogLevel { Debug, Info, Warning, Error }
+
+        public static void ConsoleLog(string msg, LogType logType = LogType.Default)
+        {
+            Console.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + msg);
         }
 
         public static string GetOsuPath()
@@ -112,7 +130,7 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private async void reader_timer_Tick(object sender, EventArgs e)
+        private async void reader_timer_Work(object sender, EventArgs e)
         {
             if (NeedReapplySettings)
             {
@@ -138,59 +156,71 @@ namespace osucatch_editor_realtimeviewer
                 {
                     try
                     {
+                        if (Is_Doing_SetProcess) return;
+                        ConsoleLog("Try to get osu! process.", LogType.EditorReader);
+                        Is_Doing_SetProcess = true;
                         reader.SetProcess();
+                        Is_Doing_SetProcess = false;
                         Is_Osu_Running = true;
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        ConsoleLog("No Osu!.exe found.\r\n" + ex, LogType.EditorReader);
+                        Is_Doing_SetProcess = false;
                         this.Text = "Osu!.exe is not running";
-                        reader_timer.Stop();
                         reader_timer.Interval = Idle_Interval;
                         Is_Osu_Running = false;
                         Is_Editor_Running = false;
                         beatmap_path = "";
-                        reader_timer.Start();
                         return;
                     }
                 }
                 string title = reader.ProcessTitle();
                 if (title == "")
                 {
+                    ConsoleLog("Empty osu title.", LogType.EditorReader);
                     this.Text = "Osu!.exe is not running";
-                    reader_timer.Stop();
                     reader_timer.Interval = Idle_Interval;
                     Is_Osu_Running = false;
                     Is_Editor_Running = false;
                     beatmap_path = "";
-                    reader_timer.Start();
                     return;
                 }
                 if (!title.EndsWith(".osu"))
                 {
+                    ConsoleLog("Osu title is not editor: " + title, LogType.EditorReader);
                     this.Text = "Editor is not running";
-                    reader_timer.Stop();
                     reader_timer.Interval = Idle_Interval;
                     Is_Editor_Running = false;
                     beatmap_path = "";
-                    reader_timer.Start();
                     return;
                 }
                 if (reader.EditorNeedsReload())
                 {
+                    ConsoleLog("Editor needs Reload.", LogType.EditorReader);
                     try
                     {
+                        if (Is_Doing_SetProcess || Is_Doing_FetchEditor) return;
+                        if (reader.ProcessNeedsReload())
+                        {
+                            ConsoleLog("Process needs Reload.", LogType.EditorReader);
+                            return;
+                        }
+                        ConsoleLog("Try fetch editor.", LogType.EditorReader);
+                        Is_Doing_FetchEditor = true;
                         reader.FetchEditor();
+                        Is_Doing_FetchEditor = false;
                         Is_Osu_Running = true;
                         Is_Editor_Running = true;
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        ConsoleLog("Fetch editor failed.\r\n" + ex, LogType.EditorReader);
+                        Is_Doing_FetchEditor = false;
                         this.Text = "Editor is not running";
-                        reader_timer.Stop();
                         reader_timer.Interval = Idle_Interval;
                         Is_Editor_Running = false;
                         beatmap_path = "";
-                        reader_timer.Start();
                         return;
                     }
                 }
@@ -198,9 +228,10 @@ namespace osucatch_editor_realtimeviewer
                 {
                     this.Text = title;
                     Is_Editor_Running = true;
-                    reader_timer.Stop();
-                    reader_timer.Interval = Drawing_Interval;
-                    reader_timer.Start();
+                    if (reader_timer.Interval != Drawing_Interval)
+                    {
+                        reader_timer.Interval = Drawing_Interval;
+                    }
                 }
 
                 try
@@ -211,16 +242,22 @@ namespace osucatch_editor_realtimeviewer
                         {
                             reader.FetchAll();
                         }
-                        catch (Exception e)
+                        catch (Exception exx)
                         {
-                            Console.WriteLine(e.ToString());
+                            ConsoleLog("FetchAll failed.\r\n" + exx, LogType.EditorReader);
                             return;
                         }
                     }, TimeSpan.FromSeconds(4));
                 }
                 catch (TimeoutException ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    ConsoleLog("FetchAll timeout.\r\n" + ex, LogType.EditorReader);
+                    return;
+                }
+
+                if (reader.hitObjects == null || reader.hitObjects.Count <= 0)
+                {
+                    ConsoleLog("HitObjects is empty.", LogType.EditorReader);
                     return;
                 }
 
@@ -278,11 +315,20 @@ namespace osucatch_editor_realtimeviewer
             catch (Exception ex)
             {
                 this.Text = ex.ToString();
+                ConsoleLog(ex.ToString(), LogType.Porgram);
                 Is_Osu_Running = false;
                 Is_Editor_Running = false;
             }
 
             if (DateTime.Now.Ticks > LastDrawingTimeStamp) LastDrawingTimeStamp = DateTime.Now.Ticks;
+        }
+
+        private async void reader_timer_Tick(object sender, EventArgs e)
+        {
+            // ConsoleLog("Tick", LogType.Porgram);
+            reader_timer.Stop();
+            reader_timer_Work(sender, e);
+            reader_timer.Start();
         }
 
 
