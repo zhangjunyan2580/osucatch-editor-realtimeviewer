@@ -142,5 +142,89 @@ namespace osucatch_editor_realtimeviewer {
                 this["Show_Console"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_Program {
+            get {
+                return ((bool)(this["Log_Program"]));
+            }
+            set {
+                this["Log_Program"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_EditorReader {
+            get {
+                return ((bool)(this["Log_EditorReader"]));
+            }
+            set {
+                this["Log_EditorReader"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_BeatmapParser {
+            get {
+                return ((bool)(this["Log_BeatmapParser"]));
+            }
+            set {
+                this["Log_BeatmapParser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_Drawing {
+            get {
+                return ((bool)(this["Log_Drawing"]));
+            }
+            set {
+                this["Log_Drawing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_Backup {
+            get {
+                return ((bool)(this["Log_Backup"]));
+            }
+            set {
+                this["Log_Backup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_Timer {
+            get {
+                return ((bool)(this["Log_Timer"]));
+            }
+            set {
+                this["Log_Timer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Log_Level {
+            get {
+                return ((int)(this["Log_Level"]));
+            }
+            set {
+                this["Log_Level"] = value;
+            }
+        }
     }
 }

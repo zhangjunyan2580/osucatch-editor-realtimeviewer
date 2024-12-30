@@ -71,17 +71,30 @@ namespace osucatch_editor_realtimeviewer
         public enum LogType
         {
             Default,
-            Porgram,
+            Program,
             EditorReader,
             BeatmapParser,
-            Grawing,
+            Drawing,
+            Backup,
+            Timer,
         }
 
-        // public enum LogLevel { Debug, Info, Warning, Error }
+        public enum LogLevel { Debug, Info, Warning, Error }
 
-        public static void ConsoleLog(string msg, LogType logType = LogType.Default)
+        public static void ConsoleLog(string msg, LogType logType = LogType.Default, LogLevel logLevel = LogLevel.Info)
         {
-            Console.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + msg);
+            if (!app.Default.Show_Console) return;
+
+            if (logType == LogType.Program && !app.Default.Log_Program) return;
+            if (logType == LogType.EditorReader && !app.Default.Log_EditorReader) return;
+            if (logType == LogType.BeatmapParser && !app.Default.Log_BeatmapParser) return;
+            if (logType == LogType.Drawing && !app.Default.Log_Drawing) return;
+            if (logType == LogType.Backup && !app.Default.Log_Backup) return;
+            if (logType == LogType.Timer && !app.Default.Log_Timer) return;
+
+            if (app.Default.Log_Level > (int)logLevel) return;
+
+            Console.WriteLine("[" + logLevel + "] [" + DateTime.Now.ToString("HH:mm:ss.fff") + "] [" + logType + "] " + msg);
         }
 
         public static string GetOsuPath()
@@ -95,7 +108,11 @@ namespace osucatch_editor_realtimeviewer
                     osupath = osupath.Remove(osupath.Length - 11);
                     return osupath;
                 }
-                else return "";
+                else
+                {
+                    ConsoleLog("Could not find osu path from registry.", LogType.Program, LogLevel.Warning);
+                    return "";
+                }
             }
         }
 
@@ -156,16 +173,18 @@ namespace osucatch_editor_realtimeviewer
                 {
                     try
                     {
+                        ConsoleLog("Osu! process needs Refetch.", LogType.EditorReader, LogLevel.Info);
                         if (Is_Doing_SetProcess) return;
-                        ConsoleLog("Try to get osu! process.", LogType.EditorReader);
+                        ConsoleLog("Try to fetch osu! process.", LogType.EditorReader, LogLevel.Info);
                         Is_Doing_SetProcess = true;
                         reader.SetProcess();
                         Is_Doing_SetProcess = false;
+                        ConsoleLog("Fetch osu! process successfully.", LogType.EditorReader, LogLevel.Info);
                         Is_Osu_Running = true;
                     }
                     catch (Exception ex)
                     {
-                        ConsoleLog("No Osu!.exe found.\r\n" + ex, LogType.EditorReader);
+                        ConsoleLog("No Osu!.exe found.\r\n" + ex, LogType.EditorReader, LogLevel.Info);
                         Is_Doing_SetProcess = false;
                         this.Text = "Osu!.exe is not running";
                         reader_timer.Interval = Idle_Interval;
@@ -178,7 +197,7 @@ namespace osucatch_editor_realtimeviewer
                 string title = reader.ProcessTitle();
                 if (title == "")
                 {
-                    ConsoleLog("Empty osu title.", LogType.EditorReader);
+                    ConsoleLog("Empty osu title.", LogType.EditorReader, LogLevel.Info);
                     this.Text = "Osu!.exe is not running";
                     reader_timer.Interval = Idle_Interval;
                     Is_Osu_Running = false;
@@ -188,7 +207,7 @@ namespace osucatch_editor_realtimeviewer
                 }
                 if (!title.EndsWith(".osu"))
                 {
-                    ConsoleLog("Osu title is not editor: " + title, LogType.EditorReader);
+                    ConsoleLog("Osu title is not editor: " + title, LogType.EditorReader, LogLevel.Info);
                     this.Text = "Editor is not running";
                     reader_timer.Interval = Idle_Interval;
                     Is_Editor_Running = false;
@@ -197,25 +216,26 @@ namespace osucatch_editor_realtimeviewer
                 }
                 if (reader.EditorNeedsReload())
                 {
-                    ConsoleLog("Editor needs Reload.", LogType.EditorReader);
+                    ConsoleLog("Editor needs Reload.", LogType.EditorReader, LogLevel.Info);
                     try
                     {
                         if (Is_Doing_SetProcess || Is_Doing_FetchEditor) return;
                         if (reader.ProcessNeedsReload())
                         {
-                            ConsoleLog("Process needs Reload.", LogType.EditorReader);
+                            ConsoleLog("Process needs Reload.", LogType.EditorReader, LogLevel.Info);
                             return;
                         }
-                        ConsoleLog("Try fetch editor.", LogType.EditorReader);
+                        ConsoleLog("Try fetch editor.", LogType.EditorReader, LogLevel.Info);
                         Is_Doing_FetchEditor = true;
                         reader.FetchEditor();
                         Is_Doing_FetchEditor = false;
+                        ConsoleLog("Fetch editor successfully.", LogType.EditorReader, LogLevel.Info);
                         Is_Osu_Running = true;
                         Is_Editor_Running = true;
                     }
                     catch (Exception ex)
                     {
-                        ConsoleLog("Fetch editor failed.\r\n" + ex, LogType.EditorReader);
+                        ConsoleLog("Fetch editor failed.\r\n" + ex, LogType.EditorReader, LogLevel.Error);
                         Is_Doing_FetchEditor = false;
                         this.Text = "Editor is not running";
                         reader_timer.Interval = Idle_Interval;
@@ -234,6 +254,8 @@ namespace osucatch_editor_realtimeviewer
                     }
                 }
 
+                ConsoleLog("Start FetchAll.", LogType.EditorReader, LogLevel.Debug);
+
                 try
                 {
                     await TimeoutCheck.DoOperationWithTimeout(() =>
@@ -244,20 +266,20 @@ namespace osucatch_editor_realtimeviewer
                         }
                         catch (Exception exx)
                         {
-                            ConsoleLog("FetchAll failed.\r\n" + exx, LogType.EditorReader);
+                            ConsoleLog("FetchAll failed.\r\n" + exx, LogType.EditorReader, LogLevel.Error);
                             return;
                         }
                     }, TimeSpan.FromSeconds(4));
                 }
                 catch (TimeoutException ex)
                 {
-                    ConsoleLog("FetchAll timeout.\r\n" + ex, LogType.EditorReader);
+                    ConsoleLog("FetchAll timeout.\r\n" + ex, LogType.EditorReader, LogLevel.Error);
                     return;
                 }
 
                 if (reader.hitObjects == null || reader.hitObjects.Count <= 0)
                 {
-                    ConsoleLog("HitObjects is empty.", LogType.EditorReader);
+                    ConsoleLog("HitObjects is empty.", LogType.EditorReader, LogLevel.Error);
                     return;
                 }
 
@@ -273,33 +295,59 @@ namespace osucatch_editor_realtimeviewer
                 string newpath = System.IO.Path.Combine(osu_path, "Songs", reader.ContainingFolder, reader.Filename);
                 float readerTime = reader.EditorTime();
 
+                ConsoleLog("Start build new beatmap.", LogType.BeatmapParser, LogLevel.Debug);
+
                 // ÐÂÎÄ¼þ
                 if (beatmap_path != newpath || newBeatmap == "")
                 {
                     beatmap_path = newpath;
-                    newBeatmap = BuildNewBeatmapFromFilepath(beatmap_path);
+                    try
+                    {
+                        newBeatmap = BuildNewBeatmapFromFilepath(beatmap_path);
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleLog("Build new beatmap from file failed.\r\n" + ex, LogType.BeatmapParser, LogLevel.Error);
+                        return;
+                    }
                 }
                 else
                 {
-                    newBeatmap = BuildNewBeatmapFromString(newBeatmap);
+                    try
+                    {
+                        newBeatmap = BuildNewBeatmapFromString(newBeatmap);
+                    }
+                    catch (Exception ex)
+                    {
+                        ConsoleLog("Build new beatmap from string failed.\r\n" + ex, LogType.BeatmapParser, LogLevel.Error);
+                        return;
+                    }
                 }
                 // Backup
                 if (Need_Backup)
                 {
                     if (Is_Editor_Running && newBeatmap != "")
                     {
-                        string backupFilePath = Path.Combine(Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + reader.Filename);
-                        string directoryPath = Path.GetDirectoryName(backupFilePath);
-                        Directory.CreateDirectory(directoryPath);
-                        File.WriteAllText(backupFilePath, newBeatmap);
-                        Need_Backup = false;
+                        try
+                        {
+                            ConsoleLog("Start backup.", LogType.Backup, LogLevel.Info);
+                            string backupFilePath = Path.Combine(Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + reader.Filename);
+                            string directoryPath = Path.GetDirectoryName(backupFilePath);
+                            Directory.CreateDirectory(directoryPath);
+                            File.WriteAllText(backupFilePath, newBeatmap);
+                            Need_Backup = false;
+                            ConsoleLog("Backup successfully.", LogType.Backup, LogLevel.Info);
+                        }
+                        catch (Exception ex) {
+                            ConsoleLog("Backup failed.\r\n" + ex.ToString(), LogType.Backup, LogLevel.Error);
+                        }
                     }
                 }
 
                 // ¶ªÆú¾ÉÖ¡
                 if (DateTime.Now.Ticks <= LastDrawingTimeStamp)
                 {
-                    Console.WriteLine("Drop a frame.");
+                    ConsoleLog("Drop an outdated data.", LogType.Program, LogLevel.Warning);
                     return;
                 }
 
@@ -307,15 +355,19 @@ namespace osucatch_editor_realtimeviewer
                 int mods = 0;
                 if (hRToolStripMenuItem.Checked) mods = (1 << 4);
                 else if (eZToolStripMenuItem.Checked) mods = (1 << 1);
+                ConsoleLog("Try parse beatmap.", LogType.BeatmapParser, LogLevel.Debug);
                 if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(newBeatmap, mods);
                 else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
+                ConsoleLog("Parse beatmap successfully.", LogType.BeatmapParser, LogLevel.Debug);
                 this.Canvas.viewerManager.currentTime = readerTime;
+                ConsoleLog("Start paint.", LogType.Drawing, LogLevel.Debug);
                 this.Canvas.Canvas_Paint(sender, null);
+                ConsoleLog("Paint a frame successful.", LogType.Drawing, LogLevel.Debug);
             }
             catch (Exception ex)
             {
                 this.Text = ex.ToString();
-                ConsoleLog(ex.ToString(), LogType.Porgram);
+                ConsoleLog(ex.ToString(), LogType.Program, LogLevel.Error);
                 Is_Osu_Running = false;
                 Is_Editor_Running = false;
             }
@@ -325,9 +377,10 @@ namespace osucatch_editor_realtimeviewer
 
         private async void reader_timer_Tick(object sender, EventArgs e)
         {
-            // ConsoleLog("Tick", LogType.Porgram);
             reader_timer.Stop();
             reader_timer_Work(sender, e);
+            ConsoleLog("Start Timer", LogType.Timer, LogLevel.Debug);
+            ConsoleLog("Timer Interval = " + reader_timer.Interval, LogType.Timer, LogLevel.Debug);
             reader_timer.Start();
         }
 

@@ -61,6 +61,14 @@
             groupBox5 = new GroupBox();
             checkBox_withColor = new CheckBox();
             groupBox6 = new GroupBox();
+            comboBox_Log_Level = new ComboBox();
+            label8 = new Label();
+            checkBox_Log_Timer = new CheckBox();
+            checkBox_Log_Backup = new CheckBox();
+            checkBox_Log_Drawing = new CheckBox();
+            checkBox_Log_BeatmapParser = new CheckBox();
+            checkBox_Log_EditorReader = new CheckBox();
+            checkBox_Log_Program = new CheckBox();
             checkBox_showConsole = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_height).BeginInit();
@@ -364,7 +372,7 @@
             // 
             // button_apply
             // 
-            button_apply.Location = new Point(495, 338);
+            button_apply.Location = new Point(500, 437);
             button_apply.Name = "button_apply";
             button_apply.Size = new Size(102, 33);
             button_apply.TabIndex = 4;
@@ -374,7 +382,7 @@
             // 
             // button_cancel
             // 
-            button_cancel.Location = new Point(623, 338);
+            button_cancel.Location = new Point(623, 437);
             button_cancel.Name = "button_cancel";
             button_cancel.Size = new Size(102, 33);
             button_cancel.TabIndex = 5;
@@ -385,9 +393,9 @@
             // groupBox5
             // 
             groupBox5.Controls.Add(checkBox_withColor);
-            groupBox5.Location = new Point(12, 233);
+            groupBox5.Location = new Point(260, 233);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(239, 56);
+            groupBox5.Size = new Size(465, 56);
             groupBox5.TabIndex = 6;
             groupBox5.TabStop = false;
             groupBox5.Text = "Hit Objects";
@@ -404,13 +412,99 @@
             // 
             // groupBox6
             // 
+            groupBox6.Controls.Add(comboBox_Log_Level);
+            groupBox6.Controls.Add(label8);
+            groupBox6.Controls.Add(checkBox_Log_Timer);
+            groupBox6.Controls.Add(checkBox_Log_Backup);
+            groupBox6.Controls.Add(checkBox_Log_Drawing);
+            groupBox6.Controls.Add(checkBox_Log_BeatmapParser);
+            groupBox6.Controls.Add(checkBox_Log_EditorReader);
+            groupBox6.Controls.Add(checkBox_Log_Program);
             groupBox6.Controls.Add(checkBox_showConsole);
-            groupBox6.Location = new Point(260, 233);
+            groupBox6.Location = new Point(12, 233);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(465, 56);
+            groupBox6.Size = new Size(239, 237);
             groupBox6.TabIndex = 7;
             groupBox6.TabStop = false;
             groupBox6.Text = "Debug";
+            // 
+            // comboBox_Log_Level
+            // 
+            comboBox_Log_Level.FormattingEnabled = true;
+            comboBox_Log_Level.Items.AddRange(new object[] { "Debug", "Info", "Warning", "Error" });
+            comboBox_Log_Level.Location = new Point(78, 43);
+            comboBox_Log_Level.Name = "comboBox_Log_Level";
+            comboBox_Log_Level.Size = new Size(98, 25);
+            comboBox_Log_Level.TabIndex = 15;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(6, 46);
+            label8.Name = "label8";
+            label8.Size = new Size(63, 17);
+            label8.TabIndex = 14;
+            label8.Text = "Log Level";
+            // 
+            // checkBox_Log_Timer
+            // 
+            checkBox_Log_Timer.AutoSize = true;
+            checkBox_Log_Timer.Location = new Point(6, 209);
+            checkBox_Log_Timer.Name = "checkBox_Log_Timer";
+            checkBox_Log_Timer.Size = new Size(83, 21);
+            checkBox_Log_Timer.TabIndex = 13;
+            checkBox_Log_Timer.Text = "Timer log";
+            checkBox_Log_Timer.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Log_Backup
+            // 
+            checkBox_Log_Backup.AutoSize = true;
+            checkBox_Log_Backup.Location = new Point(6, 182);
+            checkBox_Log_Backup.Name = "checkBox_Log_Backup";
+            checkBox_Log_Backup.Size = new Size(93, 21);
+            checkBox_Log_Backup.TabIndex = 12;
+            checkBox_Log_Backup.Text = "Backup log";
+            checkBox_Log_Backup.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Log_Drawing
+            // 
+            checkBox_Log_Drawing.AutoSize = true;
+            checkBox_Log_Drawing.Location = new Point(6, 155);
+            checkBox_Log_Drawing.Name = "checkBox_Log_Drawing";
+            checkBox_Log_Drawing.Size = new Size(98, 21);
+            checkBox_Log_Drawing.TabIndex = 11;
+            checkBox_Log_Drawing.Text = "Drawing log";
+            checkBox_Log_Drawing.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Log_BeatmapParser
+            // 
+            checkBox_Log_BeatmapParser.AutoSize = true;
+            checkBox_Log_BeatmapParser.Location = new Point(6, 128);
+            checkBox_Log_BeatmapParser.Name = "checkBox_Log_BeatmapParser";
+            checkBox_Log_BeatmapParser.Size = new Size(139, 21);
+            checkBox_Log_BeatmapParser.TabIndex = 10;
+            checkBox_Log_BeatmapParser.Text = "BeatmapParser log";
+            checkBox_Log_BeatmapParser.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Log_EditorReader
+            // 
+            checkBox_Log_EditorReader.AutoSize = true;
+            checkBox_Log_EditorReader.Location = new Point(6, 101);
+            checkBox_Log_EditorReader.Name = "checkBox_Log_EditorReader";
+            checkBox_Log_EditorReader.Size = new Size(127, 21);
+            checkBox_Log_EditorReader.TabIndex = 9;
+            checkBox_Log_EditorReader.Text = "EditorReader log";
+            checkBox_Log_EditorReader.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_Log_Program
+            // 
+            checkBox_Log_Program.AutoSize = true;
+            checkBox_Log_Program.Location = new Point(6, 74);
+            checkBox_Log_Program.Name = "checkBox_Log_Program";
+            checkBox_Log_Program.Size = new Size(101, 21);
+            checkBox_Log_Program.TabIndex = 8;
+            checkBox_Log_Program.Text = "Program log";
+            checkBox_Log_Program.UseVisualStyleBackColor = true;
             // 
             // checkBox_showConsole
             // 
@@ -426,7 +520,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(737, 383);
+            ClientSize = new Size(737, 482);
             Controls.Add(groupBox6);
             Controls.Add(groupBox5);
             Controls.Add(button_cancel);
@@ -495,5 +589,13 @@
         private CheckBox checkBox_withColor;
         private GroupBox groupBox6;
         private CheckBox checkBox_showConsole;
+        private CheckBox checkBox_Log_Program;
+        private CheckBox checkBox_Log_Backup;
+        private CheckBox checkBox_Log_Drawing;
+        private CheckBox checkBox_Log_BeatmapParser;
+        private CheckBox checkBox_Log_EditorReader;
+        private CheckBox checkBox_Log_Timer;
+        private ComboBox comboBox_Log_Level;
+        private Label label8;
     }
 }

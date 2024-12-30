@@ -34,6 +34,13 @@ namespace osucatch_editor_realtimeviewer
             checkBox_withColor.Checked = Form1.Combo_Colour;
 
             checkBox_showConsole.Checked = app.Default.Show_Console;
+            checkBox_Log_Program.Checked = app.Default.Log_Program;
+            checkBox_Log_EditorReader.Checked = app.Default.Log_EditorReader;
+            checkBox_Log_BeatmapParser.Checked = app.Default.Log_BeatmapParser;
+            checkBox_Log_Drawing.Checked = app.Default.Log_Drawing;
+            checkBox_Log_Backup.Checked = app.Default.Log_Backup;
+            checkBox_Log_Timer.Checked = app.Default.Log_Timer;
+            comboBox_Log_Level.SelectedIndex = app.Default.Log_Level;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
@@ -104,6 +111,13 @@ namespace osucatch_editor_realtimeviewer
             app.Default.Combo_Colour = Form1.Combo_Colour;
 
             app.Default.Show_Console = checkBox_showConsole.Checked;
+            app.Default.Log_Program = checkBox_Log_Program.Checked;
+            app.Default.Log_EditorReader = checkBox_Log_EditorReader.Checked;
+            app.Default.Log_BeatmapParser = checkBox_Log_BeatmapParser.Checked;
+            app.Default.Log_Drawing = checkBox_Log_Drawing.Checked;
+            app.Default.Log_Backup = checkBox_Log_Backup.Checked;
+            app.Default.Log_Timer = checkBox_Log_Timer.Checked;
+            app.Default.Log_Level = comboBox_Log_Level.SelectedIndex;
 
             app.Default.Save();
 
