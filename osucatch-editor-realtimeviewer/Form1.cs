@@ -1,8 +1,6 @@
 using Editor_Reader;
 using Microsoft.Win32;
-using SharpCompress.Common;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -73,6 +71,7 @@ namespace osucatch_editor_realtimeviewer
             Default,
             Program,
             EditorReader,
+            BeatmapBuilder,
             BeatmapParser,
             Drawing,
             Backup,
@@ -87,6 +86,7 @@ namespace osucatch_editor_realtimeviewer
 
             if (logType == LogType.Program && !app.Default.Log_Program) return;
             if (logType == LogType.EditorReader && !app.Default.Log_EditorReader) return;
+            if (logType == LogType.BeatmapBuilder && !app.Default.Log_BeatmapBuilder) return;
             if (logType == LogType.BeatmapParser && !app.Default.Log_BeatmapParser) return;
             if (logType == LogType.Drawing && !app.Default.Log_Drawing) return;
             if (logType == LogType.Backup && !app.Default.Log_Backup) return;
@@ -144,6 +144,28 @@ namespace osucatch_editor_realtimeviewer
             {
                 backup_timer.Interval = Backup_Interval;
                 backup_timer.Start();
+            }
+
+            System.Windows.Forms.Timer Memory_Monitor_Timer = new System.Windows.Forms.Timer();
+            Memory_Monitor_Timer.Interval = 200;
+            Memory_Monitor_Timer.Tick += Memory_Monitor;
+            Memory_Monitor_Timer.Start();
+
+        }
+
+        private void Memory_Monitor(object sender, EventArgs e)
+        {
+            long memorySize = System.GC.GetTotalMemory(false); 
+            long requiredMemory = 1024 * 1024 * 1000; // 1G
+
+            if (memorySize > requiredMemory)
+            {
+                ConsoleLog("Total Memory: " + (1.0 * memorySize / 1024 / 1024).ToString("F3") + "MB", LogType.Program, LogLevel.Warning);
+                //ConsoleLog(newBeatmap, LogType.BeatmapBuilder, LogLevel.Warning);
+            }
+            else
+            {
+                ConsoleLog("Total Memory: " + (1.0 * memorySize / 1024 / 1024).ToString("F3") + "MB", LogType.Program, LogLevel.Debug);
             }
         }
 
@@ -277,25 +299,54 @@ namespace osucatch_editor_realtimeviewer
                     return;
                 }
 
-                if (reader.hitObjects == null || reader.hitObjects.Count <= 0)
+                // 读取editor reader的内容一定要进行检查
+                // reader数据在程序运行种可能会变的
+
+                var thisReader = new BeatmapInfoCollection(reader);
+
+                string newpath ="";
+                try
+                {
+                    newpath = Path.Combine(osu_path, "Songs", thisReader.ContainingFolder, thisReader.Filename);
+                }
+                catch (Exception ex)
+                {
+                    ConsoleLog("Path is invalid.\r\n" + ex.ToString(), LogType.EditorReader, LogLevel.Error);
+                    ConsoleLog("ContainingFolder: " + thisReader.ContainingFolder, LogType.EditorReader, LogLevel.Error);
+                    ConsoleLog("Filename: " + thisReader.Filename, LogType.EditorReader, LogLevel.Error);
+                    return;
+                }
+
+                float readerTime = thisReader.EditorTime;
+
+                if (thisReader.HitObjects == null || thisReader.HitObjects.Count <= 0)
                 {
                     ConsoleLog("HitObjects is empty.", LogType.EditorReader, LogLevel.Error);
                     return;
                 }
 
+                ConsoleLog("FetchAll complete.", LogType.EditorReader, LogLevel.Debug);
+
                 // Fix Editor Reader
                 // Modified from Mapping_Tools
                 // https://github.com/OliBomby/Mapping_Tools/tree/master/Mapping_Tools/Classes/ToolHelpers/EditorReaderStuff.cs
                 // Under MIT Licnece https://github.com/OliBomby/Mapping_Tools/blob/master/LICENCE
-                reader.hitObjects.RemoveAll(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
+                if (!(thisReader.NumControlPoints > 0 &&
+                thisReader.ControlPoints != null && thisReader.HitObjects != null &&
+                thisReader.NumControlPoints == thisReader.ControlPoints.Count && thisReader.NumObjects == thisReader.HitObjects.Count))
+                {
+                    ConsoleLog("Fetched data is invalid.", LogType.EditorReader, LogLevel.Error);
+                    return;
+                }
+
+                int removeCount = thisReader.HitObjects.RemoveAll(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
                 readerHitObject.SegmentCount > 9000 || readerHitObject.Type == 0 || readerHitObject.SampleSet > 1000 ||
                 readerHitObject.SampleSetAdditions > 1000 || readerHitObject.SampleVolume > 1000);
                 // -----------------------
 
-                string newpath = System.IO.Path.Combine(osu_path, "Songs", reader.ContainingFolder, reader.Filename);
-                float readerTime = reader.EditorTime();
+                if (removeCount > 0) ConsoleLog("Removed " + removeCount + " invalid hitObject(s).", LogType.BeatmapBuilder, LogLevel.Warning);
 
-                ConsoleLog("Start build new beatmap.", LogType.BeatmapParser, LogLevel.Debug);
+                ConsoleLog("Start build new beatmap.", LogType.BeatmapBuilder, LogLevel.Debug);
 
                 // 新文件
                 if (beatmap_path != newpath || newBeatmap == "")
@@ -303,11 +354,11 @@ namespace osucatch_editor_realtimeviewer
                     beatmap_path = newpath;
                     try
                     {
-                        newBeatmap = BuildNewBeatmapFromFilepath(beatmap_path);
+                        newBeatmap = BuildNewBeatmapFromFilepath(beatmap_path, thisReader);
                     }
                     catch (Exception ex)
                     {
-                        ConsoleLog("Build new beatmap from file failed.\r\n" + ex, LogType.BeatmapParser, LogLevel.Error);
+                        ConsoleLog("Build new beatmap from file failed.\r\n" + ex, LogType.BeatmapBuilder, LogLevel.Error);
                         return;
                     }
                 }
@@ -315,11 +366,11 @@ namespace osucatch_editor_realtimeviewer
                 {
                     try
                     {
-                        newBeatmap = BuildNewBeatmapFromString(newBeatmap);
+                        newBeatmap = BuildNewBeatmapFromString(newBeatmap, thisReader);
                     }
                     catch (Exception ex)
                     {
-                        ConsoleLog("Build new beatmap from string failed.\r\n" + ex, LogType.BeatmapParser, LogLevel.Error);
+                        ConsoleLog("Build new beatmap from string failed.\r\n" + ex, LogType.BeatmapBuilder, LogLevel.Error);
                         return;
                     }
                 }
@@ -331,7 +382,7 @@ namespace osucatch_editor_realtimeviewer
                         try
                         {
                             ConsoleLog("Start backup.", LogType.Backup, LogLevel.Info);
-                            string backupFilePath = Path.Combine(Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + reader.Filename);
+                            string backupFilePath = Path.Combine(Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
                             string directoryPath = Path.GetDirectoryName(backupFilePath);
                             Directory.CreateDirectory(directoryPath);
                             File.WriteAllText(backupFilePath, newBeatmap);
@@ -385,17 +436,17 @@ namespace osucatch_editor_realtimeviewer
         }
 
 
-        private string BuildNewBeatmapFromString(string orgbeatmap)
+        private string BuildNewBeatmapFromString(string orgbeatmap, BeatmapInfoCollection thisReader)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes(orgbeatmap);
             MemoryStream stream = new MemoryStream(byteArray);
             StreamReader file = new StreamReader(stream);
-            return BuildNewBeatmap(file);
+            return BuildNewBeatmap(file, thisReader);
         }
-        private string BuildNewBeatmapFromFilepath(string orgpath)
+        private string BuildNewBeatmapFromFilepath(string orgpath, BeatmapInfoCollection thisReader)
         {
             StreamReader file = File.OpenText(orgpath);
-            return BuildNewBeatmap(file);
+            return BuildNewBeatmap(file, thisReader);
         }
 
         /*
@@ -420,13 +471,23 @@ namespace osucatch_editor_realtimeviewer
         */
 
 
-        private string BuildNewBeatmap(StreamReader file)
+        private string BuildNewBeatmap(StreamReader file, BeatmapInfoCollection thisReader)
         {
             StringBuilder newfile = new StringBuilder();
             string line;
             bool isMultiLine = false;
             while ((line = file.ReadLine()) != null)
             {
+                if (!line.StartsWith("Tags") && line.Length > 200)
+                {
+                    // Known bug: ":0|0" repeat
+                    if (line.Length > 10000 && line.IndexOf(":0|0:0|0:0|0:0|0:0|0:0|0:0|0:0|0") > 0)
+                    {
+                        throw new Exception("Found an incorrect \":0|0 repeat\" line.");
+                    }
+                    ConsoleLog("Maybe an incorrect line: " +  line, LogType.BeatmapParser, LogLevel.Warning);
+                }
+
                 if (isMultiLine)
                 {
                     if (line.StartsWith("["))
@@ -437,40 +498,37 @@ namespace osucatch_editor_realtimeviewer
                 }
 
                 // 只替换必要的东西
-                if (Regex.IsMatch(line, "^PreviewTime:")) newfile.AppendLine("PreviewTime: " + reader.PreviewTime);
-                else if (Regex.IsMatch(line, "^StackLeniency:")) newfile.AppendLine("StackLeniency: " + reader.StackLeniency);
+                if (Regex.IsMatch(line, "^PreviewTime:")) newfile.AppendLine("PreviewTime: " + thisReader.PreviewTime);
+                else if (Regex.IsMatch(line, "^StackLeniency:")) newfile.AppendLine("StackLeniency: " + thisReader.StackLeniency);
 
                 // 强制CTB模式
                 // if (Regex.IsMatch(line, "^Mode:")) newfile += "Mode: 2" + "\r\n";
 
-                else if (Regex.IsMatch(line, "^HPDrainRate:")) newfile.AppendLine("HPDrainRate: " + reader.HPDrainRate);
-                else if (Regex.IsMatch(line, "^CircleSize:")) newfile.AppendLine("CircleSize: " + reader.CircleSize);
-                else if (Regex.IsMatch(line, "^OverallDifficulty:")) newfile.AppendLine("OverallDifficulty: " + reader.OverallDifficulty);
-                else if (Regex.IsMatch(line, "^ApproachRate:")) newfile.AppendLine("ApproachRate: " + reader.ApproachRate);
+                else if (Regex.IsMatch(line, "^HPDrainRate:")) newfile.AppendLine("HPDrainRate: " + thisReader.HPDrainRate);
+                else if (Regex.IsMatch(line, "^CircleSize:")) newfile.AppendLine("CircleSize: " + thisReader.CircleSize);
+                else if (Regex.IsMatch(line, "^OverallDifficulty:")) newfile.AppendLine("OverallDifficulty: " + thisReader.OverallDifficulty);
+                else if (Regex.IsMatch(line, "^ApproachRate:")) newfile.AppendLine("ApproachRate: " + thisReader.ApproachRate);
 
-                else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile.AppendLine("SliderMultiplier: " + reader.SliderMultiplier);
-                else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile.AppendLine("SliderTickRate: " + reader.SliderTickRate);
+                else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile.AppendLine("SliderMultiplier: " + thisReader.SliderMultiplier);
+                else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile.AppendLine("SliderTickRate: " + thisReader.SliderTickRate);
 
                 else if (Regex.IsMatch(line, "^Bookmarks:"))
                 {
-                    var bookmarks_copy = reader.bookmarks.ToList();
-                    newfile.AppendLine("Bookmarks: " + String.Join(",", bookmarks_copy));
+                    newfile.AppendLine("Bookmarks: " + String.Join(",", thisReader.Bookmarks));
                 }
 
                 else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
                 {
                     newfile.AppendLine("[TimingPoints]");
-                    var controlPoints_copy = reader.controlPoints.ToList();
-                    newfile.AppendLine(String.Join("\r\n", controlPoints_copy));
+                    newfile.AppendLine(String.Join("\r\n", thisReader.ControlPoints));
                     newfile.AppendLine();
                     isMultiLine = true;
                 }
                 else if (Regex.IsMatch(line, @"^\[HitObjects\]"))
                 {
                     newfile.AppendLine("[HitObjects]");
-                    // newfile.AppendLine(String.Join("\r\n", FilterNearbyHitObjects(reader.hitObjects, editorTime)));
-                    var hitObjects_copy = reader.hitObjects.ToList();
-                    newfile.AppendLine(String.Join("\r\n", hitObjects_copy));
+                    // newfile.AppendLine(String.Join("\r\n", FilterNearbyHitObjects(thisReader.HitObjects, editorTime)));
+                    newfile.AppendLine(String.Join("\r\n", thisReader.HitObjects));
                     newfile.AppendLine();
                     isMultiLine = true;
                 }
@@ -529,6 +587,45 @@ namespace osucatch_editor_realtimeviewer
         private void backup_timer_Tick(object sender, EventArgs e)
         {
             Need_Backup = true;
+        }
+    }
+
+    public class BeatmapInfoCollection
+    {
+        public int NumControlPoints;
+        public int NumObjects;
+        public int EditorTime;
+        public string ContainingFolder;
+        public string Filename;
+        public int PreviewTime;
+        public float StackLeniency;
+        public float HPDrainRate;
+        public float CircleSize;
+        public float OverallDifficulty;
+        public float ApproachRate;
+        public double SliderMultiplier;
+        public double SliderTickRate;
+        public int[] Bookmarks;
+        public List<ControlPoint> ControlPoints;
+        public List<Editor_Reader.HitObject> HitObjects;
+        public BeatmapInfoCollection(EditorReader reader)
+        {
+            NumControlPoints = reader.numControlPoints;
+            NumObjects = reader.numObjects;
+            EditorTime = reader.EditorTime();
+            ContainingFolder = reader.ContainingFolder;
+            Filename = reader.Filename;
+            PreviewTime = reader.PreviewTime;
+            StackLeniency = reader.StackLeniency;
+            HPDrainRate = reader.HPDrainRate;
+            CircleSize = reader.CircleSize;
+            OverallDifficulty = reader.OverallDifficulty;
+            ApproachRate = reader.ApproachRate;
+            SliderMultiplier = reader.SliderMultiplier;
+            SliderTickRate = reader.SliderTickRate;
+            Bookmarks = reader.bookmarks;
+            ControlPoints = reader.controlPoints;
+            HitObjects = reader.hitObjects;
         }
     }
 

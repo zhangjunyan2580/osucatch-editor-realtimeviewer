@@ -226,5 +226,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Log_Level"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_BeatmapBuilder {
+            get {
+                return ((bool)(this["Log_BeatmapBuilder"]));
+            }
+            set {
+                this["Log_BeatmapBuilder"] = value;
+            }
+        }
     }
 }

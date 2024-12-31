@@ -36,6 +36,7 @@ namespace osucatch_editor_realtimeviewer
             checkBox_showConsole.Checked = app.Default.Show_Console;
             checkBox_Log_Program.Checked = app.Default.Log_Program;
             checkBox_Log_EditorReader.Checked = app.Default.Log_EditorReader;
+            checkBox_Log_BeatmapBuilder.Checked = app.Default.Log_BeatmapBuilder;
             checkBox_Log_BeatmapParser.Checked = app.Default.Log_BeatmapParser;
             checkBox_Log_Drawing.Checked = app.Default.Log_Drawing;
             checkBox_Log_Backup.Checked = app.Default.Log_Backup;
@@ -114,6 +115,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.Show_Console = checkBox_showConsole.Checked;
             app.Default.Log_Program = checkBox_Log_Program.Checked;
             app.Default.Log_EditorReader = checkBox_Log_EditorReader.Checked;
+            app.Default.Log_BeatmapBuilder = checkBox_Log_BeatmapBuilder.Checked;
             app.Default.Log_BeatmapParser = checkBox_Log_BeatmapParser.Checked;
             app.Default.Log_Drawing = checkBox_Log_Drawing.Checked;
             app.Default.Log_Backup = checkBox_Log_Backup.Checked;
