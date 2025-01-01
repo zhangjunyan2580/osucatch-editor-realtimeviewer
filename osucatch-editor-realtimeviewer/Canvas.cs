@@ -100,8 +100,9 @@ namespace osucatch_editor_realtimeviewer
             {
                 return new Texture2D(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read));
             }
-            catch
+            catch (Exception ex)
             {
+                Form1.ConsoleLog("Read texture file failed: " + path + "\r\n" + ex, Form1.LogType.Drawing, Form1.LogLevel.Error);
                 return null;
             }
         }
@@ -112,8 +113,9 @@ namespace osucatch_editor_realtimeviewer
             {
                 return new Texture2D(s);
             }
-            catch
+            catch (Exception ex)
             {
+                Form1.ConsoleLog("Build text texture failed: " + s + "\r\n" + ex, Form1.LogType.Drawing, Form1.LogLevel.Error);
                 return null;
             }
         }
@@ -210,7 +212,8 @@ namespace osucatch_editor_realtimeviewer
             if (distanceType != DistanceType.None && (hitObject is Fruit || (hitObject is Droplet && hitObject is not TinyDroplet)))
             {
                 string distanceString = wdpch.GetDistanceString(distanceType);
-                Texture2D distanceTexture = new Texture2D(distanceString);
+                if (distanceString == "") return;
+                Texture2D distanceTexture = TextureFromString(distanceString);
                 if (distanceString.Length > 0) this.DrawDistance(distanceTexture, pos, circleDiameter, Color.LightBlue);
                 distanceTexture.Dispose();
             }
@@ -219,7 +222,7 @@ namespace osucatch_editor_realtimeviewer
         private void DrawDistance(Texture2D texture, Vector2 pos, int diameter, Color color)
         {
             // 没有经过计算，纯测出来的
-            if (pos.X > 340) pos.X -= (float)(diameter * 1.5);
+            if (pos.X > 392) pos.X -= diameter / 2 + texture.Width;
             else pos.X += diameter;
             pos.Y += (float)(diameter / 6.0);
             texture.Draw(pos, new Vector2(diameter * 0.5f), color);

@@ -33,7 +33,7 @@ namespace osucatch_editor_realtimeviewer
         public Texture2D(string text)
         {
             // 创建一个Bitmap对象，大小为文本的尺寸
-            Bitmap bitmap = new Bitmap((text.Length + 1) * 32, 48);
+            Bitmap bitmap = new Bitmap(text.Length * 24, 40);
 
             // 使用指定的背景颜色填充Bitmap
             using (Graphics g = Graphics.FromImage(bitmap))
