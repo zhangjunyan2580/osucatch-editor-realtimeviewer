@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace osucatch_editor_realtimeviewer
@@ -27,6 +28,33 @@ namespace osucatch_editor_realtimeviewer
                 bitmap.UnlockBits(data);
             }
             stream.Dispose();
+        }
+
+        public Texture2D(string text)
+        {
+            // 创建一个Bitmap对象，大小为文本的尺寸
+            Bitmap bitmap = new Bitmap((text.Length + 1) * 32, 48);
+
+            // 使用指定的背景颜色填充Bitmap
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                // 设置文字的渲染质量
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+                // 使用指定的Font和颜色绘制文本
+                g.DrawString(text, new Font("Arial", 32), new SolidBrush(Color.White), new PointF(0, 0));
+            }
+            this.Width = bitmap.Width;
+            this.Height = bitmap.Height;
+            this.textureId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, this.textureId);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            BitmapData data = bitmap.LockBits(new Rectangle(0, 0, this.Width, this.Height), ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
+                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            bitmap.UnlockBits(data);
         }
 
         public void Draw(Vector2 pos, Vector2 origin, Color4 color)

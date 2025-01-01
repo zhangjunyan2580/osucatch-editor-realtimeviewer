@@ -25,7 +25,6 @@ namespace osucatch_editor_realtimeviewer
         bool Is_Doing_FetchEditor = false;
         bool Is_Osu_Running = false;
         bool Is_Editor_Running = false;
-        bool Is_Editor_CTB = false;
         string beatmap_path = "";
         string newBeatmap = "";
         bool Need_Backup = false;
@@ -155,7 +154,7 @@ namespace osucatch_editor_realtimeviewer
 
         private void Memory_Monitor(object sender, EventArgs e)
         {
-            long memorySize = System.GC.GetTotalMemory(false); 
+            long memorySize = System.GC.GetTotalMemory(false);
             long requiredMemory = 1024 * 1024 * 1000; // 1G
 
             if (memorySize > requiredMemory)
@@ -304,7 +303,7 @@ namespace osucatch_editor_realtimeviewer
 
                 var thisReader = new BeatmapInfoCollection(reader);
 
-                string newpath ="";
+                string newpath = "";
                 try
                 {
                     newpath = Path.Combine(osu_path, "Songs", thisReader.ContainingFolder, thisReader.Filename);
@@ -389,7 +388,8 @@ namespace osucatch_editor_realtimeviewer
                             Need_Backup = false;
                             ConsoleLog("Backup successfully.", LogType.Backup, LogLevel.Info);
                         }
-                        catch (Exception ex) {
+                        catch (Exception ex)
+                        {
                             ConsoleLog("Backup failed.\r\n" + ex.ToString(), LogType.Backup, LogLevel.Error);
                         }
                     }
@@ -411,6 +411,11 @@ namespace osucatch_editor_realtimeviewer
                 else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
                 ConsoleLog("Parse beatmap successfully.", LogType.BeatmapParser, LogLevel.Debug);
                 this.Canvas.viewerManager.currentTime = readerTime;
+                if (hideToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.None;
+                else if (sameWithEditorToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.SameWithEditor;
+                else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.NoSliderVelocityMultiplier;
+                else if (compareWithWalkSpeedToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.CompareWithWalkSpeed;
+                else this.Canvas.viewerManager.DistanceType = DistanceType.None;
                 ConsoleLog("Start paint.", LogType.Drawing, LogLevel.Debug);
                 this.Canvas.Canvas_Paint(sender, null);
                 ConsoleLog("Paint a frame successful.", LogType.Drawing, LogLevel.Debug);
@@ -485,7 +490,7 @@ namespace osucatch_editor_realtimeviewer
                     {
                         throw new Exception("Found an incorrect \":0|0 repeat\" line.");
                     }
-                    ConsoleLog("Maybe an incorrect line: " +  line, LogType.BeatmapParser, LogLevel.Warning);
+                    ConsoleLog("Maybe an incorrect line: " + line, LogType.BeatmapParser, LogLevel.Warning);
                 }
 
                 if (isMultiLine)
@@ -587,6 +592,38 @@ namespace osucatch_editor_realtimeviewer
         private void backup_timer_Tick(object sender, EventArgs e)
         {
             Need_Backup = true;
+        }
+
+        private void hideToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideToolStripMenuItem.Checked = true;
+            sameWithEditorToolStripMenuItem.Checked = false;
+            noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
+            compareWithWalkSpeedToolStripMenuItem.Checked = false;
+        }
+
+        private void sameWithEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideToolStripMenuItem.Checked = false;
+            sameWithEditorToolStripMenuItem.Checked = true;
+            noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
+            compareWithWalkSpeedToolStripMenuItem.Checked = false;
+        }
+
+        private void noSliderVelocityMultiplierToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideToolStripMenuItem.Checked = false;
+            sameWithEditorToolStripMenuItem.Checked = false;
+            noSliderVelocityMultiplierToolStripMenuItem.Checked = true;
+            compareWithWalkSpeedToolStripMenuItem.Checked = false;
+        }
+
+        private void compareWithWalkSpeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideToolStripMenuItem.Checked = false;
+            sameWithEditorToolStripMenuItem.Checked = false;
+            noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
+            compareWithWalkSpeedToolStripMenuItem.Checked = true;
         }
     }
 

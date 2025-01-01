@@ -8,17 +8,18 @@ namespace osucatch_editor_realtimeviewer
     {
         public float currentTime { get; set; }
         public IBeatmap Beatmap { get; set; }
-        public List<PalpableCatchHitObject> CatchHitObjects { get; set; }
-        public List<PalpableCatchHitObject> NearbyHitObjects { get; set; }
+        public List<WithDistancePalpableCatchHitObject> CatchHitObjects { get; set; }
+        public List<WithDistancePalpableCatchHitObject> NearbyHitObjects { get; set; }
         public int ApproachTime { get; set; }
         private int CircleDiameter { get; set; }
         public float State_ARMul { get; set; }
+        public DistanceType DistanceType { get; set; }
 
 
         public ViewerManager(string beatmap, int modsWhenOnlyBeatmap = 0)
         {
             currentTime = 0;
-            NearbyHitObjects = new List<PalpableCatchHitObject>();
+            NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
 
             State_ARMul = 2.7f;
             LoadBeatmap(beatmap, modsWhenOnlyBeatmap);
@@ -41,7 +42,7 @@ namespace osucatch_editor_realtimeviewer
 
         public void BuildNearby()
         {
-            NearbyHitObjects = new List<PalpableCatchHitObject>();
+            NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
             int startIndex = this.HitObjectsLowerBound(currentTime);
             int endIndex = this.HitObjectsUpperBound(currentTime);
             for (int k = startIndex; k <= endIndex; k++)
@@ -68,7 +69,7 @@ namespace osucatch_editor_realtimeviewer
                 int step = count / 2;
                 int it = first + step;
                 var hitObject = this.CatchHitObjects[it];
-                float endTime = (float)hitObject.StartTime;
+                float endTime = (float)hitObject.currentObject.StartTime;
                 float animationEnd = endTime + this.ApproachTime * this.State_ARMul;
                 if (animationEnd < target)
                 {
@@ -92,7 +93,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 int step = count / 2;
                 int it = first + step;
-                float animationStart = (float)(this.CatchHitObjects[it].StartTime - this.ApproachTime * this.State_ARMul);
+                float animationStart = (float)(this.CatchHitObjects[it].currentObject.StartTime - this.ApproachTime * this.State_ARMul);
                 if (!(target < animationStart))
                 {
                     first = ++it;

@@ -32,10 +32,16 @@
             reader_timer = new System.Windows.Forms.Timer(components);
             Canvas = new Canvas();
             menuStrip1 = new MenuStrip();
+            viewerToolStripMenuItem = new ToolStripMenuItem();
             modToolStripMenuItem = new ToolStripMenuItem();
-            noneToolStripMenuItem = new ToolStripMenuItem();
             hRToolStripMenuItem = new ToolStripMenuItem();
             eZToolStripMenuItem = new ToolStripMenuItem();
+            noneToolStripMenuItem = new ToolStripMenuItem();
+            distanceToolStripMenuItem = new ToolStripMenuItem();
+            hideToolStripMenuItem = new ToolStripMenuItem();
+            sameWithEditorToolStripMenuItem = new ToolStripMenuItem();
+            noSliderVelocityMultiplierToolStripMenuItem = new ToolStripMenuItem();
+            compareWithWalkSpeedToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             openSettingsFileToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem = new ToolStripMenuItem();
@@ -54,37 +60,35 @@
             Canvas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Canvas.BackColor = Color.Black;
             Canvas.CatcherAreaHeight = 0F;
-            Canvas.Location = new Point(0, 28);
+            Canvas.Location = new Point(0, 30);
             Canvas.Margin = new Padding(4, 5, 4, 5);
             Canvas.Name = "Canvas";
-            Canvas.Size = new Size(234, 683);
+            Canvas.Size = new Size(234, 681);
             Canvas.TabIndex = 33;
             Canvas.VSync = false;
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { modToolStripMenuItem, settingsToolStripMenuItem, githubToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { viewerToolStripMenuItem, settingsToolStripMenuItem, githubToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(234, 25);
             menuStrip1.TabIndex = 34;
             menuStrip1.Text = "menuStrip1";
             // 
+            // viewerToolStripMenuItem
+            // 
+            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, distanceToolStripMenuItem });
+            viewerToolStripMenuItem.Name = "viewerToolStripMenuItem";
+            viewerToolStripMenuItem.Size = new Size(59, 21);
+            viewerToolStripMenuItem.Text = "Viewer";
+            // 
             // modToolStripMenuItem
             // 
-            modToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { noneToolStripMenuItem, hRToolStripMenuItem, eZToolStripMenuItem });
+            modToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { hRToolStripMenuItem, eZToolStripMenuItem, noneToolStripMenuItem });
             modToolStripMenuItem.Name = "modToolStripMenuItem";
-            modToolStripMenuItem.Size = new Size(48, 21);
+            modToolStripMenuItem.Size = new Size(180, 22);
             modToolStripMenuItem.Text = "Mod";
-            // 
-            // noneToolStripMenuItem
-            // 
-            noneToolStripMenuItem.Checked = true;
-            noneToolStripMenuItem.CheckState = CheckState.Checked;
-            noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            noneToolStripMenuItem.Size = new Size(180, 22);
-            noneToolStripMenuItem.Text = "None";
-            noneToolStripMenuItem.Click += noneToolStripMenuItem_Click;
             // 
             // hRToolStripMenuItem
             // 
@@ -100,6 +104,52 @@
             eZToolStripMenuItem.Text = "EZ";
             eZToolStripMenuItem.Click += eZToolStripMenuItem_Click;
             // 
+            // noneToolStripMenuItem
+            // 
+            noneToolStripMenuItem.Checked = true;
+            noneToolStripMenuItem.CheckState = CheckState.Checked;
+            noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+            noneToolStripMenuItem.Size = new Size(180, 22);
+            noneToolStripMenuItem.Text = "None";
+            noneToolStripMenuItem.Click += noneToolStripMenuItem_Click;
+            // 
+            // distanceToolStripMenuItem
+            // 
+            distanceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { hideToolStripMenuItem, sameWithEditorToolStripMenuItem, noSliderVelocityMultiplierToolStripMenuItem, compareWithWalkSpeedToolStripMenuItem });
+            distanceToolStripMenuItem.Name = "distanceToolStripMenuItem";
+            distanceToolStripMenuItem.Size = new Size(180, 22);
+            distanceToolStripMenuItem.Text = "Distance";
+            // 
+            // hideToolStripMenuItem
+            // 
+            hideToolStripMenuItem.Checked = true;
+            hideToolStripMenuItem.CheckState = CheckState.Checked;
+            hideToolStripMenuItem.Name = "hideToolStripMenuItem";
+            hideToolStripMenuItem.Size = new Size(239, 22);
+            hideToolStripMenuItem.Text = "Hide";
+            hideToolStripMenuItem.Click += hideToolStripMenuItem_Click;
+            // 
+            // sameWithEditorToolStripMenuItem
+            // 
+            sameWithEditorToolStripMenuItem.Name = "sameWithEditorToolStripMenuItem";
+            sameWithEditorToolStripMenuItem.Size = new Size(239, 22);
+            sameWithEditorToolStripMenuItem.Text = "Same With Editor";
+            sameWithEditorToolStripMenuItem.Click += sameWithEditorToolStripMenuItem_Click;
+            // 
+            // noSliderVelocityMultiplierToolStripMenuItem
+            // 
+            noSliderVelocityMultiplierToolStripMenuItem.Name = "noSliderVelocityMultiplierToolStripMenuItem";
+            noSliderVelocityMultiplierToolStripMenuItem.Size = new Size(239, 22);
+            noSliderVelocityMultiplierToolStripMenuItem.Text = "No Slider Velocity Multiplier";
+            noSliderVelocityMultiplierToolStripMenuItem.Click += noSliderVelocityMultiplierToolStripMenuItem_Click;
+            // 
+            // compareWithWalkSpeedToolStripMenuItem
+            // 
+            compareWithWalkSpeedToolStripMenuItem.Name = "compareWithWalkSpeedToolStripMenuItem";
+            compareWithWalkSpeedToolStripMenuItem.Size = new Size(239, 22);
+            compareWithWalkSpeedToolStripMenuItem.Text = "Compare With Walk Speed";
+            compareWithWalkSpeedToolStripMenuItem.Click += compareWithWalkSpeedToolStripMenuItem_Click;
+            // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openSettingsFileToolStripMenuItem });
@@ -110,7 +160,7 @@
             // openSettingsFileToolStripMenuItem
             // 
             openSettingsFileToolStripMenuItem.Name = "openSettingsFileToolStripMenuItem";
-            openSettingsFileToolStripMenuItem.Size = new Size(180, 22);
+            openSettingsFileToolStripMenuItem.Size = new Size(158, 22);
             openSettingsFileToolStripMenuItem.Text = "Open Settings";
             openSettingsFileToolStripMenuItem.Click += openSettingsFileToolStripMenuItem_Click;
             // 
@@ -156,6 +206,7 @@
         private System.Windows.Forms.Timer reader_timer;
         private Canvas Canvas;
         private MenuStrip menuStrip1;
+        private ToolStripMenuItem viewerToolStripMenuItem;
         private ToolStripMenuItem modToolStripMenuItem;
         private ToolStripMenuItem noneToolStripMenuItem;
         private ToolStripMenuItem hRToolStripMenuItem;
@@ -165,5 +216,10 @@
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem openSettingsFileToolStripMenuItem;
         private System.Windows.Forms.Timer backup_timer;
+        private ToolStripMenuItem distanceToolStripMenuItem;
+        private ToolStripMenuItem hideToolStripMenuItem;
+        private ToolStripMenuItem sameWithEditorToolStripMenuItem;
+        private ToolStripMenuItem noSliderVelocityMultiplierToolStripMenuItem;
+        private ToolStripMenuItem compareWithWalkSpeedToolStripMenuItem;
     }
 }

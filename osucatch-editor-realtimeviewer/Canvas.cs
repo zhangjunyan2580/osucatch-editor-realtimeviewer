@@ -106,6 +106,18 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
+        private Texture2D? TextureFromString(string s)
+        {
+            try
+            {
+                return new Texture2D(s);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
 
         public void Draw()
         {
@@ -113,15 +125,15 @@ namespace osucatch_editor_realtimeviewer
             float fruitSpeed = 384 / viewerManager.ApproachTime;
             for (int b = viewerManager.NearbyHitObjects.Count - 1; b >= 0; b--)
             {
-                PalpableCatchHitObject hitObject = viewerManager.NearbyHitObjects[b];
+                WithDistancePalpableCatchHitObject hitObject = viewerManager.NearbyHitObjects[b];
                 // the song time relative to the hitobject start time
-                float diff = (float)(hitObject.StartTime - viewerManager.currentTime);
+                float diff = (float)(hitObject.currentObject.StartTime - viewerManager.currentTime);
                 // 0=在顶端 1=在判定线上 >1=超过判定线
                 float alpha = 1.0f;
                 if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
                 {
                     alpha = 1 - (diff / (float)viewerManager.ApproachTime);
-                    this.DrawHitcircle(hitObject, alpha, circleDiameter);
+                    this.DrawHitcircle(hitObject, alpha, circleDiameter, viewerManager.DistanceType);
                 }
             }
         }
@@ -139,9 +151,9 @@ namespace osucatch_editor_realtimeviewer
             GL.Enable(EnableCap.Texture2D);
         }
 
-        private void DrawHitcircle(PalpableCatchHitObject palpableCatchHitObject, float alpha, int circleDiameter)
+        private void DrawHitcircle(WithDistancePalpableCatchHitObject wdpch, float alpha, int circleDiameter, DistanceType distanceType)
         {
-            PalpableCatchHitObject hitObject = palpableCatchHitObject;
+            PalpableCatchHitObject hitObject = wdpch.currentObject;
             Vector2 pos = new Vector2(hitObject.EffectiveX, 384 * alpha - this.CatcherAreaHeight + 640);
             if (Form1.Combo_Colour)
             {
@@ -195,6 +207,20 @@ namespace osucatch_editor_realtimeviewer
                     this.DrawCircle(BananaTexture, pos, circleDiameter, Color.Yellow);
                 }
             }
+            if (distanceType != DistanceType.None && (hitObject is Fruit || (hitObject is Droplet && hitObject is not TinyDroplet)))
+            {
+                string distanceString = wdpch.GetDistanceString(distanceType);
+                if (distanceString.Length > 0) this.DrawDistance(new Texture2D(distanceString), pos, circleDiameter, Color.LightBlue);
+            }
+        }
+
+        private void DrawDistance(Texture2D texture, Vector2 pos, int diameter, Color color)
+        {
+            // 没有经过计算，纯测出来的
+            if (pos.X > 340) pos.X -= (float)(diameter * 1.5);
+            else pos.X += diameter;
+            pos.Y += (float)(diameter / 6.0);
+            texture.Draw(pos, new Vector2(diameter * 0.5f), color);
         }
 
         private void DrawCircle(Texture2D texture, Vector2 pos, int diameter, Color color)
