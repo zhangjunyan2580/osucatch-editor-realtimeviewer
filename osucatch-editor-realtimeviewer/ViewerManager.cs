@@ -7,8 +7,8 @@ namespace osucatch_editor_realtimeviewer
     public class ViewerManager
     {
         public float currentTime { get; set; }
-        public IBeatmap Beatmap { get; set; }
-        public List<WithDistancePalpableCatchHitObject> CatchHitObjects { get; set; }
+        public IBeatmap? Beatmap { get; set; }
+        public List<WithDistancePalpableCatchHitObject>? CatchHitObjects { get; set; }
         public List<WithDistancePalpableCatchHitObject> NearbyHitObjects { get; set; }
         public int ApproachTime { get; set; }
         private int CircleDiameter { get; set; }
@@ -29,7 +29,7 @@ namespace osucatch_editor_realtimeviewer
         {
 
             Beatmap = CatchBeatmapAPI.GetBeatmap(beatmap, mods);
-            CatchHitObjects = CatchBeatmapAPI.GetPalpableObjects(Beatmap);
+            CatchHitObjects = CatchBeatmapAPI.GetPalpableObjects(Beatmap, (DistanceType != DistanceType.None));
 
             float moddedAR = Beatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);
@@ -43,6 +43,7 @@ namespace osucatch_editor_realtimeviewer
         public void BuildNearby()
         {
             NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
+            if (this.CatchHitObjects == null) return;
             int startIndex = this.HitObjectsLowerBound(currentTime);
             int endIndex = this.HitObjectsUpperBound(currentTime);
             for (int k = startIndex; k <= endIndex; k++)
@@ -61,6 +62,7 @@ namespace osucatch_editor_realtimeviewer
 
         private int HitObjectsLowerBound(float target)
         {
+            if (this.CatchHitObjects == null) return 0;
             int first = 0;
             int last = this.CatchHitObjects.Count;
             int count = last - first;
@@ -86,6 +88,7 @@ namespace osucatch_editor_realtimeviewer
 
         private int HitObjectsUpperBound(float target)
         {
+            if (this.CatchHitObjects == null) return 0;
             int first = 0;
             int last = this.CatchHitObjects.Count;
             int count = last - first;

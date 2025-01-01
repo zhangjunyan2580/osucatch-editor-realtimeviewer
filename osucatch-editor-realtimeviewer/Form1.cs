@@ -98,11 +98,12 @@ namespace osucatch_editor_realtimeviewer
 
         public static string GetOsuPath()
         {
-            using (RegistryKey osureg = Registry.ClassesRoot.OpenSubKey("osu\\DefaultIcon"))
+            using (RegistryKey? osureg = Registry.ClassesRoot.OpenSubKey("osu\\DefaultIcon"))
             {
                 if (osureg != null)
                 {
-                    string osukey = osureg.GetValue(null).ToString();
+                    string? osukey = osureg.GetValue(null)?.ToString();
+                    if (osukey == null) return "";
                     string osupath = osukey.Remove(0, 1);
                     osupath = osupath.Remove(osupath.Length - 11);
                     return osupath;
@@ -152,7 +153,7 @@ namespace osucatch_editor_realtimeviewer
 
         }
 
-        private void Memory_Monitor(object sender, EventArgs e)
+        private void Memory_Monitor(object? sender, EventArgs e)
         {
             long memorySize = System.GC.GetTotalMemory(false);
             long requiredMemory = 1024 * 1024 * 1000; // 1G
@@ -168,7 +169,7 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private async void reader_timer_Work(object sender, EventArgs e)
+        private void reader_timer_Work(CancellationToken cancellationToken)
         {
             if (NeedReapplySettings)
             {
@@ -205,9 +206,13 @@ namespace osucatch_editor_realtimeviewer
                     }
                     catch (Exception ex)
                     {
-                        ConsoleLog("No Osu!.exe found.\r\n" + ex, LogType.EditorReader, LogLevel.Info);
+                        ConsoleLog("No Osu!.exe found.", LogType.EditorReader, LogLevel.Info);
+                        ConsoleLog(ex.ToString(), LogType.EditorReader, LogLevel.Debug);
                         Is_Doing_SetProcess = false;
-                        this.Text = "Osu!.exe is not running";
+                        Invoke(new MethodInvoker(delegate ()
+                        {
+                            this.Text = "Osu!.exe is not running";
+                        }));
                         reader_timer.Interval = Idle_Interval;
                         Is_Osu_Running = false;
                         Is_Editor_Running = false;
@@ -215,11 +220,21 @@ namespace osucatch_editor_realtimeviewer
                         return;
                     }
                 }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    ConsoleLog("Task Timeout, cancelled before fetching editor.", LogType.Program, LogLevel.Warning);
+                    return;
+                }
+
                 string title = reader.ProcessTitle();
                 if (title == "")
                 {
                     ConsoleLog("Empty osu title.", LogType.EditorReader, LogLevel.Info);
-                    this.Text = "Osu!.exe is not running";
+                    Invoke(new MethodInvoker(delegate ()
+                    {
+                        this.Text = "Osu!.exe is not running";
+                    }));
                     reader_timer.Interval = Idle_Interval;
                     Is_Osu_Running = false;
                     Is_Editor_Running = false;
@@ -229,7 +244,10 @@ namespace osucatch_editor_realtimeviewer
                 if (!title.EndsWith(".osu"))
                 {
                     ConsoleLog("Osu title is not editor: " + title, LogType.EditorReader, LogLevel.Info);
-                    this.Text = "Editor is not running";
+                    Invoke(new MethodInvoker(delegate ()
+                    {
+                        this.Text = "Editor is not running";
+                    }));
                     reader_timer.Interval = Idle_Interval;
                     Is_Editor_Running = false;
                     beatmap_path = "";
@@ -258,7 +276,10 @@ namespace osucatch_editor_realtimeviewer
                     {
                         ConsoleLog("Fetch editor failed.\r\n" + ex, LogType.EditorReader, LogLevel.Error);
                         Is_Doing_FetchEditor = false;
-                        this.Text = "Editor is not running";
+                        Invoke(new MethodInvoker(delegate ()
+                        {
+                            this.Text = "Editor is not running";
+                        }));
                         reader_timer.Interval = Idle_Interval;
                         Is_Editor_Running = false;
                         beatmap_path = "";
@@ -267,7 +288,10 @@ namespace osucatch_editor_realtimeviewer
                 }
                 else
                 {
-                    this.Text = title;
+                    Invoke(new MethodInvoker(delegate ()
+                    {
+                        this.Text = title;
+                    }));
                     Is_Editor_Running = true;
                     if (reader_timer.Interval != Drawing_Interval)
                     {
@@ -275,26 +299,19 @@ namespace osucatch_editor_realtimeviewer
                     }
                 }
 
-                ConsoleLog("Start FetchAll.", LogType.EditorReader, LogLevel.Debug);
-
-                try
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    await TimeoutCheck.DoOperationWithTimeout(() =>
-                    {
-                        try
-                        {
-                            reader.FetchAll();
-                        }
-                        catch (Exception exx)
-                        {
-                            ConsoleLog("FetchAll failed.\r\n" + exx, LogType.EditorReader, LogLevel.Error);
-                            return;
-                        }
-                    }, TimeSpan.FromSeconds(4));
+                    ConsoleLog("Task Timeout, cancelled before FetchAll().", LogType.Program, LogLevel.Warning);
+                    return;
                 }
-                catch (TimeoutException ex)
+
+                ConsoleLog("Start FetchAll().", LogType.EditorReader, LogLevel.Debug);
+
+                reader.FetchAll();
+
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    ConsoleLog("FetchAll timeout.\r\n" + ex, LogType.EditorReader, LogLevel.Error);
+                    ConsoleLog("Task Timeout, cancelled before checking Editor_Reader's data.", LogType.Program, LogLevel.Warning);
                     return;
                 }
 
@@ -320,7 +337,7 @@ namespace osucatch_editor_realtimeviewer
 
                 if (thisReader.HitObjects == null || thisReader.HitObjects.Count <= 0)
                 {
-                    ConsoleLog("HitObjects is empty.", LogType.EditorReader, LogLevel.Error);
+                    ConsoleLog("HitObjects is empty.", LogType.EditorReader, LogLevel.Warning);
                     return;
                 }
 
@@ -344,6 +361,12 @@ namespace osucatch_editor_realtimeviewer
                 // -----------------------
 
                 if (removeCount > 0) ConsoleLog("Removed " + removeCount + " invalid hitObject(s).", LogType.BeatmapBuilder, LogLevel.Warning);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    ConsoleLog("Task Timeout, cancelled before building new beatmap.", LogType.Program, LogLevel.Warning);
+                    return;
+                }
 
                 ConsoleLog("Start build new beatmap.", LogType.BeatmapBuilder, LogLevel.Debug);
 
@@ -373,6 +396,13 @@ namespace osucatch_editor_realtimeviewer
                         return;
                     }
                 }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    ConsoleLog("Task Timeout, cancelled before backup or beatmap prasing.", LogType.Program, LogLevel.Warning);
+                    return;
+                }
+
                 // Backup
                 if (Need_Backup)
                 {
@@ -382,17 +412,30 @@ namespace osucatch_editor_realtimeviewer
                         {
                             ConsoleLog("Start backup.", LogType.Backup, LogLevel.Info);
                             string backupFilePath = Path.Combine(Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
-                            string directoryPath = Path.GetDirectoryName(backupFilePath);
-                            Directory.CreateDirectory(directoryPath);
-                            File.WriteAllText(backupFilePath, newBeatmap);
-                            Need_Backup = false;
-                            ConsoleLog("Backup successfully.", LogType.Backup, LogLevel.Info);
+                            string? directoryPath = Path.GetDirectoryName(backupFilePath);
+                            if (directoryPath == null)
+                            {
+                                ConsoleLog("Backup failed. Path is invalid: " + backupFilePath, LogType.Backup, LogLevel.Error);
+                            }
+                            else
+                            {
+                                Directory.CreateDirectory(directoryPath);
+                                File.WriteAllText(backupFilePath, newBeatmap);
+                                Need_Backup = false;
+                                ConsoleLog("Backup successfully.", LogType.Backup, LogLevel.Info);
+                            }
                         }
                         catch (Exception ex)
                         {
                             ConsoleLog("Backup failed.\r\n" + ex.ToString(), LogType.Backup, LogLevel.Error);
                         }
                     }
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    ConsoleLog("Task Timeout, cancelled before beatmap prasing.", LogType.Program, LogLevel.Warning);
+                    return;
                 }
 
                 // ¶ªÆú¾ÉÖ¡
@@ -409,6 +452,13 @@ namespace osucatch_editor_realtimeviewer
                 ConsoleLog("Try parse beatmap.", LogType.BeatmapParser, LogLevel.Debug);
                 if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(newBeatmap, mods);
                 else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    ConsoleLog("Task Timeout, cancelled before drawing.", LogType.Program, LogLevel.Warning);
+                    return;
+                }
+
                 ConsoleLog("Parse beatmap successfully.", LogType.BeatmapParser, LogLevel.Debug);
                 this.Canvas.viewerManager.currentTime = readerTime;
                 if (hideToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.None;
@@ -417,12 +467,16 @@ namespace osucatch_editor_realtimeviewer
                 else if (compareWithWalkSpeedToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.CompareWithWalkSpeed;
                 else this.Canvas.viewerManager.DistanceType = DistanceType.None;
                 ConsoleLog("Start paint.", LogType.Drawing, LogLevel.Debug);
-                this.Canvas.Canvas_Paint(sender, null);
+
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Canvas.Canvas_Paint(null, null);
+                }));
+
                 ConsoleLog("Paint a frame successful.", LogType.Drawing, LogLevel.Debug);
             }
             catch (Exception ex)
             {
-                this.Text = ex.ToString();
                 ConsoleLog(ex.ToString(), LogType.Program, LogLevel.Error);
                 Is_Osu_Running = false;
                 Is_Editor_Running = false;
@@ -434,7 +488,11 @@ namespace osucatch_editor_realtimeviewer
         private async void reader_timer_Tick(object sender, EventArgs e)
         {
             reader_timer.Stop();
-            reader_timer_Work(sender, e);
+            var cancellationTokenSource = new CancellationTokenSource();
+            var task = Task.Run(() => reader_timer_Work(cancellationTokenSource.Token), cancellationTokenSource.Token);
+
+            var isCompleted = await Task.WhenAny(task, Task.Delay(1000)) == task;
+            if (!isCompleted) cancellationTokenSource.Cancel();
             ConsoleLog("Start Timer", LogType.Timer, LogLevel.Debug);
             ConsoleLog("Timer Interval = " + reader_timer.Interval, LogType.Timer, LogLevel.Debug);
             reader_timer.Start();
@@ -479,18 +537,18 @@ namespace osucatch_editor_realtimeviewer
         private string BuildNewBeatmap(StreamReader file, BeatmapInfoCollection thisReader)
         {
             StringBuilder newfile = new StringBuilder();
-            string line;
+            string? line;
             bool isMultiLine = false;
             while ((line = file.ReadLine()) != null)
             {
-                if (!line.StartsWith("Tags") && line.Length > 200)
+                if (!line.StartsWith("Tags") && line.Length > 1000)
                 {
                     // Known bug: ":0|0" repeat
                     if (line.Length > 10000 && line.IndexOf(":0|0:0|0:0|0:0|0:0|0:0|0:0|0:0|0") > 0)
                     {
                         throw new Exception("Found an incorrect \":0|0 repeat\" line.");
                     }
-                    ConsoleLog("Maybe an incorrect line: " + line, LogType.BeatmapParser, LogLevel.Warning);
+                    ConsoleLog("Maybe an incorrect line: " + line, LogType.BeatmapParser, LogLevel.Debug);
                 }
 
                 if (isMultiLine)
@@ -574,7 +632,7 @@ namespace osucatch_editor_realtimeviewer
             Process.Start(new ProcessStartInfo(@"https://github.com/Exsper/osucatch-editor-realtimeviewer") { UseShellExecute = true });
         }
 
-        private void Form1_SizeChanged(object sender, EventArgs e)
+        private void Form1_SizeChanged(object? sender, EventArgs e)
         {
             Window_Width = this.Width;
             Window_Height = this.Height;

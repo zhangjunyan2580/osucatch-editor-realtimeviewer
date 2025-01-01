@@ -100,7 +100,7 @@ namespace osucatch_editor_realtimeviewer
             return Execute(file, GetMods(GetModsString(mods), ruleset));
         }
 
-        public static List<WithDistancePalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap)
+        public static List<WithDistancePalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap, bool isCalDistance)
         {
             List<PalpableCatchHitObject> palpableObjects = new List<PalpableCatchHitObject>();
 
@@ -134,10 +134,13 @@ namespace osucatch_editor_realtimeviewer
             for (int i = 0; i < palpableObjects.Count; i++)
             {
                 WithDistancePalpableCatchHitObject wdpco = new WithDistancePalpableCatchHitObject(palpableObjects[i]);
-                var nextObj = GetNextComboObject(palpableObjects, i+1);
-                if (nextObj != null) 
+                if (isCalDistance)
                 {
-                    wdpco.CalDistance(beatmap, nextObj);
+                    var nextObj = GetNextComboObject(palpableObjects, i + 1);
+                    if (nextObj != null)
+                    {
+                        wdpco.CalDistance(beatmap, nextObj);
+                    }
                 }
                 wdpcos.Add(wdpco);
             }

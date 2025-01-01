@@ -8,7 +8,7 @@ namespace osucatch_editor_realtimeviewer
 
     public class Canvas : OpenTK.GLControl
     {
-        public ViewerManager viewerManager;
+        public ViewerManager? viewerManager;
 
         public float CatcherAreaHeight { get; set; }
 
@@ -37,7 +37,7 @@ namespace osucatch_editor_realtimeviewer
             this.Paint += Canvas_Paint;
             this.Resize += Canvas_Resize;
         }
-        public void Canvas_Paint(object sender, PaintEventArgs e)
+        public void Canvas_Paint(object? sender, PaintEventArgs? e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
@@ -123,6 +123,7 @@ namespace osucatch_editor_realtimeviewer
 
         public void Draw()
         {
+            if (viewerManager == null || viewerManager.Beatmap == null) { return; }
             int circleDiameter = (int)(108.848 - viewerManager.Beatmap.Difficulty.CircleSize * 8.9646);
             float fruitSpeed = 384 / viewerManager.ApproachTime;
             for (int b = viewerManager.NearbyHitObjects.Count - 1; b >= 0; b--)
@@ -213,14 +214,16 @@ namespace osucatch_editor_realtimeviewer
             {
                 string distanceString = wdpch.GetDistanceString(distanceType);
                 if (distanceString == "") return;
-                Texture2D distanceTexture = TextureFromString(distanceString);
+                Texture2D? distanceTexture = TextureFromString(distanceString);
+                if (distanceTexture == null) return;
                 if (distanceString.Length > 0) this.DrawDistance(distanceTexture, pos, circleDiameter, Color.LightBlue);
                 distanceTexture.Dispose();
             }
         }
 
-        private void DrawDistance(Texture2D texture, Vector2 pos, int diameter, Color color)
+        private void DrawDistance(Texture2D? texture, Vector2 pos, int diameter, Color color)
         {
+            if (texture == null) return;
             // 没有经过计算，纯测出来的
             if (pos.X > 392) pos.X -= diameter / 2 + texture.Width;
             else pos.X += diameter;
@@ -228,13 +231,15 @@ namespace osucatch_editor_realtimeviewer
             texture.Draw(pos, new Vector2(diameter * 0.5f), color);
         }
 
-        private void DrawCircle(Texture2D texture, Vector2 pos, int diameter, Color color)
+        private void DrawCircle(Texture2D? texture, Vector2 pos, int diameter, Color color)
         {
+            if (texture == null) return;
             texture.Draw(pos, diameter, diameter, new Vector2(diameter * 0.5f), color);
         }
 
-        private void DrawHyperDashCircle(Texture2D texture, Vector2 pos, int diameter)
+        private void DrawHyperDashCircle(Texture2D? texture, Vector2 pos, int diameter)
         {
+            if (texture == null) return;
             texture.Draw(pos, diameter * 1.4f, diameter * 1.4f, new Vector2(diameter * 1.4f * 0.5f), Color.Red);
         }
 
