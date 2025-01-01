@@ -210,7 +210,9 @@ namespace osucatch_editor_realtimeviewer
             if (distanceType != DistanceType.None && (hitObject is Fruit || (hitObject is Droplet && hitObject is not TinyDroplet)))
             {
                 string distanceString = wdpch.GetDistanceString(distanceType);
-                if (distanceString.Length > 0) this.DrawDistance(new Texture2D(distanceString), pos, circleDiameter, Color.LightBlue);
+                Texture2D distanceTexture = new Texture2D(distanceString);
+                if (distanceString.Length > 0) this.DrawDistance(distanceTexture, pos, circleDiameter, Color.LightBlue);
+                distanceTexture.Dispose();
             }
         }
 
