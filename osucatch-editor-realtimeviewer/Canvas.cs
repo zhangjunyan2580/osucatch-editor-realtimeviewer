@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Rulesets.Catch.Objects;
 using Color = OpenTK.Graphics.Color4;
 
@@ -126,6 +127,9 @@ namespace osucatch_editor_realtimeviewer
             if (viewerManager == null || viewerManager.Beatmap == null) { return; }
             int circleDiameter = (int)(108.848 - viewerManager.Beatmap.Difficulty.CircleSize * 8.9646);
             float fruitSpeed = 384 / viewerManager.ApproachTime;
+            List<TimingControlPoint> timingControlPoints = new List<TimingControlPoint>();
+            List<DifficultyControlPoint> difficultyControlPoints = new List<DifficultyControlPoint>();
+
             for (int b = viewerManager.NearbyHitObjects.Count - 1; b >= 0; b--)
             {
                 WithDistancePalpableCatchHitObject hitObject = viewerManager.NearbyHitObjects[b];
@@ -138,7 +142,18 @@ namespace osucatch_editor_realtimeviewer
                     alpha = 1 - (diff / (float)viewerManager.ApproachTime);
                     this.DrawHitcircle(hitObject, alpha, circleDiameter, viewerManager.DistanceType);
                 }
+
+                var timingControlPoint = hitObject.GetTimingPoint(viewerManager.Beatmap);
+                timingControlPoints.Add(timingControlPoint);
+
+                var difficultyControlPoint = hitObject.GetDifficultyControlPoint(viewerManager.Beatmap);
+                difficultyControlPoints.Add(difficultyControlPoint);
             }
+            timingControlPoints = timingControlPoints.Distinct().ToList();
+            DrawTimingPoints(timingControlPoints);
+
+            difficultyControlPoints = difficultyControlPoints.Distinct().ToList();
+            DrawDifficultyControPoints(difficultyControlPoints);
         }
 
 
@@ -231,6 +246,13 @@ namespace osucatch_editor_realtimeviewer
             texture.Draw(pos, new Vector2(diameter * 0.5f), color);
         }
 
+        private void DrawLabel(Texture2D? texture, Vector2 pos, bool isLeft, Color color)
+        {
+            if (texture == null) return;
+            if (isLeft) texture.Draw(pos, new Vector2(30, 0), color);
+            else texture.Draw(pos, new Vector2(texture.Width - 30, 0), color);
+        }
+
         private void DrawCircle(Texture2D? texture, Vector2 pos, int diameter, Color color)
         {
             if (texture == null) return;
@@ -250,7 +272,53 @@ namespace osucatch_editor_realtimeviewer
             DrawLine(rp0, rp1, Color.White);
         }
 
+        public void DrawTimingPoints(List<TimingControlPoint> timingControlPoints)
+        {
+            if (viewerManager == null) return;
+            timingControlPoints.ForEach(timingControlPoint =>
+            {
+                if (timingControlPoint.Time < 0 || timingControlPoint.BPM <= 0) return;
+                float diff = (float)(timingControlPoint.Time - viewerManager.currentTime);
+                // 0=在顶端 1=在判定线上 >1=超过判定线
+                float alpha = 1.0f;
+                if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
+                {
+                    alpha = 1 - (diff / (float)viewerManager.ApproachTime);
+                    Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
+                    Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
+                    DrawLine(rp0, rp1, Color.Red);
+                    Texture2D? BPMTexture = TextureFromString(timingControlPoint.BPM.ToString("F0"));
+                    if (BPMTexture == null) return;
+                    this.DrawLabel(BPMTexture, rp0, true, Color.Red);
+                    BPMTexture.Dispose();
+                }
 
+            });
+        }
+
+        public void DrawDifficultyControPoints(List<DifficultyControlPoint> difficultyControlPoints)
+        {
+            if (viewerManager == null) return;
+            difficultyControlPoints.ForEach(difficultyControlPoint =>
+            {
+                if (difficultyControlPoint.Time < 0 || difficultyControlPoint.SliderVelocity <= 0) return;
+                float diff = (float)(difficultyControlPoint.Time - viewerManager.currentTime);
+                // 0=在顶端 1=在判定线上 >1=超过判定线
+                float alpha = 1.0f;
+                if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
+                {
+                    alpha = 1 - (diff / (float)viewerManager.ApproachTime);
+                    Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
+                    Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
+                    DrawLine(rp0, rp1, Color.LightGreen);
+                    Texture2D? BPMTexture = TextureFromString(difficultyControlPoint.SliderVelocity.ToString("F2"));
+                    if (BPMTexture == null) return;
+                    this.DrawLabel(BPMTexture, rp1, false, Color.LightGreen);
+                    BPMTexture.Dispose();
+                }
+
+            });
+        }
 
     }
 }

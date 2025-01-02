@@ -182,6 +182,16 @@ namespace osucatch_editor_realtimeviewer
             this.currentObject = currentObject;
         }
 
+        public TimingControlPoint GetTimingPoint(IBeatmap beatmap)
+        {
+            return beatmap.ControlPointInfo.TimingPointAt(currentObject.StartTime);
+        }
+
+        public DifficultyControlPoint GetDifficultyControlPoint(IBeatmap beatmap)
+        {
+            return (beatmap.ControlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(currentObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
+        }
+
         public void CalDistance(IBeatmap beatmap, PalpableCatchHitObject nextObject)
         {
             double timeToNext = (int)nextObject.StartTime - (int)currentObject.StartTime; // - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
