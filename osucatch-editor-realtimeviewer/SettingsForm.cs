@@ -43,6 +43,9 @@ namespace osucatch_editor_realtimeviewer
             checkBox_Log_Timer.Checked = app.Default.Log_Timer;
             comboBox_Log_Level.SelectedIndex = app.Default.Log_Level;
             comboBox_Log_Level.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            checkBox_TimingLine_ShowRed.Checked = app.Default.TimingLine_ShowRed;
+            checkBox_TimingLine_ShowGreen.Checked = app.Default.TimingLine_ShowGreen;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
@@ -121,6 +124,9 @@ namespace osucatch_editor_realtimeviewer
             app.Default.Log_Backup = checkBox_Log_Backup.Checked;
             app.Default.Log_Timer = checkBox_Log_Timer.Checked;
             app.Default.Log_Level = comboBox_Log_Level.SelectedIndex;
+
+            app.Default.TimingLine_ShowRed = checkBox_TimingLine_ShowRed.Checked;
+            app.Default.TimingLine_ShowGreen = checkBox_TimingLine_ShowGreen.Checked;
 
             app.Default.Save();
 

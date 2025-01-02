@@ -143,17 +143,28 @@ namespace osucatch_editor_realtimeviewer
                     this.DrawHitcircle(hitObject, alpha, circleDiameter, viewerManager.DistanceType);
                 }
 
-                var timingControlPoint = hitObject.GetTimingPoint(viewerManager.Beatmap);
-                timingControlPoints.Add(timingControlPoint);
-
-                var difficultyControlPoint = hitObject.GetDifficultyControlPoint(viewerManager.Beatmap);
-                difficultyControlPoints.Add(difficultyControlPoint);
+                if (app.Default.TimingLine_ShowRed)
+                {
+                    var timingControlPoint = hitObject.GetTimingPoint(viewerManager.Beatmap);
+                    timingControlPoints.Add(timingControlPoint);
+                }
+                if (app.Default.TimingLine_ShowGreen)
+                {
+                    var difficultyControlPoint = hitObject.GetDifficultyControlPoint(viewerManager.Beatmap);
+                    difficultyControlPoints.Add(difficultyControlPoint);
+                }
             }
-            timingControlPoints = timingControlPoints.Distinct().ToList();
-            DrawTimingPoints(timingControlPoints);
 
-            difficultyControlPoints = difficultyControlPoints.Distinct().ToList();
-            DrawDifficultyControPoints(difficultyControlPoints);
+            if (app.Default.TimingLine_ShowRed)
+            {
+                timingControlPoints = timingControlPoints.Distinct().ToList();
+                DrawTimingPoints(timingControlPoints);
+            }
+            if (app.Default.TimingLine_ShowGreen)
+            {
+                difficultyControlPoints = difficultyControlPoints.Distinct().ToList();
+                DrawDifficultyControPoints(difficultyControlPoints);
+            }
         }
 
 

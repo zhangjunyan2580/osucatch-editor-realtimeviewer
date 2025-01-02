@@ -238,5 +238,29 @@ namespace osucatch_editor_realtimeviewer {
                 this["Log_BeatmapBuilder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TimingLine_ShowRed {
+            get {
+                return ((bool)(this["TimingLine_ShowRed"]));
+            }
+            set {
+                this["TimingLine_ShowRed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TimingLine_ShowGreen {
+            get {
+                return ((bool)(this["TimingLine_ShowGreen"]));
+            }
+            set {
+                this["TimingLine_ShowGreen"] = value;
+            }
+        }
     }
 }

@@ -61,6 +61,7 @@
             groupBox5 = new GroupBox();
             checkBox_withColor = new CheckBox();
             groupBox6 = new GroupBox();
+            checkBox_Log_BeatmapBuilder = new CheckBox();
             comboBox_Log_Level = new ComboBox();
             label8 = new Label();
             checkBox_Log_Timer = new CheckBox();
@@ -70,7 +71,9 @@
             checkBox_Log_EditorReader = new CheckBox();
             checkBox_Log_Program = new CheckBox();
             checkBox_showConsole = new CheckBox();
-            checkBox_Log_BeatmapBuilder = new CheckBox();
+            groupBox7 = new GroupBox();
+            checkBox_TimingLine_ShowRed = new CheckBox();
+            checkBox_TimingLine_ShowGreen = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_height).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_width).BeginInit();
@@ -82,6 +85,7 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown_backupInterval).BeginInit();
             groupBox5.SuspendLayout();
             groupBox6.SuspendLayout();
+            groupBox7.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
@@ -430,6 +434,16 @@
             groupBox6.TabStop = false;
             groupBox6.Text = "Debug";
             // 
+            // checkBox_Log_BeatmapBuilder
+            // 
+            checkBox_Log_BeatmapBuilder.AutoSize = true;
+            checkBox_Log_BeatmapBuilder.Location = new Point(6, 128);
+            checkBox_Log_BeatmapBuilder.Name = "checkBox_Log_BeatmapBuilder";
+            checkBox_Log_BeatmapBuilder.Size = new Size(143, 21);
+            checkBox_Log_BeatmapBuilder.TabIndex = 16;
+            checkBox_Log_BeatmapBuilder.Text = "BeatmapBuilder log";
+            checkBox_Log_BeatmapBuilder.UseVisualStyleBackColor = true;
+            // 
             // comboBox_Log_Level
             // 
             comboBox_Log_Level.FormattingEnabled = true;
@@ -518,21 +532,43 @@
             checkBox_showConsole.Text = "Show Console When Start";
             checkBox_showConsole.UseVisualStyleBackColor = true;
             // 
-            // checkBox_Log_BeatmapBuilder
+            // groupBox7
             // 
-            checkBox_Log_BeatmapBuilder.AutoSize = true;
-            checkBox_Log_BeatmapBuilder.Location = new Point(6, 128);
-            checkBox_Log_BeatmapBuilder.Name = "checkBox_Log_BeatmapBuilder";
-            checkBox_Log_BeatmapBuilder.Size = new Size(143, 21);
-            checkBox_Log_BeatmapBuilder.TabIndex = 16;
-            checkBox_Log_BeatmapBuilder.Text = "BeatmapBuilder log";
-            checkBox_Log_BeatmapBuilder.UseVisualStyleBackColor = true;
+            groupBox7.Controls.Add(checkBox_TimingLine_ShowGreen);
+            groupBox7.Controls.Add(checkBox_TimingLine_ShowRed);
+            groupBox7.Location = new Point(260, 299);
+            groupBox7.Name = "groupBox7";
+            groupBox7.Size = new Size(465, 83);
+            groupBox7.TabIndex = 8;
+            groupBox7.TabStop = false;
+            groupBox7.Text = "Timing Lines";
+            // 
+            // checkBox_TimingLine_ShowRed
+            // 
+            checkBox_TimingLine_ShowRed.AutoSize = true;
+            checkBox_TimingLine_ShowRed.Location = new Point(6, 22);
+            checkBox_TimingLine_ShowRed.Name = "checkBox_TimingLine_ShowRed";
+            checkBox_TimingLine_ShowRed.Size = new Size(208, 21);
+            checkBox_TimingLine_ShowRed.TabIndex = 0;
+            checkBox_TimingLine_ShowRed.Text = "Show Timing Points (Red Lines)";
+            checkBox_TimingLine_ShowRed.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_TimingLine_ShowGreen
+            // 
+            checkBox_TimingLine_ShowGreen.AutoSize = true;
+            checkBox_TimingLine_ShowGreen.Location = new Point(6, 49);
+            checkBox_TimingLine_ShowGreen.Name = "checkBox_TimingLine_ShowGreen";
+            checkBox_TimingLine_ShowGreen.Size = new Size(233, 21);
+            checkBox_TimingLine_ShowGreen.TabIndex = 1;
+            checkBox_TimingLine_ShowGreen.Text = "Show Inherited Points (Green Lines)";
+            checkBox_TimingLine_ShowGreen.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(737, 515);
+            Controls.Add(groupBox7);
             Controls.Add(groupBox6);
             Controls.Add(groupBox5);
             Controls.Add(button_cancel);
@@ -562,6 +598,8 @@
             groupBox5.PerformLayout();
             groupBox6.ResumeLayout(false);
             groupBox6.PerformLayout();
+            groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -610,5 +648,8 @@
         private ComboBox comboBox_Log_Level;
         private Label label8;
         private CheckBox checkBox_Log_BeatmapBuilder;
+        private GroupBox groupBox7;
+        private CheckBox checkBox_TimingLine_ShowGreen;
+        private CheckBox checkBox_TimingLine_ShowRed;
     }
 }
