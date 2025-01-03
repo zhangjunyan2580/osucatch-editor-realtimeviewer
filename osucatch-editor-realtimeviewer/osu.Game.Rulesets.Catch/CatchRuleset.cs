@@ -3,9 +3,7 @@
 
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Catch.Beatmaps;
-using osu.Game.Rulesets.Catch.Difficulty;
 using osu.Game.Rulesets.Catch.Objects;
-using osu.Game.Rulesets.Difficulty;
 
 namespace osu.Game.Rulesets.Catch
 {
@@ -24,9 +22,6 @@ namespace osu.Game.Rulesets.Catch
         public override string ShortName => SHORT_NAME;
 
         public override string PlayingVerb => "Catching fruit";
-
-
-        public override DifficultyCalculator CreateDifficultyCalculator(IWorkingBeatmap beatmap) => new CatchDifficultyCalculator(this, beatmap);
 
         public int LegacyID => 2;
 

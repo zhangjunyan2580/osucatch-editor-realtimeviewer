@@ -3,7 +3,6 @@
 
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Legacy;
-using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Mods;
 using System.Collections.Concurrent;
 
@@ -94,9 +93,6 @@ namespace osu.Game.Rulesets
         /// <param name="beatmap">The <see cref="IBeatmap"/> to be processed.</param>
         /// <returns>The <see cref="IBeatmapProcessor"/>.</returns>
         public virtual IBeatmapProcessor? CreateBeatmapProcessor(IBeatmap beatmap) => null;
-
-        public abstract DifficultyCalculator CreateDifficultyCalculator(IWorkingBeatmap beatmap);
-
 
         public abstract string Description { get; }
 

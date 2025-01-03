@@ -94,11 +94,7 @@ namespace osu.Game.Rulesets.Catch.UI
         /// </summary>
         public float CatchWidth { get; private set; }
 
-        private double? lastHyperDashStartTime;
         private double hyperDashModifier = 1;
-        private int hyperDashDirection;
-        private float hyperDashTargetPosition;
-        private Bindable<bool> hitLighting = null!;
 
         public Catcher(IBeatmapDifficultyInfo? difficulty = null)
         {
