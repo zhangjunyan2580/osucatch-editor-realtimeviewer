@@ -1,5 +1,4 @@
 ﻿using osu.Game.Beatmaps;
-using osu.Game.Rulesets.Catch.Objects;
 
 namespace osucatch_editor_realtimeviewer
 {

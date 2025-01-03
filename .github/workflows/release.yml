@@ -15,7 +15,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
 
     - name: Restore dependencies
       run: dotnet restore osucatch-editor-realtimeviewer
@@ -28,7 +28,7 @@ jobs:
       with:
         type: 'zip'
         filename: 'release.zip'
-        directory: 'osucatch-editor-realtimeviewer/bin/x64/Release/net6.0-windows/win-x64/'
+        directory: 'osucatch-editor-realtimeviewer/bin/x64/Release/net8.0-windows7.0/win-x64/'
 
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
@@ -37,4 +37,4 @@ jobs:
         automatic_release_tag: "latest"
         title: release
         files: |
-          osucatch-editor-realtimeviewer/bin/x64/Release/net6.0-windows/win-x64/release.zip
+          osucatch-editor-realtimeviewer/bin/x64/Release/net8.0-windows7.0/win-x64/release.zip

@@ -4,6 +4,7 @@ using osu.Game.Beatmaps.Legacy;
 using osu.Game.IO;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Catch;
+using osu.Game.Rulesets.Catch.Mods;
 using osu.Game.Rulesets.Catch.Objects;
 using osu.Game.Rulesets.Catch.UI;
 using osu.Game.Rulesets.Mods;
@@ -28,14 +29,13 @@ namespace osucatch_editor_realtimeviewer
             if (Mods == null)
                 return Array.Empty<Mod>();
 
-            List<Mod> availableMods = ruleset.CreateAllMods().ToList();
             List<Mod> mods = new List<Mod>();
 
             foreach (var modString in Mods)
             {
                 if (modString == "ScoreV2") continue;
-                Mod newMod = availableMods.FirstOrDefault(m => string.Equals(m.Acronym, modString, StringComparison.CurrentCultureIgnoreCase)) ?? throw new ArgumentException($"Invalid mod provided: {modString}");
-                mods.Add(newMod);
+                else if (modString == "EZ") mods.Add(new CatchModEasy().CreateInstance());
+                else if (modString == "HR") mods.Add(new CatchModHardRock().CreateInstance());
             }
 
             return mods.ToArray();
@@ -83,7 +83,7 @@ namespace osucatch_editor_realtimeviewer
             Ruleset ruleset = catchRulest;
             Beatmap beatmap = readFromFile(file);
             FlatWorkingBeatmap workingBeatmap = new FlatWorkingBeatmap(beatmap);
-            IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(ruleset.RulesetInfo, mods);
+            IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(ruleset, mods);
             if (playableBeatmap == null) throw new Exception("This beatmap is invalid or is not a ctb beatmap.");
             return playableBeatmap;
         }
@@ -206,7 +206,7 @@ namespace osucatch_editor_realtimeviewer
                 return;
             }
             if (beatmap.Difficulty.SliderMultiplier <= 0 || nextTimingPoint.BeatLength <= 0) return;
-            XDistToNext_NoSliderVelocityMultiplier = distanceToNext / (beatmap.Difficulty.SliderMultiplier * 100 ) / (timeToNext / nextTimingPoint.BeatLength);
+            XDistToNext_NoSliderVelocityMultiplier = distanceToNext / (beatmap.Difficulty.SliderMultiplier * 100) / (timeToNext / nextTimingPoint.BeatLength);
             if (XDistToNext_NoSliderVelocityMultiplier <= 0 || XDistToNext_NoSliderVelocityMultiplier > 100)
             {
                 XDistToNext_NoSliderVelocityMultiplier = 0;

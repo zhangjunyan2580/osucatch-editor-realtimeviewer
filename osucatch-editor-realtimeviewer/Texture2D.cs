@@ -1,7 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace osucatch_editor_realtimeviewer

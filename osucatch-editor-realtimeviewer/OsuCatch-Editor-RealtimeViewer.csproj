@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <RootNamespace>osucatch_editor_realtimeviewer</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -10,13 +10,13 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="3.3.3" />
     <PackageReference Include="OpenTK.GLControl" Version="3.3.3" />
-    <PackageReference Include="ppy.osu.Game" Version="2023.1004.0" />
-    <PackageReference Include="ppy.osu.Game.Rulesets.Catch" Version="2023.1004.0" />
+    <PackageReference Include="System.Numerics.Tensors" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +59,10 @@
     <None Update="img\fruit-drop.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Osu.Game\" />
   </ItemGroup>
 
 </Project>
