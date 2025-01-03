@@ -66,7 +66,6 @@ namespace osu.Game.Rulesets.Catch.Objects
         {
             base.CreateNestedHitObjects(cancellationToken);
 
-            int nodeIndex = 0;
             SliderEventDescriptor? lastEvent = null;
 
             foreach (var e in SliderEventGenerator.Generate(StartTime, SpanDuration, Velocity, TickDistance, Path.Distance, this.SpanCount(), cancellationToken))

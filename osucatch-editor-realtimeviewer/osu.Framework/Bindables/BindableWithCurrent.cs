@@ -9,7 +9,7 @@ namespace osu.Framework.Bindables
     /// A bindable which holds a reference to a bound target, allowing switching between targets and handling unbind/rebind.
     /// </summary>
     /// <typeparam name="T">The type of our stored <see cref="Bindable{T}.Value"/>.</typeparam>
-    public class BindableWithCurrent<T> : Bindable<T>, IBindableWithCurrent<T>
+    public class BindableWithCurrent<T> : Bindable<T>
     {
         private Bindable<T> currentBound;
 

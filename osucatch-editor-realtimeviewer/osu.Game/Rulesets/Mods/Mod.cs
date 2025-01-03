@@ -90,8 +90,6 @@ namespace osu.Game.Rulesets.Mods
         /// </summary>
         public virtual Type[] IncompatibleMods => Array.Empty<Type>();
 
-        private IReadOnlyDictionary<string, IBindable>? settingsBacking;
-
         public bool Equals(IMod? other) => other is Mod them && Equals(them);
 
         public bool Equals(Mod? other)

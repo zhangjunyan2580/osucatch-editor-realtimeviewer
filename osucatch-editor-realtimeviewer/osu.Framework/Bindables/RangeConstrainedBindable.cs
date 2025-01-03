@@ -55,12 +55,6 @@ namespace osu.Framework.Bindables
         /// </summary>
         protected abstract T DefaultMaxValue { get; }
 
-        /// <summary>
-        /// Whether this bindable has a user-defined range that is not the full range of the <typeparamref name="T"/> type.
-        /// </summary>
-        public bool HasDefinedRange => !EqualityComparer<T>.Default.Equals(MinValue, DefaultMinValue) ||
-                                       !EqualityComparer<T>.Default.Equals(MaxValue, DefaultMaxValue);
-
         protected RangeConstrainedBindable(T defaultValue = default)
             : base(defaultValue)
         {
@@ -69,21 +63,6 @@ namespace osu.Framework.Bindables
 
             // Reapply the default value here for respecting the defined default min/max values.
             setValue(defaultValue);
-        }
-
-        public float NormalizedValue
-        {
-            get
-            {
-                float min = convertToSingle(MinValue);
-                float max = convertToSingle(MaxValue);
-
-                if (max - min == 0)
-                    return 1;
-
-                float val = convertToSingle(Value);
-                return (val - min) / (max - min);
-            }
         }
 
         private static float convertToSingle(T val)

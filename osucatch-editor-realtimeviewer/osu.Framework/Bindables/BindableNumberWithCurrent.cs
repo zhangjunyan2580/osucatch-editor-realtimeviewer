@@ -11,7 +11,7 @@ namespace osu.Framework.Bindables
     /// A bindable which holds a reference to a bound target, allowing switching between targets and handling unbind/rebind.
     /// </summary>
     /// <typeparam name="T">The type of our stored <see cref="Bindable{T}.Value"/>.</typeparam>
-    public class BindableNumberWithCurrent<T> : BindableNumber<T>, IBindableWithCurrent<T>
+    public class BindableNumberWithCurrent<T> : BindableNumber<T>
         where T : struct, INumber<T>, IMinMaxValue<T>
     {
         private BindableNumber<T> currentBound;

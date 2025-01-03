@@ -6,7 +6,5 @@ namespace osu.Game.Rulesets.Catch.Objects
 {
     public class Fruit : PalpableCatchHitObject
     {
-
-        public static FruitVisualRepresentation GetVisualRepresentation(int indexInBeatmap) => (FruitVisualRepresentation)(indexInBeatmap % 4);
     }
 }
