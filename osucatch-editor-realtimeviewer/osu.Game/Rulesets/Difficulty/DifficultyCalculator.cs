@@ -12,7 +12,6 @@ using osu.Game.Rulesets.Difficulty.Preprocessing;
 using osu.Game.Rulesets.Difficulty.Skills;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Objects;
-using osu.Game.Utils;
 
 namespace osu.Game.Rulesets.Difficulty
 {
@@ -54,7 +53,7 @@ namespace osu.Game.Rulesets.Difficulty
         /// <param name="mods">The mods that should be applied to the beatmap.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A structure describing the difficulty of the beatmap.</returns>
-        public DifficultyAttributes Calculate( IEnumerable<Mod> mods, CancellationToken cancellationToken = default)
+        public DifficultyAttributes Calculate(IEnumerable<Mod> mods, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             preProcess(mods, cancellationToken);
@@ -90,7 +89,7 @@ namespace osu.Game.Rulesets.Difficulty
         /// <param name="mods">The mods that should be applied to the beatmap.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>The set of <see cref="TimedDifficultyAttributes"/>.</returns>
-        public List<TimedDifficultyAttributes> CalculateTimed( IEnumerable<Mod> mods, CancellationToken cancellationToken = default)
+        public List<TimedDifficultyAttributes> CalculateTimed(IEnumerable<Mod> mods, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             preProcess(mods, cancellationToken);
@@ -137,7 +136,7 @@ namespace osu.Game.Rulesets.Difficulty
         /// </summary>
         /// <param name="mods">The original list of <see cref="Mod"/>s.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        private void preProcess( IEnumerable<Mod> mods, CancellationToken cancellationToken = default)
+        private void preProcess(IEnumerable<Mod> mods, CancellationToken cancellationToken = default)
         {
             playableMods = mods.ToArray();
 

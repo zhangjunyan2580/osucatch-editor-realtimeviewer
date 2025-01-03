@@ -15,7 +15,7 @@ namespace osu.Game.Rulesets.Objects
         /// <summary>
         /// The position of this <see cref="PathControlPoint"/>.
         /// </summary>
-        
+
         public Vector2 Position
         {
             get => position;
@@ -35,7 +35,7 @@ namespace osu.Game.Rulesets.Objects
         /// The type of path segment starting at this <see cref="PathControlPoint"/>.
         /// If null, this <see cref="PathControlPoint"/> will be a part of the previous path segment.
         /// </summary>
-        
+
         public PathType? Type
         {
             get => type;

@@ -20,7 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-using System;
 using System.Runtime.InteropServices;
 
 namespace osuTK
@@ -706,7 +705,7 @@ namespace osuTK
         /// <param name="result">A new instance that is the result of the multiplication</param>
         public static void Mult(ref Matrix3 left, ref Matrix3 right, out Matrix3 result)
         {
-            float   lM11 = left.Row0.X, lM12 = left.Row0.Y, lM13 = left.Row0.Z,
+            float lM11 = left.Row0.X, lM12 = left.Row0.Y, lM13 = left.Row0.Z,
             lM21 = left.Row1.X, lM22 = left.Row1.Y, lM23 = left.Row1.Z,
             lM31 = left.Row2.X, lM32 = left.Row2.Y, lM33 = left.Row2.Z,
             rM11 = right.Row0.X, rM12 = right.Row0.Y, rM13 = right.Row0.Z,

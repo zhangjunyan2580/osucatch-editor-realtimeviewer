@@ -3,12 +3,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using osu.Framework.Extensions.ObjectExtensions;
-using osu.Framework.Utils;
 
 namespace osu.Framework.Extensions.EnumExtensions
 {

@@ -6,8 +6,8 @@
 using osu.Framework.Bindables;
 using osu.Framework.Lists;
 using osu.Framework.Utils;
-using osu.Game.Utils;
 using osu.Game.Screens.Edit;
+using osu.Game.Utils;
 
 namespace osu.Game.Beatmaps.ControlPoints
 {
@@ -18,15 +18,15 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// <summary>
         /// Invoked on any change to the set of control points.
         /// </summary>
-        
+
         public event Action ControlPointsChanged;
 
-        private void raiseControlPointsChanged( ControlPoint _ = null) => ControlPointsChanged?.Invoke();
+        private void raiseControlPointsChanged(ControlPoint _ = null) => ControlPointsChanged?.Invoke();
 
         /// <summary>
         /// All control points grouped by time.
         /// </summary>
-        
+
         public IBindableList<ControlPointGroup> Groups => groups;
 
         private readonly BindableList<ControlPointGroup> groups = new BindableList<ControlPointGroup>();
@@ -34,7 +34,7 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// <summary>
         /// All timing points.
         /// </summary>
-        
+
         public IReadOnlyList<TimingControlPoint> TimingPoints => timingPoints;
 
         private readonly SortedList<TimingControlPoint> timingPoints = new SortedList<TimingControlPoint>(Comparer<TimingControlPoint>.Default);
@@ -42,7 +42,7 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// <summary>
         /// All effect points.
         /// </summary>
-        
+
         public IReadOnlyList<EffectControlPoint> EffectPoints => effectPoints;
 
         private readonly SortedList<EffectControlPoint> effectPoints = new SortedList<EffectControlPoint>(Comparer<EffectControlPoint>.Default);
@@ -50,7 +50,7 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// <summary>
         /// All control points, of all types.
         /// </summary>
-        
+
         public IEnumerable<ControlPoint> AllControlPoints => Groups.SelectMany(g => g.ControlPoints).ToArray();
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// </summary>
         /// <param name="time">The time to find the effect control point at.</param>
         /// <returns>The effect control point.</returns>
-        
+
         public EffectControlPoint EffectPointAt(double time) => BinarySearchWithFallback(EffectPoints, time, EffectControlPoint.DEFAULT);
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// </summary>
         /// <param name="time">The time to find the timing control point at.</param>
         /// <returns>The timing control point.</returns>
-        
+
         public TimingControlPoint TimingPointAt(double time) => BinarySearchWithFallback(TimingPoints, time, TimingPoints.Count > 0 ? TimingPoints[0] : TimingControlPoint.DEFAULT);
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// </summary>
         /// <param name="time">The time after which to find the timing control point.</param>
         /// <returns>The timing control point.</returns>
-        
+
         public TimingControlPoint TimingPointAfter(double time)
         {
             int index = BinarySearch(TimingPoints, time, EqualitySelection.Rightmost);
@@ -85,14 +85,14 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// <summary>
         /// Finds the maximum BPM represented by any timing control point.
         /// </summary>
-        
+
         public double BPMMaximum =>
             60000 / (TimingPoints.MinBy(c => c.BeatLength) ?? TimingControlPoint.DEFAULT).BeatLength;
 
         /// <summary>
         /// Finds the minimum BPM represented by any timing control point.
         /// </summary>
-        
+
         public double BPMMinimum =>
             60000 / (TimingPoints.MaxBy(c => c.BeatLength) ?? TimingControlPoint.DEFAULT).BeatLength;
 

@@ -52,7 +52,7 @@ namespace osu.Game.Beatmaps
             };
         }
 
-        
+
         public BeatmapMetadata Metadata => BeatmapInfo.Metadata;
 
         public ControlPointInfo ControlPointInfo { get; set; } = new ControlPointInfo();
@@ -61,7 +61,7 @@ namespace osu.Game.Beatmaps
 
         public List<string> UnhandledEventLines { get; set; } = new List<string>();
 
-        
+
         public double TotalBreakTime => Breaks.Sum(b => b.Duration);
         public List<T> HitObjects { get; set; } = new List<T>();
 

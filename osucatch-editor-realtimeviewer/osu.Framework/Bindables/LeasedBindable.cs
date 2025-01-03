@@ -3,9 +3,6 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-
 
 namespace osu.Framework.Bindables
 {
@@ -22,7 +19,7 @@ namespace osu.Framework.Bindables
         private readonly bool disabledBeforeLease;
         private readonly bool revertValueOnReturn;
 
-        internal LeasedBindable( Bindable<T> source, bool revertValueOnReturn)
+        internal LeasedBindable(Bindable<T> source, bool revertValueOnReturn)
         {
             BindTo(source);
 

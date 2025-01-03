@@ -2,13 +2,11 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Framework.Utils;
-using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Formats;
 using osu.Game.Beatmaps.Legacy;
 using osu.Game.Rulesets.Objects.Types;
-using osu.Game.Utils;
-using System.Buffers;
 using osuTK;
+using System.Buffers;
 
 namespace osu.Game.Rulesets.Objects.Legacy
 {

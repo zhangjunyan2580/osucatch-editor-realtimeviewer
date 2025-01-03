@@ -11,7 +11,7 @@ namespace osu.Game.Beatmaps.Legacy
         /// <summary>
         /// All difficulty points.
         /// </summary>
-        
+
         public IReadOnlyList<DifficultyControlPoint> DifficultyPoints => difficultyPoints;
 
         private readonly SortedList<DifficultyControlPoint> difficultyPoints = new SortedList<DifficultyControlPoint>(Comparer<DifficultyControlPoint>.Default);

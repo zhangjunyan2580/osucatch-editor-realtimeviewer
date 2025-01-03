@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Game.IO;
-using osu.Game.Rulesets;
 
 namespace osu.Game.Beatmaps.Formats
 {

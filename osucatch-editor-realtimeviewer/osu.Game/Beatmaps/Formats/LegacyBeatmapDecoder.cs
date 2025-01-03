@@ -1,17 +1,15 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Extensions;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Legacy;
 using osu.Game.Beatmaps.Timing;
 using osu.Game.IO;
-using osu.Game.Rulesets;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Legacy;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Utils;
-using osu.Framework.Extensions;
-using osucatch_editor_realtimeviewer;
 
 namespace osu.Game.Beatmaps.Formats
 {
@@ -227,11 +225,11 @@ namespace osu.Game.Beatmaps.Formats
                     beatmap.StackLeniency = Parsing.ParseFloat(pair.Value);
                     break;
 
-                    /*
-                case @"Mode":
-                    beatmap.BeatmapInfo.Ruleset = RulesetStore?.GetRuleset(Parsing.ParseInt(pair.Value)) ?? throw new ArgumentException("Ruleset is not available locally.");
-                    break;
-                    */
+                /*
+            case @"Mode":
+                beatmap.BeatmapInfo.Ruleset = RulesetStore?.GetRuleset(Parsing.ParseInt(pair.Value)) ?? throw new ArgumentException("Ruleset is not available locally.");
+                break;
+                */
 
                 case @"LetterboxInBreaks":
                     beatmap.LetterboxInBreaks = Parsing.ParseInt(pair.Value) == 1;

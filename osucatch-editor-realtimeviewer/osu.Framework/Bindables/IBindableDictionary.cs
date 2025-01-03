@@ -1,8 +1,6 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System.Collections.Generic;
-
 namespace osu.Framework.Bindables
 {
     public interface IBindableDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, ICanBeDisabled, IHasDefaultValue, IUnbindable, IHasDescription

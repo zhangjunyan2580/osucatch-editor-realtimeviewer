@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Game.Rulesets;
-using System.Diagnostics;
 
 namespace osu.Game.Beatmaps
 {
@@ -26,7 +25,7 @@ namespace osu.Game.Beatmaps
 
         public BeatmapMetadata Metadata { get; set; } = null!;
 
-        
+
         public BeatmapInfo(RulesetInfo? ruleset = null, BeatmapDifficulty? difficulty = null, BeatmapMetadata? metadata = null)
         {
             ID = Guid.NewGuid();

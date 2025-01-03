@@ -4,9 +4,7 @@
 #nullable disable
 
 using osu.Framework.Extensions.TypeExtensions;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace osu.Framework.Lists
 {

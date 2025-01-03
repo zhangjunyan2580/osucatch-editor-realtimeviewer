@@ -31,7 +31,7 @@ namespace osu.Game.Rulesets.Objects.Legacy
 
         public int RepeatCount { get; set; }
 
-        
+
         public double Duration
         {
             get => this.SpanCount() * Distance / Velocity;

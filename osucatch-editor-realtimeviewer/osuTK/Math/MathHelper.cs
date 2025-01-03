@@ -6,7 +6,6 @@
  * Contributions by Andy Gill, James Talton and Georg Wächter.
  */
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace osuTK

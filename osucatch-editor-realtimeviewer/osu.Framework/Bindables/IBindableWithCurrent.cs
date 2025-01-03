@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using System;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Utils;
 

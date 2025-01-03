@@ -4,9 +4,9 @@
 using osu.Framework.Bindables;
 using osu.Framework.Utils;
 using osu.Game.Rulesets.Objects.Types;
+using osuTK;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using osuTK;
 
 namespace osu.Game.Rulesets.Objects
 {
@@ -15,7 +15,7 @@ namespace osu.Game.Rulesets.Objects
         /// <summary>
         /// The current version of this <see cref="SliderPath"/>. Updated when any change to the path occurs.
         /// </summary>
-        
+
         public IBindable<int> Version => version;
 
         private readonly Bindable<int> version = new Bindable<int>();
@@ -105,7 +105,7 @@ namespace osu.Game.Rulesets.Objects
         /// <summary>
         /// The distance of the path after lengthening/shortening to account for <see cref="ExpectedDistance"/>.
         /// </summary>
-        
+
         public double Distance
         {
             get

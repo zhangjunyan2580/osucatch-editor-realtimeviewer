@@ -3,15 +3,10 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-
 using osu.Framework.Extensions.ObjectExtensions;
 using osu.Framework.Extensions.TypeExtensions;
 using osu.Framework.Lists;
+using System.Globalization;
 
 namespace osu.Framework.Bindables
 {
@@ -24,19 +19,19 @@ namespace osu.Framework.Bindables
         /// <summary>
         /// An event which is raised when <see cref="Value"/> has changed (or manually via <see cref="TriggerValueChange"/>).
         /// </summary>
-        
+
         public event Action<ValueChangedEvent<T>> ValueChanged;
 
         /// <summary>
         /// An event which is raised when <see cref="Disabled"/> has changed (or manually via <see cref="TriggerDisabledChange"/>).
         /// </summary>
-        
+
         public event Action<bool> DisabledChanged;
 
         /// <summary>
         /// An event which is raised when <see cref="Default"/> has changed (or manually via <see cref="TriggerDefaultChange"/>).
         /// </summary>
-        
+
         public event Action<ValueChangedEvent<T>> DefaultChanged;
 
         private T value;
@@ -140,7 +135,7 @@ namespace osu.Framework.Bindables
         /// <summary>
         /// Creates a new bindable instance. This is used for deserialization of bindables.
         /// </summary>
-        
+
         private Bindable()
             : this(default)
         {

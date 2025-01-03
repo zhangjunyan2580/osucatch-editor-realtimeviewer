@@ -3,9 +3,7 @@
 
 #nullable disable
 
-using System.Linq;
 using osu.Framework.Bindables;
-using osuTK;
 
 namespace osu.Game.Screens.Edit
 {

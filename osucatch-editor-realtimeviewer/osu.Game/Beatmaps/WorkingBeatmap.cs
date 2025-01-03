@@ -3,10 +3,10 @@
 
 #nullable disable
 
+using osu.Framework.Extensions;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Mods;
 using System.Diagnostics;
-using osu.Framework.Extensions;
 
 namespace osu.Game.Beatmaps
 {

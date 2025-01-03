@@ -3,8 +3,6 @@
 
 #nullable disable
 
-using osu.Framework.Lists;
-using osu.Game.Beatmaps.Timing;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Objects;
 

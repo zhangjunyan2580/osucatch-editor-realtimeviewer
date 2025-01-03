@@ -3,9 +3,6 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-
 namespace osu.Framework.Bindables
 {
     public abstract class RangeConstrainedBindable<T> : Bindable<T>

@@ -1,10 +1,6 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
-using System.Buffers;
-using System.Diagnostics;
-using System.Linq;
 using osu.Framework.Bindables;
 using osu.Framework.Utils;
 using osu.Game.Beatmaps;
@@ -121,7 +117,7 @@ namespace osu.Game.Rulesets.Catch.UI
         /// <param name="difficulty">The beatmap difficulty.</param>
         public static float CalculateCatchWidth(IBeatmapDifficultyInfo difficulty) => CalculateCatchWidth(calculateScale(difficulty));
 
- 
+
         /// <summary>
         /// Set the scale and catch width.
         /// </summary>

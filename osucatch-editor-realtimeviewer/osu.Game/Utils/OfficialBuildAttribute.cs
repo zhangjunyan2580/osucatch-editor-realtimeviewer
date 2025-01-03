@@ -3,7 +3,7 @@
 
 namespace osu.Game.Utils
 {
-    
+
     [AttributeUsage(AttributeTargets.Assembly)]
     public class OfficialBuildAttribute : Attribute;
 }

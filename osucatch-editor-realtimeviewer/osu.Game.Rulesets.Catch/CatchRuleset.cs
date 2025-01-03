@@ -2,14 +2,10 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Game.Beatmaps;
-using osu.Game.Beatmaps.Legacy;
 using osu.Game.Rulesets.Catch.Beatmaps;
 using osu.Game.Rulesets.Catch.Difficulty;
-using osu.Game.Rulesets.Catch.Mods;
 using osu.Game.Rulesets.Catch.Objects;
-using osu.Game.Rulesets.Catch.UI;
 using osu.Game.Rulesets.Difficulty;
-using osu.Game.Rulesets.Mods;
 
 namespace osu.Game.Rulesets.Catch
 {

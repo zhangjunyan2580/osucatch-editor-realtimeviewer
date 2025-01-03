@@ -1,11 +1,9 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Game.Beatmaps.ControlPoints;
-using osu.Game.IO;
-using osu.Game.Rulesets.Objects.Legacy;
-using osucatch_editor_realtimeviewer;
 using osu.Framework.Extensions;
+using osu.Game.IO;
+using osucatch_editor_realtimeviewer;
 
 namespace osu.Game.Beatmaps.Formats
 {

@@ -18,7 +18,7 @@ namespace osu.Game.Beatmaps.ControlPoints
 
         private double time;
 
-        
+
         public double Time
         {
             get => time;

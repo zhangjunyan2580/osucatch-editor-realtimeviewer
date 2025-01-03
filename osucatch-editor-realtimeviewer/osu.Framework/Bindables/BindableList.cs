@@ -3,14 +3,11 @@
 
 #nullable disable
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.Linq;
 using osu.Framework.Extensions.TypeExtensions;
 using osu.Framework.Lists;
+using System.Collections;
+using System.Collections.Specialized;
+using System.Globalization;
 
 namespace osu.Framework.Bindables
 {
@@ -24,7 +21,7 @@ namespace osu.Framework.Bindables
         /// <summary>
         /// An event which is raised when <see cref="Disabled"/>'s state has changed (or manually via <see cref="triggerDisabledChange(bool)"/>).
         /// </summary>
-        
+
         public event Action<bool> DisabledChanged;
 
         private readonly List<T> collection = new List<T>();

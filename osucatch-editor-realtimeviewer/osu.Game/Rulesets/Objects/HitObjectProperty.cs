@@ -12,7 +12,7 @@ namespace osu.Game.Rulesets.Objects
     /// </summary>
     public struct HitObjectProperty<T>
     {
-        
+
         private Bindable<T> backingBindable;
 
         /// <summary>

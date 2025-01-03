@@ -20,7 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
 using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 
@@ -84,8 +83,10 @@ namespace osuTK
         /// <summary>
         /// Gets or sets the value at the index of the Vector.
         /// </summary>
-        public double this[int index] {
-            get{
+        public double this[int index]
+        {
+            get
+            {
                 if (index == 0)
                 {
                     return X;
@@ -95,7 +96,9 @@ namespace osuTK
                     return Y;
                 }
                 throw new IndexOutOfRangeException("You tried to access this vector at index: " + index);
-            } set{
+            }
+            set
+            {
                 if (index == 0)
                 {
                     X = value;

@@ -3,14 +3,8 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.ListExtensions;
-using osu.Framework.Extensions.TypeExtensions;
 using osu.Framework.Lists;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
@@ -53,17 +47,17 @@ namespace osu.Game.Rulesets.Objects
         /// <summary>
         /// Whether this <see cref="HitObject"/> is in Kiai time.
         /// </summary>
-        
+
         public bool Kiai { get; private set; }
 
         /// <summary>
         /// The hit windows for this <see cref="HitObject"/>.
         /// </summary>
-        
+
 
         private readonly List<HitObject> nestedHitObjects = new List<HitObject>();
 
-        
+
         public SlimReadOnlyListWrapper<HitObject> NestedHitObjects => nestedHitObjects.AsSlimReadOnly();
 
         /// <summary>
@@ -133,7 +127,7 @@ namespace osu.Game.Rulesets.Objects
         /// <summary>
         /// The <see cref="Judgement"/> that represents the scoring information for this <see cref="HitObject"/>.
         /// </summary>
-        
+
 
         /// <summary>
         /// Creates the <see cref="HitWindows"/> for this <see cref="HitObject"/>.
@@ -142,7 +136,7 @@ namespace osu.Game.Rulesets.Objects
         /// This will only be invoked if <see cref="HitWindows"/> hasn't been set externally (e.g. from a <see cref="BeatmapConverter{T}"/>.
         /// </para>
         /// </summary>
-       
+
 
     }
 

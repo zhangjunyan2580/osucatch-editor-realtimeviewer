@@ -3,17 +3,15 @@
 
 #nullable disable
 
-using System;
-using System.Numerics;
-
 using osu.Framework.Utils;
+using System.Numerics;
 
 namespace osu.Framework.Bindables
 {
     public class BindableNumber<T> : RangeConstrainedBindable<T>, IBindableNumber<T>
         where T : struct, INumber<T>, IMinMaxValue<T>
     {
-        
+
         public event Action<T> PrecisionChanged;
 
         public BindableNumber(T defaultValue = default)

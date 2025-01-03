@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using System;
 using System.Numerics;
 
 namespace osu.Framework.Bindables

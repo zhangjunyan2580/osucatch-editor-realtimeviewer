@@ -28,7 +28,7 @@ namespace osu.Game.Rulesets
             OnlineID = onlineID;
         }
 
-        
+
         public RulesetInfo()
         {
         }
