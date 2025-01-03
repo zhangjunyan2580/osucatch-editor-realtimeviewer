@@ -4,6 +4,7 @@ using osu.Game.Beatmaps.Legacy;
 using osu.Game.IO;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Catch;
+using osu.Game.Rulesets.Catch.Mods;
 using osu.Game.Rulesets.Catch.Objects;
 using osu.Game.Rulesets.Catch.UI;
 using osu.Game.Rulesets.Mods;
@@ -23,58 +24,31 @@ namespace osucatch_editor_realtimeviewer
                 return osu.Game.Beatmaps.Formats.Decoder.GetDecoder<Beatmap>(reader).Decode(reader);
         }
 
+        static Mod[] NoMod = Array.Empty<Mod>();
+
+        static Mod[] EZMod = { new CatchModEasy().CreateInstance() };
+
+        static Mod[] HRMod = { new CatchModHardRock().CreateInstance() };
+
         static Mod[] GetMods(string[] Mods, Ruleset ruleset)
         {
             if (Mods == null)
-                return Array.Empty<Mod>();
-
-            List<Mod> availableMods = ruleset.CreateAllMods().ToList();
-            List<Mod> mods = new List<Mod>();
+                return NoMod;
 
             foreach (var modString in Mods)
             {
-                if (modString == "ScoreV2") continue;
-                Mod newMod = availableMods.FirstOrDefault(m => string.Equals(m.Acronym, modString, StringComparison.CurrentCultureIgnoreCase)) ?? throw new ArgumentException($"Invalid mod provided: {modString}");
-                mods.Add(newMod);
+                if (modString == "EZ") return EZMod;
+                else if (modString == "HR") return HRMod;
             }
 
-            return mods.ToArray();
+            return NoMod;
         }
 
         public static string[] GetModsString(int raw_mods)
         {
             List<string> modsArr = new List<string>();
-            if ((raw_mods & 1) > 0) modsArr.Add("NF");
             if ((raw_mods & 2) > 0) modsArr.Add("EZ");
-            if ((raw_mods & 4) > 0) modsArr.Add("TD");
-            if ((raw_mods & 8) > 0) modsArr.Add("HD");
             if ((raw_mods & 16) > 0) modsArr.Add("HR");
-            if ((raw_mods & 32) > 0) modsArr.Add("SD");
-            if ((raw_mods & 64) > 0) modsArr.Add("DT");
-            if ((raw_mods & 128) > 0) modsArr.Add("Relax");
-            if ((raw_mods & 256) > 0) modsArr.Add("HT");
-            if ((raw_mods & 512) > 0) { modsArr.Add("NC"); modsArr.Remove("DT"); }
-            if ((raw_mods & 1024) > 0) modsArr.Add("FL");
-            if ((raw_mods & 2048) > 0) modsArr.Add("Auto");
-            if ((raw_mods & 4096) > 0) modsArr.Add("SO");
-            if ((raw_mods & 8192) > 0) modsArr.Add("AP");
-            if ((raw_mods & 16384) > 0) { modsArr.Add("PF"); modsArr.Remove("SD"); };
-            if ((raw_mods & 32768) > 0) modsArr.Add("4K");
-            if ((raw_mods & 65536) > 0) modsArr.Add("5K");
-            if ((raw_mods & 131072) > 0) modsArr.Add("6K");
-            if ((raw_mods & 262144) > 0) modsArr.Add("7K");
-            if ((raw_mods & 524288) > 0) modsArr.Add("8K");
-            if ((raw_mods & 1048576) > 0) modsArr.Add("FI");
-            if ((raw_mods & 2097152) > 0) modsArr.Add("RD");
-            if ((raw_mods & 4194304) > 0) modsArr.Add("Cinema");
-            if ((raw_mods & 8388608) > 0) modsArr.Add("Target");
-            if ((raw_mods & 16777216) > 0) modsArr.Add("9K");
-            if ((raw_mods & 33554432) > 0) modsArr.Add("KeyCoop");
-            if ((raw_mods & 67108864) > 0) modsArr.Add("1K");
-            if ((raw_mods & 134217728) > 0) modsArr.Add("3K");
-            if ((raw_mods & 268435456) > 0) modsArr.Add("2K");
-            if ((raw_mods & 536870912) > 0) modsArr.Add("ScoreV2");
-            if ((raw_mods & 1073741824) > 0) modsArr.Add("MR");
             return modsArr.ToArray();
         }
 
@@ -83,7 +57,7 @@ namespace osucatch_editor_realtimeviewer
             Ruleset ruleset = catchRulest;
             Beatmap beatmap = readFromFile(file);
             FlatWorkingBeatmap workingBeatmap = new FlatWorkingBeatmap(beatmap);
-            IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(ruleset.RulesetInfo, mods);
+            IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(ruleset, mods);
             if (playableBeatmap == null) throw new Exception("This beatmap is invalid or is not a ctb beatmap.");
             return playableBeatmap;
         }
@@ -206,7 +180,7 @@ namespace osucatch_editor_realtimeviewer
                 return;
             }
             if (beatmap.Difficulty.SliderMultiplier <= 0 || nextTimingPoint.BeatLength <= 0) return;
-            XDistToNext_NoSliderVelocityMultiplier = distanceToNext / (beatmap.Difficulty.SliderMultiplier * 100 ) / (timeToNext / nextTimingPoint.BeatLength);
+            XDistToNext_NoSliderVelocityMultiplier = distanceToNext / (beatmap.Difficulty.SliderMultiplier * 100) / (timeToNext / nextTimingPoint.BeatLength);
             if (XDistToNext_NoSliderVelocityMultiplier <= 0 || XDistToNext_NoSliderVelocityMultiplier > 100)
             {
                 XDistToNext_NoSliderVelocityMultiplier = 0;
