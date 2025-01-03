@@ -22,11 +22,6 @@ namespace osu.Game.Rulesets.Mods
         public virtual ModType Type => ModType.Fun;
 
         /// <summary>
-        /// Returns true if this mod is implemented (and playable).
-        /// </summary>
-        public virtual bool HasImplementation => this is IApplicableMod;
-
-        /// <summary>
         /// Whether this mod can be played by a real human user.
         /// Non-user-playable mods are not viable for single-player score submission.
         /// </summary>

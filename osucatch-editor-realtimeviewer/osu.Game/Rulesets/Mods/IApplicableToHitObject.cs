@@ -8,7 +8,7 @@ namespace osu.Game.Rulesets.Mods
     /// <summary>
     /// An interface for <see cref="Mod"/>s that can be applied to <see cref="HitObject"/>s.
     /// </summary>
-    public interface IApplicableToHitObject : IApplicableMod
+    public interface IApplicableToHitObject
     {
         /// <summary>
         /// Applies this <see cref="IApplicableToHitObject"/> to a <see cref="HitObject"/>.

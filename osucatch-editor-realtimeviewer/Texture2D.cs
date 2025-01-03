@@ -29,10 +29,10 @@ namespace osucatch_editor_realtimeviewer
             stream.Dispose();
         }
 
-        public Texture2D(string text)
+        public Texture2D(string text, float fontScale)
         {
             // 创建一个Bitmap对象，大小为文本的尺寸
-            int bitmapWidth = (text.Contains(".")) ? text.Length * 24 : text.Length * 28;
+            int bitmapWidth = (int)((text.Contains(".")) ? text.Length * 24 / fontScale : text.Length * 28 / fontScale);
             Bitmap bitmap = new Bitmap(bitmapWidth, 40);
 
             // 使用指定的背景颜色填充Bitmap
@@ -41,8 +41,12 @@ namespace osucatch_editor_realtimeviewer
                 // 设置文字的渲染质量
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
+                Font font = new Font("Arial", (float)(32.0 * fontScale));
+                SolidBrush solidBrush = new SolidBrush(Color.White);
                 // 使用指定的Font和颜色绘制文本
-                g.DrawString(text, new Font("Arial", 32), new SolidBrush(Color.White), new PointF(0, 0));
+                g.DrawString(text, font, solidBrush, new PointF(0, 0));
+                font.Dispose();
+                solidBrush.Dispose();
             }
             this.Width = bitmap.Width;
             this.Height = bitmap.Height;

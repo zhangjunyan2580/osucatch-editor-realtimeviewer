@@ -32,17 +32,6 @@ namespace osu.Game.Beatmaps
         /// </summary>
         public virtual BeatmapDifficulty Clone() => new BeatmapDifficulty(this);
 
-        public virtual void CopyTo(BeatmapDifficulty difficulty)
-        {
-            difficulty.ApproachRate = ApproachRate;
-            difficulty.DrainRate = DrainRate;
-            difficulty.CircleSize = CircleSize;
-            difficulty.OverallDifficulty = OverallDifficulty;
-
-            difficulty.SliderMultiplier = SliderMultiplier;
-            difficulty.SliderTickRate = SliderTickRate;
-        }
-
         public virtual void CopyFrom(IBeatmapDifficultyInfo other)
         {
             ApproachRate = other.ApproachRate;

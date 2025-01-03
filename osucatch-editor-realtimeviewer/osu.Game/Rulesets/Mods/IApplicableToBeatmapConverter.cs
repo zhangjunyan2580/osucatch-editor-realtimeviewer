@@ -8,7 +8,7 @@ namespace osu.Game.Rulesets.Mods
     /// <summary>
     /// Interface for a <see cref="Mod"/> that applies changes to a <see cref="BeatmapConverter{TObject}"/>.
     /// </summary>
-    public interface IApplicableToBeatmapConverter : IApplicableMod
+    public interface IApplicableToBeatmapConverter
     {
         /// <summary>
         /// Applies this <see cref="Mod"/> to a <see cref="BeatmapConverter{TObject}"/>.

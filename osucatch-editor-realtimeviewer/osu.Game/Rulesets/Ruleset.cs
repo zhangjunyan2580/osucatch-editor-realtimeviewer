@@ -10,9 +10,6 @@ namespace osu.Game.Rulesets
 {
     public abstract class Ruleset
     {
-        public RulesetInfo RulesetInfo { get; }
-
-        private static readonly ConcurrentDictionary<string, IMod[]> mod_reference_cache = new ConcurrentDictionary<string, IMod[]>();
 
         /// <summary>
         /// Version history:
@@ -31,54 +28,6 @@ namespace osu.Game.Rulesets
         /// See https://github.com/ppy/osu/wiki/Breaking-Changes for full details on required ongoing changes.
         /// </remarks>
         public virtual string RulesetAPIVersionSupported => string.Empty;
-
-        /// <summary>
-        /// Converts mods from legacy enum values. Do not override if you're not a legacy ruleset.
-        /// </summary>
-        /// <param name="mods">The legacy enum which will be converted.</param>
-        /// <returns>An enumerable of constructed <see cref="Mod"/>s.</returns>
-        public virtual IEnumerable<Mod> ConvertFromLegacyMods(LegacyMods mods) => Array.Empty<Mod>();
-
-        /// <summary>
-        /// Converts mods to legacy enum values. Do not override if you're not a legacy ruleset.
-        /// </summary>
-        /// <param name="mods">The mods which will be converted.</param>
-        /// <returns>A single bitwise enumerable value representing (to the best of our ability) the mods.</returns>
-        public virtual LegacyMods ConvertToLegacyMods(Mod[] mods)
-        {
-            var value = LegacyMods.None;
-
-            foreach (var mod in mods)
-            {
-                switch (mod)
-                {
-
-                    case ModEasy:
-                        value |= LegacyMods.Easy;
-                        break;
-
-                    case ModHardRock:
-                        value |= LegacyMods.HardRock;
-                        break;
-
-                }
-            }
-
-            return value;
-        }
-
-
-        protected Ruleset()
-        {
-            RulesetInfo = new RulesetInfo
-            {
-                Name = Description,
-                ShortName = ShortName,
-                OnlineID = (this as ILegacyRuleset)?.LegacyID ?? -1,
-                Available = true,
-            };
-        }
-
 
         /// <summary>
         /// Creates a <see cref="IBeatmapConverter"/> to convert a <see cref="IBeatmap"/> to one that is applicable for this <see cref="Ruleset"/>.

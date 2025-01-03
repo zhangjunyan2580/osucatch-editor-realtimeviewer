@@ -60,11 +60,6 @@ namespace osu.Game.Rulesets.Catch.UI
         /// </summary>
         public double Speed => (Dashing ? BASE_DASH_SPEED : BASE_WALK_SPEED) * hyperDashModifier;
 
-        /// <summary>
-        /// The amount by which caught fruit should be scaled down to fit on the plate.
-        /// </summary>
-        private const float caught_fruit_scale_adjust = 0.5f;
-
         private Vector2 scale = Vector2.One;
 
         /// <summary>

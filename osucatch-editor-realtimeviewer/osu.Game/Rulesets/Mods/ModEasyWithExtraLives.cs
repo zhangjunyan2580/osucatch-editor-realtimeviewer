@@ -6,7 +6,7 @@ using osu.Game.Beatmaps;
 
 namespace osu.Game.Rulesets.Mods
 {
-    public abstract class ModEasyWithExtraLives : ModEasy, IApplicableFailOverride, IApplicableToHealthProcessor
+    public abstract class ModEasyWithExtraLives : ModEasy, IApplicableFailOverride
     {
         public Bindable<int> Retries { get; } = new BindableInt(2)
         {

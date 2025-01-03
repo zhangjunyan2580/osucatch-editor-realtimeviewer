@@ -8,7 +8,7 @@ namespace osu.Game.Rulesets.Mods
     /// <summary>
     /// An interface for mods that make general adjustments to difficulty.
     /// </summary>
-    public interface IApplicableToDifficulty : IApplicableMod
+    public interface IApplicableToDifficulty
     {
         /// <summary>
         /// Called post beatmap conversion. Can be used to apply changes to difficulty attributes.

@@ -14,18 +14,6 @@ namespace osu.Framework.Utils
         public readonly float Radius;
         public readonly Vector2 Centre;
 
-        public double ThetaEnd => ThetaStart + ThetaRange * Direction;
-
-        public CircularArcProperties(double thetaStart, double thetaRange, double direction, float radius, Vector2 centre)
-        {
-            IsValid = true;
-            ThetaStart = thetaStart;
-            ThetaRange = thetaRange;
-            Direction = direction;
-            Radius = radius;
-            Centre = centre;
-        }
-
         /// <summary>
         /// Computes various properties that can be used to approximate the circular arc.
         /// </summary>

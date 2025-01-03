@@ -11,6 +11,8 @@ namespace osucatch_editor_realtimeviewer
     {
         public ViewerManager? viewerManager;
 
+        public float fontScale = 1;
+
         public float CatcherAreaHeight { get; set; }
 
         private Texture2D? hitCircleTexture;
@@ -108,11 +110,11 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private Texture2D? TextureFromString(string s)
+        private Texture2D? TextureFromString(string s, float fontscale)
         {
             try
             {
-                return new Texture2D(s);
+                return new Texture2D(s, fontscale);
             }
             catch (Exception ex)
             {
@@ -240,7 +242,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 string distanceString = wdpch.GetDistanceString(distanceType);
                 if (distanceString == "") return;
-                Texture2D? distanceTexture = TextureFromString(distanceString);
+                Texture2D? distanceTexture = TextureFromString(distanceString, fontScale);
                 if (distanceTexture == null) return;
                 if (distanceString.Length > 0) this.DrawDistance(distanceTexture, pos, circleDiameter, Color.LightBlue);
                 distanceTexture.Dispose();
@@ -298,7 +300,7 @@ namespace osucatch_editor_realtimeviewer
                     Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
                     Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
                     DrawLine(rp0, rp1, Color.Red);
-                    Texture2D? BPMTexture = TextureFromString(timingControlPoint.BPM.ToString("F0"));
+                    Texture2D? BPMTexture = TextureFromString(timingControlPoint.BPM.ToString("F0"), fontScale);
                     if (BPMTexture == null) return;
                     this.DrawLabel(BPMTexture, rp0, true, Color.Red);
                     BPMTexture.Dispose();
@@ -322,7 +324,7 @@ namespace osucatch_editor_realtimeviewer
                     Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
                     Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
                     DrawLine(rp0, rp1, Color.LightGreen);
-                    Texture2D? BPMTexture = TextureFromString(difficultyControlPoint.SliderVelocity.ToString("F2"));
+                    Texture2D? BPMTexture = TextureFromString(difficultyControlPoint.SliderVelocity.ToString("F2"), fontScale);
                     if (BPMTexture == null) return;
                     this.DrawLabel(BPMTexture, rp1, false, Color.LightGreen);
                     BPMTexture.Dispose();
