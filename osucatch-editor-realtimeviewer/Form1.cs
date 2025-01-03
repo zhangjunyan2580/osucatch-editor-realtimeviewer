@@ -196,7 +196,12 @@ namespace osucatch_editor_realtimeviewer
                     try
                     {
                         ConsoleLog("Osu! process needs Refetch.", LogType.EditorReader, LogLevel.Info);
-                        if (Is_Doing_SetProcess) return;
+                        if (Is_Doing_SetProcess)
+                        {
+                            ConsoleLog("Already fetching osu!.", LogType.EditorReader, LogLevel.Info);
+                            reader_timer.Interval = Idle_Interval;
+                            return;
+                        }
                         ConsoleLog("Try to fetch osu! process.", LogType.EditorReader, LogLevel.Info);
                         Is_Doing_SetProcess = true;
                         reader.SetProcess();
@@ -258,7 +263,12 @@ namespace osucatch_editor_realtimeviewer
                     ConsoleLog("Editor needs Reload.", LogType.EditorReader, LogLevel.Info);
                     try
                     {
-                        if (Is_Doing_SetProcess || Is_Doing_FetchEditor) return;
+                        if (Is_Doing_SetProcess || Is_Doing_FetchEditor)
+                        {
+                            ConsoleLog("Already reloading editor.", LogType.EditorReader, LogLevel.Info);
+                            reader_timer.Interval = Idle_Interval;
+                            return;
+                        }
                         if (reader.ProcessNeedsReload())
                         {
                             ConsoleLog("Process needs Reload.", LogType.EditorReader, LogLevel.Info);
