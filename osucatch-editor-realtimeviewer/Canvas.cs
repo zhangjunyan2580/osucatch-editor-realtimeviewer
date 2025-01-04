@@ -249,14 +249,17 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private void DrawDistance(Texture2D? texture, Vector2 pos, int diameter, Color color)
+        private void DrawDistance(Texture2D? texture, Vector2 notePos, int diameter, Color color)
         {
             if (texture == null) return;
-            // 没有经过计算，纯测出来的
-            if (pos.X > 392) pos.X -= diameter / 2 + texture.Width;
-            else pos.X += diameter;
-            pos.Y += (float)(diameter / 6.0);
-            texture.Draw(pos, new Vector2(diameter * 0.5f), color);
+            Vector2 labelPosStart = notePos;
+            labelPosStart.X += diameter / 2;
+            labelPosStart.Y -= diameter / 2;
+
+            float textureRightX = labelPosStart.X + texture.Width;
+            if (textureRightX > 512) labelPosStart.X -= diameter + texture.Width;
+            labelPosStart.Y += ((float)diameter - texture.Height) / 2;
+            texture.Draw(labelPosStart, new Vector2(0, 0), color);
         }
 
         private void DrawLabel(Texture2D? texture, Vector2 pos, bool isLeft, Color color)
