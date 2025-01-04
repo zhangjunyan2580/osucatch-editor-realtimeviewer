@@ -45,6 +45,7 @@ namespace osu.Game.Rulesets.Objects
                 // Stop on the next timing point, or if there is no next timing point stop slightly past the last object
                 double endTime = i < timingPoints.Count - 1 ? timingPoints[i + 1].Time : lastHitTime + currentTimingPoint.BeatLength * currentTimingPoint.TimeSignature.Numerator;
 
+
                 double barLength = currentTimingPoint.BeatLength * currentTimingPoint.TimeSignature.Numerator;
 
                 double startTime;
