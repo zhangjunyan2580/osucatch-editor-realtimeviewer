@@ -1,6 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using OpenTK.Graphics;
 using osu.Framework.Extensions;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Legacy;
@@ -186,6 +187,11 @@ namespace osu.Game.Beatmaps.Formats
 
                 case Section.HitObjects:
                     handleHitObject(line);
+                    return;
+
+                    // Add
+                case Section.Colours:
+                    handleColours(line);
                     return;
             }
 
@@ -558,6 +564,41 @@ namespace osu.Game.Beatmaps.Formats
             obj.ApplyDefaults(beatmap.ControlPointInfo, beatmap.Difficulty);
 
             beatmap.HitObjects.Add(obj);
+        }
+
+        private Color4 convertSettingStringToColor4(string[] split, bool allowAlpha, KeyValuePair<string, string> pair)
+        {
+            if (split.Length != 3 && split.Length != 4)
+                throw new InvalidOperationException($@"Color specified in incorrect format (should be R,G,B or R,G,B,A): {pair.Value}");
+
+            Color4 colour;
+
+            try
+            {
+                byte alpha = allowAlpha && split.Length == 4 ? byte.Parse(split[3]) : (byte)255;
+                colour = new Color4(byte.Parse(split[0]), byte.Parse(split[1]), byte.Parse(split[2]), alpha);
+            }
+            catch
+            {
+                throw new InvalidOperationException(@"Color must be specified with 8-bit integer components");
+            }
+
+            return colour;
+        }
+
+        private void handleColours(string line)
+        {
+            var pair = SplitKeyVal(line);
+
+            string[] split = pair.Value.Split(',');
+            Color4 colour = convertSettingStringToColor4(split, false, pair);
+
+            bool isCombo = pair.Key.StartsWith(@"Combo", StringComparison.Ordinal);
+
+            if (isCombo)
+            {
+                beatmap.CustomComboColours.Add(colour);
+            }
         }
 
         private int getOffsetTime(int time) => time + (ApplyOffsets ? offset : 0);

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using OpenTK.Graphics;
 using osu.Framework.Lists;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Timing;
@@ -44,6 +45,8 @@ namespace osu.Game.Beatmaps
         /// These lines should be written out to the beatmap file on save or export.
         /// </summary>
         List<string> UnhandledEventLines { get; }
+
+        List<Color4> CustomComboColours { get; set; }
 
         /// <summary>
         /// Total amount of break time in the beatmap.

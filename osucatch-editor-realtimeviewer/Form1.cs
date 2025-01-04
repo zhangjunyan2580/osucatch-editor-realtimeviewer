@@ -1,5 +1,6 @@
 using Editor_Reader;
 using Microsoft.Win32;
+using osu.Game.Beatmaps;
 using System.Diagnostics;
 using System.Drawing;
 using System.Text;
