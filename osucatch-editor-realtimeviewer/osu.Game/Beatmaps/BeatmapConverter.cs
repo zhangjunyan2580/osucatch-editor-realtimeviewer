@@ -76,6 +76,8 @@ namespace osu.Game.Beatmaps
             beatmap.Countdown = original.Countdown;
             beatmap.CountdownOffset = original.CountdownOffset;
             beatmap.Bookmarks = original.Bookmarks;
+            // Add
+            beatmap.CustomComboColours = original.CustomComboColours;
 
             return beatmap;
         }

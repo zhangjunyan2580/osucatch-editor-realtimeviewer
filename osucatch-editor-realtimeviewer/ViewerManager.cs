@@ -1,4 +1,5 @@
-﻿using osu.Game.Beatmaps;
+﻿using OpenTK.Graphics;
+using osu.Game.Beatmaps;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -13,6 +14,8 @@ namespace osucatch_editor_realtimeviewer
         private int CircleDiameter { get; set; }
         public float State_ARMul { get; set; }
         public DistanceType DistanceType { get; set; }
+        public List<Color4> CustomComboColours { get; set; }
+
 
 
         public ViewerManager(string beatmap, int modsWhenOnlyBeatmap = 0)
@@ -34,7 +37,7 @@ namespace osucatch_editor_realtimeviewer
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);
             float moddedCS = Beatmap.Difficulty.CircleSize;
             CircleDiameter = (int)(108.848 - moddedCS * 8.9646);
-
+            CustomComboColours = Beatmap.CustomComboColours;
         }
 
 

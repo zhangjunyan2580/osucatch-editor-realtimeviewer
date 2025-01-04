@@ -31,7 +31,7 @@ namespace osucatch_editor_realtimeviewer
             new Color(255, 128, 255, 255),
         };
 
-        public static Color[] Combo_Colors = new Color[8] { Default_Colors[1], Default_Colors[3], Default_Colors[5], Default_Colors[7], Default_Colors[0], Default_Colors[2], Default_Colors[4], Default_Colors[6] };
+        public Color[] Combo_Colors = new Color[8] { Default_Colors[1], Default_Colors[3], Default_Colors[5], Default_Colors[7], Default_Colors[6], Default_Colors[4], Default_Colors[0], Default_Colors[2] };
 
         public Canvas()
             : base()
@@ -127,6 +127,10 @@ namespace osucatch_editor_realtimeviewer
         public void Draw()
         {
             if (viewerManager == null || viewerManager.Beatmap == null) { return; }
+            if (viewerManager.CustomComboColours.Count > 0)
+            {
+                Combo_Colors = viewerManager.CustomComboColours.ToArray();
+            }
             int circleDiameter = (int)(108.848 - viewerManager.Beatmap.Difficulty.CircleSize * 8.9646);
             float fruitSpeed = 384 / viewerManager.ApproachTime;
             List<TimingControlPoint> timingControlPoints = new List<TimingControlPoint>();
@@ -188,7 +192,7 @@ namespace osucatch_editor_realtimeviewer
             Vector2 pos = new Vector2(hitObject.EffectiveX, 384 * alpha - this.CatcherAreaHeight + 640);
             if (Form1.Combo_Colour)
             {
-                int comboColorIndex = (hitObject.ComboIndex - 1) % 8;
+                int comboColorIndex = (hitObject.ComboIndex) % Combo_Colors.Length;
                 Color color = Combo_Colors[comboColorIndex];
                 if (hitObject is TinyDroplet)
                 {

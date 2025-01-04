@@ -1,6 +1,7 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using OpenTK.Graphics;
 using osu.Framework.Lists;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Timing;
@@ -60,6 +61,8 @@ namespace osu.Game.Beatmaps
         public SortedList<BreakPeriod> Breaks { get; set; } = new SortedList<BreakPeriod>(Comparer<BreakPeriod>.Default);
 
         public List<string> UnhandledEventLines { get; set; } = new List<string>();
+
+        public List<Color4> CustomComboColours { get; set; } = new List<Color4>();
 
 
         public double TotalBreakTime => Breaks.Sum(b => b.Duration);
