@@ -68,8 +68,6 @@ namespace osu.Game.Beatmaps.Formats
             this.beatmap.BeatmapInfo.BeatmapVersion = FormatVersion;
             parser = new ConvertHitObjectParser(getOffsetTime(), FormatVersion);
 
-            ApplyLegacyDefaults(this.beatmap);
-
             base.ParseStreamInto(stream, beatmap);
 
             applyDifficultyRestrictions(beatmap.Difficulty, beatmap);
@@ -144,19 +142,6 @@ namespace osu.Game.Beatmaps.Formats
             hitObject.ApplyDefaults(beatmap.ControlPointInfo, beatmap.Difficulty);
         }
 
-
-        /// <summary>
-        /// Some `BeatmapInfo` members have default values that differ from the default values used by stable.
-        /// In addition, legacy beatmaps will sometimes not contain some configuration keys, in which case
-        /// the legacy default values should be used.
-        /// This method's intention is to restore those legacy defaults.
-        /// See also: https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29
-        /// </summary>
-        internal static void ApplyLegacyDefaults(Beatmap beatmap)
-        {
-            beatmap.WidescreenStoryboard = false;
-        }
-
         protected override void ParseLine(Beatmap beatmap, Section section, string line)
         {
             switch (section)
@@ -210,10 +195,6 @@ namespace osu.Game.Beatmaps.Formats
                     metadata.AudioFile = pair.Value.ToStandardisedPath();
                     break;
 
-                case @"AudioLeadIn":
-                    beatmap.AudioLeadIn = Parsing.ParseInt(pair.Value);
-                    break;
-
                 case @"PreviewTime":
                     int time = Parsing.ParseInt(pair.Value);
                     metadata.PreviewTime = time == -1 ? time : getOffsetTime(time);
@@ -227,43 +208,11 @@ namespace osu.Game.Beatmaps.Formats
                     defaultSampleVolume = Parsing.ParseInt(pair.Value);
                     break;
 
-                case @"StackLeniency":
-                    beatmap.StackLeniency = Parsing.ParseFloat(pair.Value);
-                    break;
-
                 /*
             case @"Mode":
                 beatmap.BeatmapInfo.Ruleset = RulesetStore?.GetRuleset(Parsing.ParseInt(pair.Value)) ?? throw new ArgumentException("Ruleset is not available locally.");
                 break;
                 */
-
-                case @"LetterboxInBreaks":
-                    beatmap.LetterboxInBreaks = Parsing.ParseInt(pair.Value) == 1;
-                    break;
-
-                case @"SpecialStyle":
-                    beatmap.SpecialStyle = Parsing.ParseInt(pair.Value) == 1;
-                    break;
-
-                case @"WidescreenStoryboard":
-                    beatmap.WidescreenStoryboard = Parsing.ParseInt(pair.Value) == 1;
-                    break;
-
-                case @"EpilepsyWarning":
-                    beatmap.EpilepsyWarning = Parsing.ParseInt(pair.Value) == 1;
-                    break;
-
-                case @"SamplesMatchPlaybackRate":
-                    beatmap.SamplesMatchPlaybackRate = Parsing.ParseInt(pair.Value) == 1;
-                    break;
-
-                case @"Countdown":
-                    beatmap.Countdown = Enum.Parse<CountdownType>(pair.Value);
-                    break;
-
-                case @"CountdownOffset":
-                    beatmap.CountdownOffset = Parsing.ParseInt(pair.Value);
-                    break;
             }
         }
 
@@ -281,20 +230,8 @@ namespace osu.Game.Beatmaps.Formats
                     }).Where(p => p.result).Select(p => p.val).ToArray();
                     break;
 
-                case @"DistanceSpacing":
-                    beatmap.DistanceSpacing = Math.Max(0, Parsing.ParseDouble(pair.Value));
-                    break;
-
                 case @"BeatDivisor":
                     beatmap.BeatmapInfo.BeatDivisor = Math.Clamp(Parsing.ParseInt(pair.Value), 1, 64);
-                    break;
-
-                case @"GridSize":
-                    beatmap.GridSize = Parsing.ParseInt(pair.Value);
-                    break;
-
-                case @"TimelineZoom":
-                    beatmap.TimelineZoom = Math.Max(0, Parsing.ParseDouble(pair.Value));
                     break;
             }
         }

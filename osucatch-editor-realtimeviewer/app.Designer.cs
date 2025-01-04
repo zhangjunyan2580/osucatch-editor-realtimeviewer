@@ -262,5 +262,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["TimingLine_ShowGreen"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool BarLine_Show {
+            get {
+                return ((bool)(this["BarLine_Show"]));
+            }
+            set {
+                this["BarLine_Show"] = value;
+            }
+        }
     }
 }

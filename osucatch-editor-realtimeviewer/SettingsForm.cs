@@ -36,6 +36,7 @@
 
             checkBox_TimingLine_ShowRed.Checked = app.Default.TimingLine_ShowRed;
             checkBox_TimingLine_ShowGreen.Checked = app.Default.TimingLine_ShowGreen;
+            checkBox_BarLine_Show.Checked = app.Default.BarLine_Show;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
@@ -117,6 +118,7 @@
 
             app.Default.TimingLine_ShowRed = checkBox_TimingLine_ShowRed.Checked;
             app.Default.TimingLine_ShowGreen = checkBox_TimingLine_ShowGreen.Checked;
+            app.Default.BarLine_Show = checkBox_BarLine_Show.Checked;
 
             app.Default.Save();
 

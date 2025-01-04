@@ -2,6 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Rulesets.Catch.Objects;
+using osu.Game.Rulesets.Objects;
 using Color = OpenTK.Graphics.Color4;
 
 namespace osucatch_editor_realtimeviewer
@@ -136,10 +137,15 @@ namespace osucatch_editor_realtimeviewer
             List<TimingControlPoint> timingControlPoints = new List<TimingControlPoint>();
             List<DifficultyControlPoint> difficultyControlPoints = new List<DifficultyControlPoint>();
 
+            double MaxStartTime = -1;
+            double MinStartTime = -1;
+
             for (int b = viewerManager.NearbyHitObjects.Count - 1; b >= 0; b--)
             {
                 WithDistancePalpableCatchHitObject hitObject = viewerManager.NearbyHitObjects[b];
-                // the song time relative to the hitobject start time
+
+                if (MaxStartTime < 0 || hitObject.currentObject.StartTime > MaxStartTime) MaxStartTime = hitObject.currentObject.StartTime;
+                if (MinStartTime < 0 || hitObject.currentObject.StartTime < MinStartTime) MinStartTime = hitObject.currentObject.StartTime;
                 float diff = (float)(hitObject.currentObject.StartTime - viewerManager.currentTime);
                 // 0=在顶端 1=在判定线上 >1=超过判定线
                 float alpha = 1.0f;
@@ -170,6 +176,12 @@ namespace osucatch_editor_realtimeviewer
             {
                 difficultyControlPoints = difficultyControlPoints.Distinct().ToList();
                 DrawDifficultyControPoints(difficultyControlPoints);
+            }
+
+            if (app.Default.BarLine_Show)
+            {
+                List<BarLine> barLines = viewerManager.Beatmap.BarLines.Where((barLine) => barLine.StartTime >= 0 && barLine.StartTime <= MaxStartTime + 1).ToList();
+                DrawBarLines(barLines);
             }
         }
 
@@ -335,6 +347,27 @@ namespace osucatch_editor_realtimeviewer
                     if (BPMTexture == null) return;
                     this.DrawLabel(BPMTexture, rp1, false, Color.LightGreen);
                     BPMTexture.Dispose();
+                }
+
+            });
+        }
+
+        public void DrawBarLines(List<BarLine> barLines)
+        {
+            if (viewerManager == null) return;
+            barLines.ForEach(barLine =>
+            {
+                if (barLine.StartTime < 0) return;
+                float diff = (float)(barLine.StartTime - viewerManager.currentTime);
+                // 0=在顶端 1=在判定线上 >1=超过判定线
+                float alpha = 1.0f;
+                if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
+                {
+                    alpha = 1 - (diff / (float)viewerManager.ApproachTime);
+                    Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
+                    Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
+                    if (barLine.Major) DrawLine(rp0, rp1, Color.LightGray);
+                    else DrawLine(rp0, rp1, Color.Gray);
                 }
 
             });

@@ -72,8 +72,9 @@
             checkBox_Log_Program = new CheckBox();
             checkBox_showConsole = new CheckBox();
             groupBox7 = new GroupBox();
-            checkBox_TimingLine_ShowRed = new CheckBox();
+            checkBox_BarLine_Show = new CheckBox();
             checkBox_TimingLine_ShowGreen = new CheckBox();
+            checkBox_TimingLine_ShowRed = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_height).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_width).BeginInit();
@@ -534,24 +535,25 @@
             // 
             // groupBox7
             // 
+            groupBox7.Controls.Add(checkBox_BarLine_Show);
             groupBox7.Controls.Add(checkBox_TimingLine_ShowGreen);
             groupBox7.Controls.Add(checkBox_TimingLine_ShowRed);
             groupBox7.Location = new Point(260, 299);
             groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(465, 83);
+            groupBox7.Size = new Size(465, 110);
             groupBox7.TabIndex = 8;
             groupBox7.TabStop = false;
             groupBox7.Text = "Timing Lines";
             // 
-            // checkBox_TimingLine_ShowRed
+            // checkBox_BarLine_Show
             // 
-            checkBox_TimingLine_ShowRed.AutoSize = true;
-            checkBox_TimingLine_ShowRed.Location = new Point(6, 22);
-            checkBox_TimingLine_ShowRed.Name = "checkBox_TimingLine_ShowRed";
-            checkBox_TimingLine_ShowRed.Size = new Size(208, 21);
-            checkBox_TimingLine_ShowRed.TabIndex = 0;
-            checkBox_TimingLine_ShowRed.Text = "Show Timing Points (Red Lines)";
-            checkBox_TimingLine_ShowRed.UseVisualStyleBackColor = true;
+            checkBox_BarLine_Show.AutoSize = true;
+            checkBox_BarLine_Show.Location = new Point(6, 76);
+            checkBox_BarLine_Show.Name = "checkBox_BarLine_Show";
+            checkBox_BarLine_Show.Size = new Size(115, 21);
+            checkBox_BarLine_Show.TabIndex = 2;
+            checkBox_BarLine_Show.Text = "Show Bar Lines";
+            checkBox_BarLine_Show.UseVisualStyleBackColor = true;
             // 
             // checkBox_TimingLine_ShowGreen
             // 
@@ -562,6 +564,16 @@
             checkBox_TimingLine_ShowGreen.TabIndex = 1;
             checkBox_TimingLine_ShowGreen.Text = "Show Inherited Points (Green Lines)";
             checkBox_TimingLine_ShowGreen.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_TimingLine_ShowRed
+            // 
+            checkBox_TimingLine_ShowRed.AutoSize = true;
+            checkBox_TimingLine_ShowRed.Location = new Point(6, 22);
+            checkBox_TimingLine_ShowRed.Name = "checkBox_TimingLine_ShowRed";
+            checkBox_TimingLine_ShowRed.Size = new Size(208, 21);
+            checkBox_TimingLine_ShowRed.TabIndex = 0;
+            checkBox_TimingLine_ShowRed.Text = "Show Timing Points (Red Lines)";
+            checkBox_TimingLine_ShowRed.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -651,5 +663,6 @@
         private GroupBox groupBox7;
         private CheckBox checkBox_TimingLine_ShowGreen;
         private CheckBox checkBox_TimingLine_ShowRed;
+        private CheckBox checkBox_BarLine_Show;
     }
 }
