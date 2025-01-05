@@ -167,6 +167,12 @@ namespace osucatch_editor_realtimeviewer
                 }
             }
 
+
+            if (app.Default.BarLine_Show)
+            {
+                List<BarLine> barLines = viewerManager.Beatmap.BarLines.Where((barLine) => barLine.StartTime >= 0 && barLine.StartTime <= MaxStartTime + 1).ToList();
+                DrawBarLines(barLines);
+            }
             if (app.Default.TimingLine_ShowRed)
             {
                 timingControlPoints = timingControlPoints.Distinct().ToList();
@@ -176,12 +182,6 @@ namespace osucatch_editor_realtimeviewer
             {
                 difficultyControlPoints = difficultyControlPoints.Distinct().ToList();
                 DrawDifficultyControPoints(difficultyControlPoints);
-            }
-
-            if (app.Default.BarLine_Show)
-            {
-                List<BarLine> barLines = viewerManager.Beatmap.BarLines.Where((barLine) => barLine.StartTime >= 0 && barLine.StartTime <= MaxStartTime + 1).ToList();
-                DrawBarLines(barLines);
             }
         }
 

@@ -60,17 +60,11 @@ namespace osu.Game.Rulesets.Objects.Legacy
             bool combo = type.HasFlag(LegacyHitObjectType.NewCombo);
             type &= ~LegacyHitObjectType.NewCombo;
 
-            var soundType = (LegacyHitSoundType)Parsing.ParseInt(split[4]);
-            var bankInfo = new SampleBankInfo();
-
             ConvertHitObject? result = null;
 
             if (type.HasFlag(LegacyHitObjectType.Circle))
             {
                 result = createHitCircle(pos, combo, comboOffset);
-
-                if (split.Length > 5)
-                    readCustomSampleBanks(split[5], bankInfo);
             }
             else if (type.HasFlag(LegacyHitObjectType.Slider))
             {
@@ -91,51 +85,8 @@ namespace osu.Game.Rulesets.Objects.Legacy
                         length = null;
                 }
 
-                if (split.Length > 10)
-                    readCustomSampleBanks(split[10], bankInfo, true);
-
                 // One node for each repeat + the start and end nodes
                 int nodes = repeatCount + 2;
-
-                // Populate node sample bank infos with the default hit object sample bank
-                var nodeBankInfos = new List<SampleBankInfo>();
-                for (int i = 0; i < nodes; i++)
-                    nodeBankInfos.Add(bankInfo.Clone());
-
-                // Read any per-node sample banks
-                if (split.Length > 9 && split[9].Length > 0)
-                {
-                    string[] sets = split[9].Split('|');
-
-                    for (int i = 0; i < nodes; i++)
-                    {
-                        if (i >= sets.Length)
-                            break;
-
-                        SampleBankInfo info = nodeBankInfos[i];
-                        readCustomSampleBanks(sets[i], info);
-                    }
-                }
-
-                // Populate node sound types with the default hit object sound type
-                var nodeSoundTypes = new List<LegacyHitSoundType>();
-                for (int i = 0; i < nodes; i++)
-                    nodeSoundTypes.Add(soundType);
-
-                // Read any per-node sound types
-                if (split.Length > 8 && split[8].Length > 0)
-                {
-                    string[] adds = split[8].Split('|');
-
-                    for (int i = 0; i < nodes; i++)
-                    {
-                        if (i >= adds.Length)
-                            break;
-
-                        int.TryParse(adds[i], out int sound);
-                        nodeSoundTypes[i] = (LegacyHitSoundType)sound;
-                    }
-                }
 
                 result = createSlider(pos, combo, comboOffset, convertPathString(split[5], pos), length, repeatCount);
             }
@@ -144,9 +95,6 @@ namespace osu.Game.Rulesets.Objects.Legacy
                 double duration = Math.Max(0, Parsing.ParseDouble(split[5]) + offset - startTime);
 
                 result = createSpinner(new Vector2(512, 384) / 2, combo, duration);
-
-                if (split.Length > 6)
-                    readCustomSampleBanks(split[6], bankInfo);
             }
             else if (type.HasFlag(LegacyHitObjectType.Hold))
             {
@@ -158,7 +106,6 @@ namespace osu.Game.Rulesets.Objects.Legacy
                 {
                     string[] ss = split[5].Split(':');
                     endTime = Math.Max(startTime, Parsing.ParseDouble(ss[0]));
-                    readCustomSampleBanks(string.Join(':', ss.Skip(1)), bankInfo);
                 }
 
                 result = createHold(pos, endTime + offset - startTime);
@@ -173,49 +120,6 @@ namespace osu.Game.Rulesets.Objects.Legacy
             firstObject = false;
 
             return result;
-        }
-
-        private void readCustomSampleBanks(string str, SampleBankInfo bankInfo, bool banksOnly = false)
-        {
-            if (string.IsNullOrEmpty(str))
-                return;
-
-            string[] split = str.Split(':');
-
-            var bank = (LegacySampleBank)Parsing.ParseInt(split[0]);
-            if (!Enum.IsDefined(bank))
-                bank = LegacySampleBank.Normal;
-
-            var addBank = (LegacySampleBank)Parsing.ParseInt(split[1]);
-            if (!Enum.IsDefined(addBank))
-                addBank = LegacySampleBank.Normal;
-
-            string? stringBank = bank.ToString().ToLowerInvariant();
-            string? stringAddBank = addBank.ToString().ToLowerInvariant();
-
-            if (stringBank == @"none")
-                stringBank = null;
-
-            if (stringAddBank == @"none")
-            {
-                bankInfo.EditorAutoBank = true;
-                stringAddBank = null;
-            }
-            else
-                bankInfo.EditorAutoBank = false;
-
-            bankInfo.BankForNormal = stringBank;
-            bankInfo.BankForAdditions = string.IsNullOrEmpty(stringAddBank) ? stringBank : stringAddBank;
-
-            if (banksOnly) return;
-
-            if (split.Length > 2)
-                bankInfo.CustomSampleBank = Parsing.ParseInt(split[2]);
-
-            if (split.Length > 3)
-                bankInfo.Volume = Math.Max(0, Parsing.ParseInt(split[3]));
-
-            bankInfo.Filename = split.Length > 4 ? split[4] : null;
         }
 
         private PathType convertPathType(string input)
@@ -496,46 +400,6 @@ namespace osu.Game.Rulesets.Objects.Legacy
                 Position = position,
                 Duration = duration
             };
-        }
-
-        private class SampleBankInfo
-        {
-            /// <summary>
-            /// An optional overriding filename which causes all bank/sample specifications to be ignored.
-            /// </summary>
-            public string? Filename;
-
-            /// <summary>
-            /// The bank identifier to use for the base ("hitnormal") sample.
-            /// Transferred to <see cref="HitSampleInfo.Bank"/> when appropriate.
-            /// </summary>
-            public string? BankForNormal;
-
-            /// <summary>
-            /// The bank identifier to use for additions ("hitwhistle", "hitfinish", "hitclap").
-            /// Transferred to <see cref="HitSampleInfo.Bank"/> when appropriate.
-            /// </summary>
-            public string? BankForAdditions;
-
-            /// <summary>
-            /// Hit sample volume (0-100).
-            /// See <see cref="HitSampleInfo.Volume"/>.
-            /// </summary>
-            public int Volume;
-
-            /// <summary>
-            /// The index of the custom sample bank. Is only used if 2 or above for "reasons".
-            /// This will add a suffix to lookups, allowing extended bank lookups (ie. "normal-hitnormal-2").
-            /// See <see cref="HitSampleInfo.Suffix"/>.
-            /// </summary>
-            public int CustomSampleBank;
-
-            /// <summary>
-            /// Whether the bank for additions should be inherited from the normal sample in edit.
-            /// </summary>
-            public bool EditorAutoBank = true;
-
-            public SampleBankInfo Clone() => (SampleBankInfo)MemberwiseClone();
         }
     }
 }
