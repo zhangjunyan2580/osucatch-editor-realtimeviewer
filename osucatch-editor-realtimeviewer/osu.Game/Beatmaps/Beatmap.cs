@@ -60,8 +60,6 @@ namespace osu.Game.Beatmaps
 
         public SortedList<BreakPeriod> Breaks { get; set; } = new SortedList<BreakPeriod>(Comparer<BreakPeriod>.Default);
 
-        public List<string> UnhandledEventLines { get; set; } = new List<string>();
-
         public List<Color4> CustomComboColours { get; set; } = new List<Color4>();
 
         public List<BarLine> BarLines { get; set; } = new List<BarLine>();

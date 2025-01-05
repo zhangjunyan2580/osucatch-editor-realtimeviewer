@@ -16,27 +16,12 @@ namespace osu.Game.Beatmaps
     {
         private readonly IBeatmap beatmap;
 
-        public FlatWorkingBeatmap(string file, int? beatmapId = null)
-            : this(readFromFile(file))
-        {
-            if (beatmapId.HasValue)
-                beatmap.BeatmapInfo.OnlineID = beatmapId.Value;
-        }
-
         public FlatWorkingBeatmap(IBeatmap beatmap)
             : base(beatmap.BeatmapInfo)
         {
             this.beatmap = beatmap;
         }
 
-        private static Beatmap readFromFile(string filename)
-        {
-            using (var stream = File.OpenRead(filename))
-            using (var reader = new LineBufferedReader(stream))
-                return Decoder.GetDecoder<Beatmap>(reader).Decode(reader);
-        }
-
         protected override IBeatmap GetBeatmap() => beatmap;
-        public override Stream GetStream(string storagePath) => throw new NotImplementedException();
     }
 }

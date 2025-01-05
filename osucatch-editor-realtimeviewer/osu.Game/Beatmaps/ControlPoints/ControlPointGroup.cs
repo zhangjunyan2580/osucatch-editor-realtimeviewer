@@ -1,7 +1,7 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
+
 
 namespace osu.Game.Beatmaps.ControlPoints
 {
@@ -18,9 +18,9 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// </summary>
         public double Time { get; }
 
-        public IBindableList<ControlPoint> ControlPoints => controlPoints;
+        public IList<ControlPoint> ControlPoints => controlPoints;
 
-        private readonly BindableList<ControlPoint> controlPoints = new BindableList<ControlPoint>();
+        private List<ControlPoint> controlPoints = new List<ControlPoint>();
 
         public ControlPointGroup(double time)
         {

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Legacy;
@@ -42,12 +41,12 @@ namespace osu.Game.Rulesets.Objects.Legacy
 
         public double Velocity = 1;
 
-        public BindableNumber<double> SliderVelocityMultiplierBindable { get; } = new BindableDouble(1);
+        public double sliderVelocityMultiplier = 1;
 
         public double SliderVelocityMultiplier
         {
-            get => SliderVelocityMultiplierBindable.Value;
-            set => SliderVelocityMultiplierBindable.Value = value;
+            get => sliderVelocityMultiplier;
+            set => sliderVelocityMultiplier = value;
         }
 
         public bool GenerateTicks { get; set; } = true;

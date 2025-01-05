@@ -1,7 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
+
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Rulesets.Catch.UI;
@@ -16,9 +16,7 @@ namespace osu.Game.Rulesets.Catch.Objects
     {
         public const float OBJECT_RADIUS = 64;
 
-        private HitObjectProperty<float> originalX;
-
-        public Bindable<float> OriginalXBindable => originalX.Bindable;
+        private float originalX;
 
         /// <summary>
         /// The horizontal position of the hit object between 0 and <see cref="CatchPlayfield.WIDTH"/>.
@@ -29,20 +27,18 @@ namespace osu.Game.Rulesets.Catch.Objects
         /// </remarks>
         public float X
         {
-            set => originalX.Value = value;
+            set => originalX = value;
         }
 
-        private HitObjectProperty<float> xOffset;
-
-        public Bindable<float> XOffsetBindable => xOffset.Bindable;
+        private float xOffset;
 
         /// <summary>
         /// A random offset applied to the horizontal position, set by the beatmap processing.
         /// </summary>
         public float XOffset
         {
-            get => xOffset.Value;
-            set => xOffset.Value = value;
+            get => xOffset;
+            set => xOffset = value;
         }
 
         /// <summary>
@@ -54,8 +50,8 @@ namespace osu.Game.Rulesets.Catch.Objects
         /// </remarks>
         public float OriginalX
         {
-            get => originalX.Value;
-            set => originalX.Value = value;
+            get => originalX;
+            set => originalX = value;
         }
 
         /// <summary>
@@ -69,71 +65,59 @@ namespace osu.Game.Rulesets.Catch.Objects
 
         public double TimePreempt { get; set; } = 1000;
 
-        private HitObjectProperty<int> indexInBeatmap;
-
-        public Bindable<int> IndexInBeatmapBindable => indexInBeatmap.Bindable;
+        private int indexInBeatmap;
 
         public int IndexInBeatmap
         {
-            get => indexInBeatmap.Value;
-            set => indexInBeatmap.Value = value;
+            get => indexInBeatmap;
+            set => indexInBeatmap = value;
         }
 
         public virtual bool NewCombo { get; set; }
 
         public int ComboOffset { get; set; }
 
-        private HitObjectProperty<int> indexInCurrentCombo;
-
-        public Bindable<int> IndexInCurrentComboBindable => indexInCurrentCombo.Bindable;
+        private int indexInCurrentCombo;
 
         public int IndexInCurrentCombo
         {
-            get => indexInCurrentCombo.Value;
-            set => indexInCurrentCombo.Value = value;
+            get => indexInCurrentCombo;
+            set => indexInCurrentCombo = value;
         }
 
-        private HitObjectProperty<int> comboIndex;
-
-        public Bindable<int> ComboIndexBindable => comboIndex.Bindable;
+        private int comboIndex;
 
         public int ComboIndex
         {
-            get => comboIndex.Value;
-            set => comboIndex.Value = value;
+            get => comboIndex;
+            set => comboIndex = value;
         }
 
-        private HitObjectProperty<int> comboIndexWithOffsets;
-
-        public Bindable<int> ComboIndexWithOffsetsBindable => comboIndexWithOffsets.Bindable;
+        private int comboIndexWithOffsets;
 
         public int ComboIndexWithOffsets
         {
-            get => comboIndexWithOffsets.Value;
-            set => comboIndexWithOffsets.Value = value;
+            get => comboIndexWithOffsets;
+            set => comboIndexWithOffsets = value;
         }
 
-        private HitObjectProperty<bool> lastInCombo;
-
-        public Bindable<bool> LastInComboBindable => lastInCombo.Bindable;
+        private bool lastInCombo;
 
         /// <summary>
         /// The next fruit starts a new combo. Used for explodey.
         /// </summary>
         public virtual bool LastInCombo
         {
-            get => lastInCombo.Value;
-            set => lastInCombo.Value = value;
+            get => lastInCombo;
+            set => lastInCombo = value;
         }
 
-        private HitObjectProperty<float> scale = new HitObjectProperty<float>(1);
-
-        public Bindable<float> ScaleBindable => scale.Bindable;
+        private float scale = 1;
 
         public float Scale
         {
-            get => scale.Value;
-            set => scale.Value = value;
+            get => scale;
+            set => scale = value;
         }
 
         /// <summary>

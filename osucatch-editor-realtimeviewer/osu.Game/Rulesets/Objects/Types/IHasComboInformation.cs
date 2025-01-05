@@ -1,7 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
+
 
 namespace osu.Game.Rulesets.Objects.Types
 {
@@ -11,19 +11,9 @@ namespace osu.Game.Rulesets.Objects.Types
     public interface IHasComboInformation : IHasCombo
     {
         /// <summary>
-        /// Bindable exposure of <see cref="IndexInCurrentCombo"/>.
-        /// </summary>
-        Bindable<int> IndexInCurrentComboBindable { get; }
-
-        /// <summary>
         /// The index of this hitobject in the current combo.
         /// </summary>
         int IndexInCurrentCombo { get; set; }
-
-        /// <summary>
-        /// Bindable exposure of <see cref="ComboIndex"/>.
-        /// </summary>
-        Bindable<int> ComboIndexBindable { get; }
 
         /// <summary>
         /// The index of this combo in relation to the beatmap.
@@ -31,11 +21,6 @@ namespace osu.Game.Rulesets.Objects.Types
         /// In other words, this is incremented by 1 each time a <see cref="NewCombo"/> is reached.
         /// </summary>
         int ComboIndex { get; set; }
-
-        /// <summary>
-        /// Bindable exposure of <see cref="ComboIndexWithOffsets"/>.
-        /// </summary>
-        Bindable<int> ComboIndexWithOffsetsBindable { get; }
 
         /// <summary>
         /// The index of this combo in relation to the beatmap, with all aggregate <see cref="IHasCombo.ComboOffset"/>s applied.
@@ -47,11 +32,6 @@ namespace osu.Game.Rulesets.Objects.Types
         /// Whether the HitObject starts a new combo.
         /// </summary>
         new bool NewCombo { get; set; }
-
-        /// <summary>
-        /// Bindable exposure of <see cref="LastInCombo"/>.
-        /// </summary>
-        Bindable<bool> LastInComboBindable { get; }
 
         /// <summary>
         /// Whether this is the last object in the current combo.

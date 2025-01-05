@@ -1,7 +1,7 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
+
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
 
@@ -21,14 +21,12 @@ namespace osu.Game.Rulesets.Catch.Objects
         /// </summary>
         public float DistanceToHyperDash { get; set; }
 
-        private HitObjectProperty<bool> hyperDash;
-
-        public Bindable<bool> HyperDashBindable => hyperDash.Bindable;
+        private bool hyperDash;
 
         /// <summary>
         /// Whether this fruit can initiate a hyperdash.
         /// </summary>
-        public bool HyperDash => hyperDash.Value;
+        public bool HyperDash => hyperDash;
 
         private CatchHitObject? hyperDashTarget;
 
@@ -41,7 +39,7 @@ namespace osu.Game.Rulesets.Catch.Objects
             set
             {
                 hyperDashTarget = value;
-                HyperDashBindable.Value = value != null;
+                hyperDash = value != null;
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Rulesets.Objects;
@@ -20,16 +19,12 @@ namespace osu.Game.Rulesets.Catch.Objects
 
         public int RepeatCount { get; set; }
 
-        public BindableNumber<double> SliderVelocityMultiplierBindable { get; } = new BindableDouble(1)
-        {
-            MinValue = 0.1,
-            MaxValue = 10
-        };
+        private double sliderVelocityMultiplier = 1;
 
         public double SliderVelocityMultiplier
         {
-            get => SliderVelocityMultiplierBindable.Value;
-            set => SliderVelocityMultiplierBindable.Value = value;
+            get => sliderVelocityMultiplier;
+            set => sliderVelocityMultiplier = Math.Clamp(value, 0.1, 10);
         }
 
         /// <summary>
@@ -140,7 +135,7 @@ namespace osu.Game.Rulesets.Catch.Objects
             {
                 path.ControlPoints.Clear();
                 path.ControlPoints.AddRange(value.ControlPoints.Select(c => new PathControlPoint(c.Position, c.Type)));
-                path.ExpectedDistance.Value = value.ExpectedDistance.Value;
+                path.ExpectedDistance = value.ExpectedDistance;
             }
         }
 

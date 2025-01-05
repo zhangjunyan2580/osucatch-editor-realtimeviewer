@@ -43,22 +43,6 @@ namespace osu.Game.Beatmaps
         /// </summary>
         string Tags { get; }
 
-        /// <summary>
-        /// The time in milliseconds to begin playing the track for preview purposes.
-        /// If -1, the track should begin playing at 40% of its length.
-        /// </summary>
-        int PreviewTime { get; }
-
-        /// <summary>
-        /// The filename of the audio file consumed by this beatmap.
-        /// </summary>
-        string AudioFile { get; }
-
-        /// <summary>
-        /// The filename of the background image file consumed by this beatmap.
-        /// </summary>
-        string BackgroundFile { get; }
-
         bool IEquatable<IBeatmapMetadataInfo>.Equals(IBeatmapMetadataInfo? other)
         {
             if (other == null)
@@ -70,10 +54,7 @@ namespace osu.Game.Beatmaps
                    && ArtistUnicode == other.ArtistUnicode
                    && Author == other.Author
                    && Source == other.Source
-                   && Tags == other.Tags
-                   && PreviewTime == other.PreviewTime
-                   && AudioFile == other.AudioFile
-                   && BackgroundFile == other.BackgroundFile;
+                   && Tags == other.Tags;
         }
     }
 }

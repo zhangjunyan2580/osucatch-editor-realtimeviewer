@@ -6,7 +6,7 @@ namespace osu.Game.Rulesets
     /// <summary>
     /// A representation of a ruleset's metadata.
     /// </summary>
-    public interface IRulesetInfo : IEquatable<IRulesetInfo>, IComparable<IRulesetInfo>
+    public interface IRulesetInfo
     {
         /// <summary>
         /// The user-exposed name of this ruleset.

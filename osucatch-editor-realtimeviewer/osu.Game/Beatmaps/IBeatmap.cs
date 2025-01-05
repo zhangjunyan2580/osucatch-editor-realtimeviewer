@@ -40,12 +40,6 @@ namespace osu.Game.Beatmaps
         /// </summary>
         SortedList<BreakPeriod> Breaks { get; set; }
 
-        /// <summary>
-        /// All lines from the [Events] section which aren't handled in the encoding process yet.
-        /// These lines should be written out to the beatmap file on save or export.
-        /// </summary>
-        List<string> UnhandledEventLines { get; }
-
         List<Color4> CustomComboColours { get; set; }
 
         List<BarLine> BarLines { get; set; }

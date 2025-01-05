@@ -65,12 +65,6 @@ namespace osu.Game.Beatmaps
         IBeatmap GetPlayableBeatmap(Ruleset ruleset, IReadOnlyList<Mod> mods, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Returns the stream of the file from the given storage path.
-        /// </summary>
-        /// <param name="storagePath">The storage path to the file.</param>
-        Stream GetStream(string storagePath);
-
-        /// <summary>
         /// Beings loading the contents of this <see cref="IWorkingBeatmap"/> asynchronously.
         /// </summary>
         void BeginAsyncLoad();

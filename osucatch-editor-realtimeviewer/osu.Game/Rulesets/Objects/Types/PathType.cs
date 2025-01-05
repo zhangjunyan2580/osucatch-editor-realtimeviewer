@@ -1,8 +1,6 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Bindables;
-
 namespace osu.Game.Rulesets.Objects.Types
 {
     public enum SplineType
@@ -13,7 +11,7 @@ namespace osu.Game.Rulesets.Objects.Types
         PerfectCurve
     }
 
-    public readonly struct PathType : IEquatable<PathType>, IHasDescription
+    public readonly struct PathType : IEquatable<PathType>
     {
         /// <summary>
         /// The type of the spline that should be used to interpret the control points of the path.
@@ -44,30 +42,6 @@ namespace osu.Game.Rulesets.Objects.Types
             return new PathType { Type = SplineType.BSpline, Degree = degree };
         }
 
-        public string Description
-        {
-            get
-            {
-                switch (Type)
-                {
-                    case SplineType.Catmull:
-                        return "Catmull";
-
-                    case SplineType.BSpline:
-                        return Degree == null ? "Bezier" : "B-spline";
-
-                    case SplineType.Linear:
-                        return "Linear";
-
-                    case SplineType.PerfectCurve:
-                        return "Perfect curve";
-
-                    default:
-                        return Type.ToString();
-                }
-            }
-        }
-
         public override int GetHashCode()
             => HashCode.Combine(Type, Degree);
 
@@ -79,7 +53,5 @@ namespace osu.Game.Rulesets.Objects.Types
 
         public static bool operator ==(PathType a, PathType b) => a.Equals(b);
         public static bool operator !=(PathType a, PathType b) => !a.Equals(b);
-
-        public override string ToString() => Description;
     }
 }

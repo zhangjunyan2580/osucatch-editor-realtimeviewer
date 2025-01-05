@@ -208,8 +208,6 @@ namespace osu.Game.Beatmaps
 
         public override string ToString() => BeatmapInfo.ToString();
 
-        public abstract Stream GetStream(string storagePath);
-
         IBeatmapInfo IWorkingBeatmap.BeatmapInfo => BeatmapInfo;
 
         private class BeatmapLoadTimeoutException : TimeoutException

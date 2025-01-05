@@ -66,10 +66,5 @@ namespace osu.Game.Rulesets
         /// <param name="rate">The rate adjustment multiplier from mods. For example 1.5 for DT.</param>
         /// <returns>The adjusted difficulty attributes.</returns>
         public virtual BeatmapDifficulty GetRateAdjustedDisplayDifficulty(IBeatmapDifficultyInfo difficulty, double rate) => new BeatmapDifficulty(difficulty);
-
-        /// <summary>
-        /// Can be overridden to avoid showing scroll speed changes in the editor.
-        /// </summary>
-        public virtual bool EditorShowScrollSpeed => true;
     }
 }

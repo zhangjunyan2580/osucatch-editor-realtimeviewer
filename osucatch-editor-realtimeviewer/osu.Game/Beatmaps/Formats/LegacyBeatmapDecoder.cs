@@ -35,12 +35,6 @@ namespace osu.Game.Beatmaps.Formats
         private LegacySampleBank defaultSampleBank;
         private int defaultSampleVolume = 100;
 
-        public static void Register()
-        {
-            AddDecoder<Beatmap>(@"osu file format v", m => new LegacyBeatmapDecoder(Parsing.ParseInt(m.Split('v').Last())));
-            SetFallbackDecoder<Beatmap>(() => new LegacyBeatmapDecoder());
-        }
-
         /// <summary>
         /// Whether beatmap or runtime offsets should be applied. Defaults on; only disable for testing purposes.
         /// </summary>
@@ -191,14 +185,6 @@ namespace osu.Game.Beatmaps.Formats
 
             switch (pair.Key)
             {
-                case @"AudioFilename":
-                    metadata.AudioFile = pair.Value.ToStandardisedPath();
-                    break;
-
-                case @"PreviewTime":
-                    int time = Parsing.ParseInt(pair.Value);
-                    metadata.PreviewTime = time == -1 ? time : getOffsetTime(time);
-                    break;
 
                 case @"SampleSet":
                     defaultSampleBank = Enum.Parse<LegacySampleBank>(pair.Value);
@@ -327,57 +313,18 @@ namespace osu.Game.Beatmaps.Formats
         {
             string[] split = line.Split(',');
 
-            // Until we have full storyboard encoder coverage, let's track any lines which aren't handled
-            // and store them to a temporary location such that they aren't lost on editor save / export.
-            bool lineSupportedByEncoder = false;
-
             if (Enum.TryParse(split[0], out LegacyEventType type))
             {
                 switch (type)
                 {
-                    case LegacyEventType.Sprite:
-                        // Generally, the background is the first thing defined in a beatmap file.
-                        // In some older beatmaps, it is not present and replaced by a storyboard-level background instead.
-                        // Allow the first sprite (by file order) to act as the background in such cases.
-                        if (string.IsNullOrEmpty(beatmap.BeatmapInfo.Metadata.BackgroundFile))
-                        {
-                            beatmap.BeatmapInfo.Metadata.BackgroundFile = CleanFilename(split[3]);
-                            lineSupportedByEncoder = true;
-                        }
-
-                        break;
-
-                    case LegacyEventType.Video:
-                        string filename = CleanFilename(split[2]);
-
-                        // Some very old beatmaps had incorrect type specifications for their backgrounds (ie. using 1 for VIDEO
-                        // instead of 0 for BACKGROUND). To handle this gracefully, check the file extension against known supported
-                        // video extensions and handle similar to a background if it doesn't match.
-                        if (!SupportedExtensions.VIDEO_EXTENSIONS.Contains(Path.GetExtension(filename).ToLowerInvariant()))
-                        {
-                            beatmap.BeatmapInfo.Metadata.BackgroundFile = filename;
-                            lineSupportedByEncoder = true;
-                        }
-
-                        break;
-
-                    case LegacyEventType.Background:
-                        beatmap.BeatmapInfo.Metadata.BackgroundFile = CleanFilename(split[2]);
-                        lineSupportedByEncoder = true;
-                        break;
-
                     case LegacyEventType.Break:
                         double start = getOffsetTime(Parsing.ParseDouble(split[1]));
                         double end = Math.Max(start, getOffsetTime(Parsing.ParseDouble(split[2])));
 
                         beatmap.Breaks.Add(new BreakPeriod(start, end));
-                        lineSupportedByEncoder = true;
                         break;
                 }
             }
-
-            if (!lineSupportedByEncoder)
-                beatmap.UnhandledEventLines.Add(line);
         }
 
         private void handleTimingPoint(string line)
