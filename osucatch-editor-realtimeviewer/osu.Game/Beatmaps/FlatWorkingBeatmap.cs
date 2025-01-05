@@ -23,6 +23,5 @@ namespace osu.Game.Beatmaps
         }
 
         protected override IBeatmap GetBeatmap() => beatmap;
-        public override Stream GetStream(string storagePath) => throw new NotImplementedException();
     }
 }
