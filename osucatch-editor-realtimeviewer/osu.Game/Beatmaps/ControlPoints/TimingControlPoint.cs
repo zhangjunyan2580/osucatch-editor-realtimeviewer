@@ -9,67 +9,47 @@ namespace osu.Game.Beatmaps.ControlPoints
     public class TimingControlPoint : ControlPoint, IEquatable<TimingControlPoint>
     {
         /// <summary>
-        /// The time signature at this control point.
-        /// </summary>
-        public readonly Bindable<TimeSignature> TimeSignatureBindable = new Bindable<TimeSignature>(TimeSignature.SimpleQuadruple);
-
-        /// <summary>
-        /// Whether the first bar line of this control point is ignored.
-        /// </summary>
-        public readonly BindableBool OmitFirstBarLineBindable = new BindableBool();
-
-        /// <summary>
         /// Default length of a beat in milliseconds. Used whenever there is no beatmap or track playing.
         /// </summary>
         private const double default_beat_length = 60000.0 / 60.0;
 
         public static readonly TimingControlPoint DEFAULT = new TimingControlPoint
         {
-            BeatLengthBindable =
-            {
-                Value = default_beat_length,
-                Disabled = true
-            },
-            OmitFirstBarLineBindable = { Disabled = true },
-            TimeSignatureBindable = { Disabled = true }
         };
+
+        private TimeSignature timeSignature = TimeSignature.SimpleQuadruple;
 
         /// <summary>
         /// The time signature at this control point.
         /// </summary>
         public TimeSignature TimeSignature
         {
-            get => TimeSignatureBindable.Value;
-            set => TimeSignatureBindable.Value = value;
+            get => timeSignature;
+            set => timeSignature = value;
         }
+
+        private bool omitFirstBarLine = false;
 
         /// <summary>
         /// Whether the first bar line of this control point is ignored.
         /// </summary>
         public bool OmitFirstBarLine
         {
-            get => OmitFirstBarLineBindable.Value;
-            set => OmitFirstBarLineBindable.Value = value;
+            get => omitFirstBarLine;
+            set => omitFirstBarLine = value;
         }
 
         public const double DEFAULT_BEAT_LENGTH = 1000;
 
-        /// <summary>
-        /// The beat length at this control point.
-        /// </summary>
-        public readonly BindableDouble BeatLengthBindable = new BindableDouble(DEFAULT_BEAT_LENGTH)
-        {
-            MinValue = 6,
-            MaxValue = 60000
-        };
+        private double beatLength = DEFAULT_BEAT_LENGTH;
 
         /// <summary>
         /// The beat length at this control point.
         /// </summary>
         public double BeatLength
         {
-            get => BeatLengthBindable.Value;
-            set => BeatLengthBindable.Value = value;
+            get => beatLength;
+            set => beatLength = Math.Clamp(value, 6, 60000);
         }
 
         /// <summary>
@@ -79,9 +59,6 @@ namespace osu.Game.Beatmaps.ControlPoints
 
         public TimingControlPoint()
         {
-            TimeSignatureBindable.BindValueChanged(_ => RaiseChanged());
-            OmitFirstBarLineBindable.BindValueChanged(_ => RaiseChanged());
-            BeatLengthBindable.BindValueChanged(_ => RaiseChanged());
         }
 
         // Timing points are never redundant as they can change the time signature.

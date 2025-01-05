@@ -8,14 +8,14 @@ namespace osu.Game.Rulesets.Objects
 {
     public class BarLine : IBarLine
     {
-        private HitObjectProperty<bool> major;
+        private bool major;
 
         private double startTime;
 
         public bool Major
         {
-            get => major.Value;
-            set => major.Value = value;
+            get => major;
+            set => major = value;
         }
 
         public double StartTime

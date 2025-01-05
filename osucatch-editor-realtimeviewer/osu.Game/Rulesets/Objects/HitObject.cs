@@ -33,16 +33,10 @@ namespace osu.Game.Rulesets.Objects
         // playfield to remain in memory.
         public event Action<HitObject> DefaultsApplied;
 
-        public readonly Bindable<double> StartTimeBindable = new BindableDouble();
-
         /// <summary>
         /// The time at which the HitObject starts.
         /// </summary>
-        public virtual double StartTime
-        {
-            get => StartTimeBindable.Value;
-            set => StartTimeBindable.Value = value;
-        }
+        public double StartTime = 0;
 
         /// <summary>
         /// Whether this <see cref="HitObject"/> is in Kiai time.
@@ -80,9 +74,9 @@ namespace osu.Game.Rulesets.Objects
                 {
                     if (hitObject is IHasComboInformation n)
                     {
-                        n.ComboIndexBindable.BindTo(hasCombo.ComboIndexBindable);
-                        n.ComboIndexWithOffsetsBindable.BindTo(hasCombo.ComboIndexWithOffsetsBindable);
-                        n.IndexInCurrentComboBindable.BindTo(hasCombo.IndexInCurrentComboBindable);
+                        n.ComboIndex = hasCombo.ComboIndex;
+                        n.ComboIndexWithOffsets = hasCombo.ComboIndexWithOffsets;
+                        n.IndexInCurrentCombo = hasCombo.IndexInCurrentCombo;
                     }
                 }
             }

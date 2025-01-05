@@ -12,16 +12,6 @@ namespace osu.Game.Beatmaps.ControlPoints
     {
         public static readonly DifficultyControlPoint DEFAULT = new DifficultyControlPoint
         {
-            SliderVelocityBindable = { Disabled = true },
-        };
-
-        /// <summary>
-        /// The slider velocity at this control point.
-        /// </summary>
-        public readonly BindableDouble SliderVelocityBindable = new BindableDouble(1)
-        {
-            MinValue = 0.1,
-            MaxValue = 10
         };
 
         /// <summary>
@@ -30,18 +20,19 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// </summary>
         public bool GenerateTicks { get; set; } = true;
 
+        private double sliderVelocity = 1;
+
         /// <summary>
         /// The slider velocity at this control point.
         /// </summary>
         public double SliderVelocity
         {
-            get => SliderVelocityBindable.Value;
-            set => SliderVelocityBindable.Value = value;
+            get => sliderVelocity;
+            set => sliderVelocity = Math.Clamp(value, 0.1, 10);
         }
 
         public DifficultyControlPoint()
         {
-            SliderVelocityBindable.BindValueChanged(_ => RaiseChanged());
         }
 
         public override bool IsRedundant(ControlPoint? existing)

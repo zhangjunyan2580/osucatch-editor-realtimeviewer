@@ -21,14 +21,12 @@ namespace osu.Game.Rulesets.Catch.Objects
         /// </summary>
         public float DistanceToHyperDash { get; set; }
 
-        private HitObjectProperty<bool> hyperDash;
-
-        public Bindable<bool> HyperDashBindable => hyperDash.Bindable;
+        private bool hyperDash;
 
         /// <summary>
         /// Whether this fruit can initiate a hyperdash.
         /// </summary>
-        public bool HyperDash => hyperDash.Value;
+        public bool HyperDash => hyperDash;
 
         private CatchHitObject? hyperDashTarget;
 
@@ -41,7 +39,7 @@ namespace osu.Game.Rulesets.Catch.Objects
             set
             {
                 hyperDashTarget = value;
-                HyperDashBindable.Value = value != null;
+                hyperDash = value != null;
             }
         }
 

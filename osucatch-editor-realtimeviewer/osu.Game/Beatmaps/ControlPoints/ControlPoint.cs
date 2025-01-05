@@ -22,14 +22,7 @@ namespace osu.Game.Beatmaps.ControlPoints
         public double Time
         {
             get => time;
-            set
-            {
-                if (time == value)
-                    return;
-
-                time = value;
-                RaiseChanged();
-            }
+            set => time = value;
         }
 
         public void AttachGroup(ControlPointGroup pointGroup) => Time = pointGroup.Time;

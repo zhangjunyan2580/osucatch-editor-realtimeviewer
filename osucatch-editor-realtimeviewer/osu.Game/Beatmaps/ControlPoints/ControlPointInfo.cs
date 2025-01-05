@@ -6,7 +6,6 @@
 using osu.Framework.Bindables;
 using osu.Framework.Lists;
 using osu.Framework.Utils;
-using osu.Game.Screens.Edit;
 using osu.Game.Utils;
 
 namespace osu.Game.Beatmaps.ControlPoints

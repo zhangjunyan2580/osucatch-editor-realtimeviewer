@@ -9,46 +9,32 @@ namespace osu.Game.Beatmaps.ControlPoints
     {
         public static readonly EffectControlPoint DEFAULT = new EffectControlPoint
         {
-            KiaiModeBindable = { Disabled = true },
-            ScrollSpeedBindable = { Disabled = true }
         };
 
-        /// <summary>
-        /// The relative scroll speed at this control point.
-        /// </summary>
-        public readonly BindableDouble ScrollSpeedBindable = new BindableDouble(1)
-        {
-            MinValue = 0.01,
-            MaxValue = 10
-        };
+        private double scrollSpeed = 1;
 
         /// <summary>
         /// The relative scroll speed.
         /// </summary>
         public double ScrollSpeed
         {
-            get => ScrollSpeedBindable.Value;
-            set => ScrollSpeedBindable.Value = value;
+            get => scrollSpeed;
+            set => scrollSpeed = Math.Clamp(value, 0.01, 10);
         }
 
-        /// <summary>
-        /// Whether this control point enables Kiai mode.
-        /// </summary>
-        public readonly BindableBool KiaiModeBindable = new BindableBool();
+        private bool kiaiMode = false;
 
         /// <summary>
         /// Whether this control point enables Kiai mode.
         /// </summary>
         public bool KiaiMode
         {
-            get => KiaiModeBindable.Value;
-            set => KiaiModeBindable.Value = value;
+            get => kiaiMode;
+            set => kiaiMode = value;
         }
 
         public EffectControlPoint()
         {
-            KiaiModeBindable.BindValueChanged(_ => RaiseChanged());
-            ScrollSpeedBindable.BindValueChanged(_ => RaiseChanged());
         }
 
         public override bool IsRedundant(ControlPoint? existing)
