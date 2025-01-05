@@ -18,9 +18,9 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// </summary>
         public double Time { get; }
 
-        public IBindableList<ControlPoint> ControlPoints => controlPoints;
+        public IList<ControlPoint> ControlPoints => controlPoints;
 
-        private readonly BindableList<ControlPoint> controlPoints = new BindableList<ControlPoint>();
+        private List<ControlPoint> controlPoints = new List<ControlPoint>();
 
         public ControlPointGroup(double time)
         {

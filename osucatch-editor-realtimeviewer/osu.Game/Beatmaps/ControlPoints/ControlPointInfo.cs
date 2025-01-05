@@ -26,9 +26,9 @@ namespace osu.Game.Beatmaps.ControlPoints
         /// All control points grouped by time.
         /// </summary>
 
-        public IBindableList<ControlPointGroup> Groups => groups;
+        public IList<ControlPointGroup> Groups => groups;
 
-        private readonly BindableList<ControlPointGroup> groups = new BindableList<ControlPointGroup>();
+        private List<ControlPointGroup> groups = new List<ControlPointGroup>();
 
         /// <summary>
         /// All timing points.

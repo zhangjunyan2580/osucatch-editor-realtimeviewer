@@ -15,23 +15,20 @@ namespace osu.Game.Rulesets.Objects
         /// <summary>
         /// The current version of this <see cref="SliderPath"/>. Updated when any change to the path occurs.
         /// </summary>
-
-        public IBindable<int> Version => version;
-
-        private readonly Bindable<int> version = new Bindable<int>();
+        public int version = 0;
 
         /// <summary>
         /// The user-set distance of the path. If non-null, <see cref="Distance"/> will match this value,
         /// and the path will be shortened/lengthened to match this length.
         /// </summary>
-        public readonly Bindable<double?> ExpectedDistance = new Bindable<double?>();
+        public double? ExpectedDistance = 0;
 
         public bool HasValidLength => Precision.DefinitelyBigger(Distance, 0);
 
         /// <summary>
         /// The control points of the path.
         /// </summary>
-        public readonly BindableList<PathControlPoint> ControlPoints = new BindableList<PathControlPoint>();
+        public List<PathControlPoint> ControlPoints = new List<PathControlPoint>();
 
         private readonly List<Vector2> calculatedPath = new List<Vector2>();
         private readonly List<double> cumulativeLength = new List<double>();
@@ -57,31 +54,6 @@ namespace osu.Game.Rulesets.Objects
         /// </summary>
         public SliderPath()
         {
-            ExpectedDistance.ValueChanged += _ => invalidate();
-
-            ControlPoints.CollectionChanged += (_, args) =>
-            {
-                switch (args.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        Debug.Assert(args.NewItems != null);
-
-                        foreach (object? newItem in args.NewItems)
-                            ((PathControlPoint)newItem).Changed += invalidate;
-
-                        break;
-
-                    case NotifyCollectionChangedAction.Reset:
-                    case NotifyCollectionChangedAction.Remove:
-                        Debug.Assert(args.OldItems != null);
-
-                        foreach (object? oldItem in args.OldItems)
-                            ((PathControlPoint)oldItem).Changed -= invalidate;
-                        break;
-                }
-
-                invalidate();
-            };
         }
 
         /// <summary>
@@ -94,7 +66,7 @@ namespace osu.Game.Rulesets.Objects
             : this()
         {
             ControlPoints.AddRange(controlPoints);
-            ExpectedDistance.Value = expectedDistance;
+            ExpectedDistance = expectedDistance;
         }
 
         public SliderPath(PathType type, Vector2[] controlPoints, double? expectedDistance = null)
@@ -247,7 +219,7 @@ namespace osu.Game.Rulesets.Objects
 
         private void invalidate()
         {
-            version.Value++;
+            version++;
         }
 
         private void ensureValid()
@@ -416,7 +388,7 @@ namespace osu.Game.Rulesets.Objects
                 segmentEndDistances[i] = cumulativeLength[segmentEnds[i]];
             }
 
-            if (ExpectedDistance.Value is double expectedDistance && calculatedLength != expectedDistance)
+            if (ExpectedDistance is double expectedDistance && calculatedLength != expectedDistance)
             {
                 // In osu-stable, if the last two path points of a slider are equal, extension is not performed.
                 if (calculatedPath.Count >= 2 && calculatedPath[^1] == calculatedPath[^2] && expectedDistance > calculatedLength)
