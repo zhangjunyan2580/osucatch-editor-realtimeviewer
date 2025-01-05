@@ -124,19 +124,6 @@ namespace osu.Game.Rulesets.Objects
 
         protected void AddNested(HitObject hitObject) => nestedHitObjects.Add(hitObject);
 
-        /// <summary>
-        /// The <see cref="Judgement"/> that represents the scoring information for this <see cref="HitObject"/>.
-        /// </summary>
-
-
-        /// <summary>
-        /// Creates the <see cref="HitWindows"/> for this <see cref="HitObject"/>.
-        /// This can be null to indicate that the <see cref="HitObject"/> has no <see cref="HitWindows"/> and timing errors should not be displayed to the user.
-        /// <para>
-        /// This will only be invoked if <see cref="HitWindows"/> hasn't been set externally (e.g. from a <see cref="BeatmapConverter{T}"/>.
-        /// </para>
-        /// </summary>
-
 
     }
 

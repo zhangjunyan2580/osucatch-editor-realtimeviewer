@@ -7,7 +7,7 @@ using osu.Game.Rulesets.Catch.Objects;
 
 namespace osu.Game.Rulesets.Catch
 {
-    public class CatchRuleset : Ruleset, ILegacyRuleset
+    public class CatchRuleset : Ruleset
     {
         public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new CatchBeatmapConverter(beatmap, this);
 
@@ -23,8 +23,6 @@ namespace osu.Game.Rulesets.Catch
 
         public override string PlayingVerb => "Catching fruit";
 
-        public int LegacyID => 2;
-
 
         /// <seealso cref="CatchHitObject.ApplyDefaultsToSelf"/>
         public override BeatmapDifficulty GetRateAdjustedDisplayDifficulty(IBeatmapDifficultyInfo difficulty, double rate)
@@ -37,7 +35,5 @@ namespace osu.Game.Rulesets.Catch
 
             return adjustedDifficulty;
         }
-
-        public override bool EditorShowScrollSpeed => false;
     }
 }

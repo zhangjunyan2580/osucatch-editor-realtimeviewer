@@ -173,6 +173,7 @@ namespace osucatch_editor_realtimeviewer
                 List<BarLine> barLines = viewerManager.Beatmap.BarLines.Where((barLine) => barLine.StartTime >= 0 && barLine.StartTime <= MaxStartTime + 1).ToList();
                 DrawBarLines(barLines);
             }
+
             if (app.Default.TimingLine_ShowRed)
             {
                 timingControlPoints = timingControlPoints.Distinct().ToList();
