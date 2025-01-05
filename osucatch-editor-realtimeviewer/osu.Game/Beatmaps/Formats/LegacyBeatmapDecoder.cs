@@ -35,12 +35,6 @@ namespace osu.Game.Beatmaps.Formats
         private LegacySampleBank defaultSampleBank;
         private int defaultSampleVolume = 100;
 
-        public static void Register()
-        {
-            AddDecoder<Beatmap>(@"osu file format v", m => new LegacyBeatmapDecoder(Parsing.ParseInt(m.Split('v').Last())));
-            SetFallbackDecoder<Beatmap>(() => new LegacyBeatmapDecoder());
-        }
-
         /// <summary>
         /// Whether beatmap or runtime offsets should be applied. Defaults on; only disable for testing purposes.
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Beatmaps.Formats;
 using osu.Game.Beatmaps.Legacy;
 using osu.Game.IO;
 using osu.Game.Rulesets;
@@ -16,12 +17,14 @@ namespace osucatch_editor_realtimeviewer
     public class CatchBeatmapAPI
     {
         public static Ruleset catchRulest => new CatchRuleset();
+
+        public static Decoder<Beatmap> beatmapDecoder => new LegacyBeatmapDecoder();
         private static Beatmap readFromFile(string file)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes(file);
             MemoryStream stream = new MemoryStream(byteArray);
             using (var reader = new LineBufferedReader(stream))
-                return osu.Game.Beatmaps.Formats.Decoder.GetDecoder<Beatmap>(reader).Decode(reader);
+                return beatmapDecoder.Decode(reader);
         }
 
         static Mod[] NoMod = Array.Empty<Mod>();
