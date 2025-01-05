@@ -704,6 +704,11 @@ namespace osucatch_editor_realtimeviewer
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = true;
         }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 
     public class BeatmapInfoCollection

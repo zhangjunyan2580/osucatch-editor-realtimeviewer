@@ -174,15 +174,16 @@ namespace osucatch_editor_realtimeviewer
                 DrawBarLines(barLines);
             }
 
-            if (app.Default.TimingLine_ShowRed)
-            {
-                timingControlPoints = timingControlPoints.Distinct().ToList();
-                DrawTimingPoints(timingControlPoints);
-            }
             if (app.Default.TimingLine_ShowGreen)
             {
                 difficultyControlPoints = difficultyControlPoints.Distinct().ToList();
                 DrawDifficultyControPoints(difficultyControlPoints);
+            }
+
+            if (app.Default.TimingLine_ShowRed)
+            {
+                timingControlPoints = timingControlPoints.Distinct().ToList();
+                DrawTimingPoints(timingControlPoints);
             }
         }
 

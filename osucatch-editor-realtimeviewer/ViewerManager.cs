@@ -14,7 +14,7 @@ namespace osucatch_editor_realtimeviewer
         private int CircleDiameter { get; set; }
         public float State_ARMul { get; set; }
         public DistanceType DistanceType { get; set; }
-        public List<Color4> CustomComboColours { get; set; }
+        public List<Color4>? CustomComboColours { get; set; }
 
 
 
