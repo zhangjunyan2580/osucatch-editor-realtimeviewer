@@ -184,9 +184,12 @@ namespace osucatch_editor_realtimeviewer
         {
             if (NeedReapplySettings)
             {
-                this.Width = Window_Width;
-                this.Height = Window_Height;
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Width = Window_Width;
+                    this.Height = Window_Height;
 
+                }));
                 if (Backup_Enabled && !backup_timer.Enabled)
                 {
                     backup_timer.Interval = Backup_Interval;
