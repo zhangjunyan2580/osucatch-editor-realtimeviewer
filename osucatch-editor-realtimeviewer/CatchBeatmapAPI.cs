@@ -22,9 +22,11 @@ namespace osucatch_editor_realtimeviewer
         private static Beatmap readFromFile(string file)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes(file);
-            MemoryStream stream = new MemoryStream(byteArray);
-            using (var reader = new LineBufferedReader(stream))
-                return beatmapDecoder.Decode(reader);
+            using (MemoryStream stream = new MemoryStream(byteArray))
+            {
+                using (var reader = new LineBufferedReader(stream))
+                    return beatmapDecoder.Decode(reader);
+            }
         }
 
         static Mod[] NoMod = Array.Empty<Mod>();

@@ -3,7 +3,7 @@
 
 namespace osu.Game.Beatmaps.Timing
 {
-    public class BreakPeriod : IEquatable<BreakPeriod>, IComparable<BreakPeriod>
+    public class BreakPeriod
     {
         /// <summary>
         /// The minimum gap between the start of the break and the previous object.
@@ -43,11 +43,6 @@ namespace osu.Game.Beatmaps.Timing
         public double Duration => EndTime - StartTime;
 
         /// <summary>
-        /// Whether the break has any effect.
-        /// </summary>
-        public bool HasEffect => Duration >= MIN_BREAK_DURATION;
-
-        /// <summary>
         /// Constructs a new break period.
         /// </summary>
         /// <param name="startTime">The start time of the break period.</param>
@@ -56,27 +51,6 @@ namespace osu.Game.Beatmaps.Timing
         {
             StartTime = startTime;
             EndTime = endTime;
-        }
-
-        public bool Intersects(BreakPeriod other) => StartTime <= other.EndTime && EndTime >= other.StartTime;
-
-        public virtual bool Equals(BreakPeriod? other) =>
-            other != null
-            && StartTime == other.StartTime
-            && EndTime == other.EndTime;
-
-        public override int GetHashCode() => HashCode.Combine(StartTime, EndTime);
-
-        public int CompareTo(BreakPeriod? other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            if (ReferenceEquals(null, other)) return 1;
-
-            int result = StartTime.CompareTo(other.StartTime);
-            if (result != 0)
-                return result;
-
-            return EndTime.CompareTo(other.EndTime);
         }
     }
 }

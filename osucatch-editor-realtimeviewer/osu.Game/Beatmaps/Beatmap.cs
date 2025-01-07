@@ -77,8 +77,6 @@ namespace osu.Game.Beatmaps
         IBeatmap IBeatmap.Clone() => Clone();
 
         public Beatmap<T> Clone() => (Beatmap<T>)MemberwiseClone();
-
-        public override string ToString() => BeatmapInfo.ToString();
     }
 
     public class Beatmap : Beatmap<HitObject>

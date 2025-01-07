@@ -76,11 +76,6 @@ namespace osu.Game.Beatmaps.Formats
 
         protected virtual void ParseLine(T output, Section section, string line)
         {
-            switch (section)
-            {
-                case Section.Colours:
-                    return;
-            }
         }
 
         protected string StripComments(string line)
@@ -102,12 +97,6 @@ namespace osu.Game.Beatmaps.Formats
                 split.Length > 1 ? split[1] : string.Empty
             );
         }
-
-        protected string CleanFilename(string path) => path
-                                                       // User error which is supported by stable (https://github.com/ppy/osu/issues/21204)
-                                                       .Replace(@"\\", @"\")
-                                                       .Trim('"')
-                                                       .ToStandardisedPath();
 
         public enum Section
         {

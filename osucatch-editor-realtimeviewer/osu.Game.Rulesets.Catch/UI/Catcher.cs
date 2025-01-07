@@ -36,16 +36,6 @@ namespace osu.Game.Rulesets.Catch.UI
         public const double HYPER_DASH_TRANSITION_DURATION = 180;
 
         /// <summary>
-        /// Whether we are hyper-dashing or not.
-        /// </summary>
-        public bool HyperDashing => hyperDashModifier != 1;
-
-        /// <summary>
-        /// Whether <see cref="DrawablePalpableCatchHitObject"/> fruit should appear on the plate.
-        /// </summary>
-        public bool CatchFruitOnPlate { get; set; } = true;
-
-        /// <summary>
         /// The speed of the catcher when the catcher is dashing.
         /// </summary>
         public const double BASE_DASH_SPEED = 1.0;
@@ -54,11 +44,6 @@ namespace osu.Game.Rulesets.Catch.UI
         /// The speed of the catcher when the catcher is not dashing.
         /// </summary>
         public const double BASE_WALK_SPEED = 0.5;
-
-        /// <summary>
-        /// The current speed of the catcher with the hyper-dash modifier applied.
-        /// </summary>
-        public double Speed => (Dashing ? BASE_DASH_SPEED : BASE_WALK_SPEED) * hyperDashModifier;
 
         private Vector2 scale = Vector2.One;
 
@@ -78,11 +63,6 @@ namespace osu.Game.Rulesets.Catch.UI
                 scale = value;
             }
         }
-
-        /// <summary>
-        /// Whether the catcher is currently dashing.
-        /// </summary>
-        public bool Dashing { get; set; }
 
         /// <summary>
         /// Width of the area that can be used to attempt catches during gameplay.
