@@ -82,20 +82,6 @@ namespace osu.Game.Beatmaps.ControlPoints
         }
 
         /// <summary>
-        /// Finds the maximum BPM represented by any timing control point.
-        /// </summary>
-
-        public double BPMMaximum =>
-            60000 / (TimingPoints.MinBy(c => c.BeatLength) ?? TimingControlPoint.DEFAULT).BeatLength;
-
-        /// <summary>
-        /// Finds the minimum BPM represented by any timing control point.
-        /// </summary>
-
-        public double BPMMinimum =>
-            60000 / (TimingPoints.MaxBy(c => c.BeatLength) ?? TimingControlPoint.DEFAULT).BeatLength;
-
-        /// <summary>
         /// Remove all <see cref="ControlPointGroup"/>s and return to a pristine state.
         /// </summary>
         public virtual void Clear()

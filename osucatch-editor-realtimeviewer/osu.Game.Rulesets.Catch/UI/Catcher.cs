@@ -45,37 +45,6 @@ namespace osu.Game.Rulesets.Catch.UI
         /// </summary>
         public const double BASE_WALK_SPEED = 0.5;
 
-        private Vector2 scale = Vector2.One;
-
-        /// <summary>
-        /// Base relative scaling factor around <see cref="OriginPosition"/>.
-        /// </summary>
-        public Vector2 Scale
-        {
-            get => scale;
-            set
-            {
-                if (scale == value)
-                    return;
-
-                if (!Validation.IsFinite(value)) throw new ArgumentException($@"{nameof(Scale)} must be finite, but is {value}.");
-
-                scale = value;
-            }
-        }
-
-        /// <summary>
-        /// Width of the area that can be used to attempt catches during gameplay.
-        /// </summary>
-        public float CatchWidth { get; private set; }
-
-        private double hyperDashModifier = 1;
-
-        public Catcher(IBeatmapDifficultyInfo? difficulty = null)
-        {
-            ApplyDifficulty(difficulty);
-        }
-
         /// <summary>
         /// Calculates the width of the area used for attempting catches in gameplay.
         /// </summary>
@@ -88,17 +57,6 @@ namespace osu.Game.Rulesets.Catch.UI
         /// <param name="difficulty">The beatmap difficulty.</param>
         public static float CalculateCatchWidth(IBeatmapDifficultyInfo difficulty) => CalculateCatchWidth(calculateScale(difficulty));
 
-
-        /// <summary>
-        /// Set the scale and catch width.
-        /// </summary>
-        public void ApplyDifficulty(IBeatmapDifficultyInfo? difficulty)
-        {
-            if (difficulty != null)
-                Scale = calculateScale(difficulty);
-
-            CatchWidth = CalculateCatchWidth(Scale);
-        }
 
         /// <summary>
         /// Calculates the scale of the catcher based off the provided beatmap difficulty.

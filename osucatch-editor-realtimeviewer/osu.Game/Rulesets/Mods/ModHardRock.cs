@@ -9,13 +9,8 @@ namespace osu.Game.Rulesets.Mods
     {
         public override string Name => "Hard Rock";
         public override string Acronym => "HR";
-        public override ModType Type => ModType.DifficultyIncrease;
 
         protected const float ADJUST_RATIO = 1.4f;
-
-        public void ReadFromDifficulty(IBeatmapDifficultyInfo difficulty)
-        {
-        }
 
         public virtual void ApplyToDifficulty(BeatmapDifficulty difficulty)
         {

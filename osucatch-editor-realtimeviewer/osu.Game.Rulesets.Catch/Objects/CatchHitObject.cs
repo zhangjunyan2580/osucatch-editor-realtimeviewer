@@ -12,7 +12,7 @@ using osuTK;
 
 namespace osu.Game.Rulesets.Catch.Objects
 {
-    public abstract class CatchHitObject : HitObject, IHasPosition, IHasComboInformation, IHasTimePreempt
+    public abstract class CatchHitObject : HitObject, IHasPosition, IHasComboInformation
     {
         public const float OBJECT_RADIUS = 64;
 
@@ -62,8 +62,6 @@ namespace osu.Game.Rulesets.Catch.Objects
         /// Use <see cref="OriginalX"/> if a value not affected by the offset is desired.
         /// </remarks>
         public float EffectiveX => Math.Clamp(OriginalX + XOffset, 0, CatchPlayfield.WIDTH);
-
-        public double TimePreempt { get; set; } = 1000;
 
         private int indexInBeatmap;
 
@@ -129,8 +127,6 @@ namespace osu.Game.Rulesets.Catch.Objects
         protected override void ApplyDefaultsToSelf(ControlPointInfo controlPointInfo, IBeatmapDifficultyInfo difficulty)
         {
             base.ApplyDefaultsToSelf(controlPointInfo, difficulty);
-
-            TimePreempt = (float)IBeatmapDifficultyInfo.DifficultyRange(difficulty.ApproachRate, PREEMPT_MAX, PREEMPT_MID, PREEMPT_MIN);
 
             Scale = LegacyRulesetExtensions.CalculateScaleFromCircleSize(difficulty.CircleSize);
         }

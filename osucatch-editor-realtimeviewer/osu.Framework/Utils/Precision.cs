@@ -21,15 +21,6 @@ namespace osu.Framework.Utils
         public const double DOUBLE_EPSILON = 1e-7;
 
         /// <summary>
-        /// Computes whether a value is definitely greater than another given an acceptable difference.
-        /// </summary>
-        /// <param name="value1">The value to compare.</param>
-        /// <param name="value2">The value to compare against.</param>
-        /// <param name="acceptableDifference">The acceptable difference. Defaults to <see cref="DOUBLE_EPSILON"/>.</param>
-        /// <returns>Whether <paramref name="value1"/> is definitely greater than <paramref name="value2"/>.</returns>
-        public static bool DefinitelyBigger(double value1, double value2, double acceptableDifference = DOUBLE_EPSILON) => value1 - acceptableDifference > value2;
-
-        /// <summary>
         /// Computes whether a value is almost greater than another given an acceptable difference.
         /// </summary>
         /// <param name="value1">The value to compare.</param>

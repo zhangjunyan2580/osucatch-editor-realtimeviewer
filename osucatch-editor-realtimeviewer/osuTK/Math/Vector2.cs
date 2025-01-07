@@ -67,30 +67,11 @@ namespace osuTK
         /// <summary>
         /// Gets the length (magnitude) of the vector.
         /// </summary>
-        /// <see cref="LengthFast"/>
-        /// <seealso cref="LengthSquared"/>
         public float Length
         {
             get
             {
                 return (float)System.Math.Sqrt(X * X + Y * Y);
-            }
-        }
-
-        /// <summary>
-        /// Gets an approximation of the vector length (magnitude).
-        /// </summary>
-        /// <remarks>
-        /// This property uses an approximation of the square root function to calculate vector magnitude, with
-        /// an upper error bound of 0.001.
-        /// </remarks>
-        /// <see cref="Length"/>
-        /// <seealso cref="LengthSquared"/>
-        public float LengthFast
-        {
-            get
-            {
-                return 1.0f / MathHelper.InverseSqrtFast(X * X + Y * Y);
             }
         }
 
@@ -101,8 +82,6 @@ namespace osuTK
         /// This property avoids the costly square root operation required by the Length property. This makes it more suitable
         /// for comparisons.
         /// </remarks>
-        /// <see cref="Length"/>
-        /// <seealso cref="LengthFast"/>
         public float LengthSquared
         {
             get
@@ -132,29 +111,9 @@ namespace osuTK
         }
 
         /// <summary>
-        /// Defines a unit-length Vector2 that points towards the X-axis.
-        /// </summary>
-        public static readonly Vector2 UnitX = new Vector2(1, 0);
-
-        /// <summary>
-        /// Defines a unit-length Vector2 that points towards the Y-axis.
-        /// </summary>
-        public static readonly Vector2 UnitY = new Vector2(0, 1);
-
-        /// <summary>
         /// Defines a zero-length Vector2.
         /// </summary>
         public static readonly Vector2 Zero = new Vector2(0, 0);
-
-        /// <summary>
-        /// Defines an instance with all components set to 1.
-        /// </summary>
-        public static readonly Vector2 One = new Vector2(1, 1);
-
-        /// <summary>
-        /// Defines the size of the Vector2 struct in bytes.
-        /// </summary>
-        public static readonly int SizeInBytes = Marshal.SizeOf(new Vector2());
 
         /// <summary>
         /// Compute the euclidean distance between two vectors.
@@ -290,7 +249,32 @@ namespace osuTK
             return !left.Equals(right);
         }
 
-        private static string listSeparator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+        /// <summary>
+        /// Returns the hashcode for this instance.
+        /// </summary>
+        /// <returns>A System.Int32 containing the unique hashcode for this instance.</returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (this.X.GetHashCode() * 397) ^ this.Y.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether this instance and a specified object are equal.
+        /// </summary>
+        /// <param name="obj">The object to compare to.</param>
+        /// <returns>True if the instances are equal; false otherwise.</returns>
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Vector2))
+            {
+                return false;
+            }
+
+            return this.Equals((Vector2)obj);
+        }
 
         /// <summary>Indicates whether the current vector is equal to another vector.</summary>
         /// <param name="other">A vector to compare with this vector.</param>

@@ -3,7 +3,7 @@
 
 namespace osu.Game.Beatmaps.Timing
 {
-    public class BreakPeriod
+    public class BreakPeriod : IComparable<BreakPeriod>
     {
         /// <summary>
         /// The minimum gap between the start of the break and the previous object.
@@ -51,6 +51,18 @@ namespace osu.Game.Beatmaps.Timing
         {
             StartTime = startTime;
             EndTime = endTime;
+        }
+
+        public int CompareTo(BreakPeriod? other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+
+            int result = StartTime.CompareTo(other.StartTime);
+            if (result != 0)
+                return result;
+
+            return EndTime.CompareTo(other.EndTime);
         }
     }
 }

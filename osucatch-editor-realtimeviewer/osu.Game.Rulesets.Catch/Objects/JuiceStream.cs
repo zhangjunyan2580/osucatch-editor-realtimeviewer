@@ -48,7 +48,7 @@ namespace osu.Game.Rulesets.Catch.Objects
 
             TimingControlPoint timingPoint = controlPointInfo.TimingPointAt(StartTime);
 
-            Velocity = base_scoring_distance * difficulty.SliderMultiplier / LegacyRulesetExtensions.GetPrecisionAdjustedBeatLength(this, timingPoint, CatchRuleset.SHORT_NAME);
+            Velocity = base_scoring_distance * difficulty.SliderMultiplier / LegacyRulesetExtensions.GetPrecisionAdjustedBeatLength(this, timingPoint);
 
             // WARNING: this is intentionally not computed as `BASE_SCORING_DISTANCE * difficulty.SliderMultiplier`
             // for backwards compatibility reasons (intentionally introducing floating point errors to match stable).

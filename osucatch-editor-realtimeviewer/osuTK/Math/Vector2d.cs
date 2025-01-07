@@ -36,31 +36,6 @@ namespace osuTK
         /// <summary>The Y coordinate of this instance.</summary>
         public double Y;
 
-        /// <summary>
-        /// Defines a unit-length Vector2d that points towards the X-axis.
-        /// </summary>
-        public static readonly Vector2d UnitX = new Vector2d(1, 0);
-
-        /// <summary>
-        /// Defines a unit-length Vector2d that points towards the Y-axis.
-        /// </summary>
-        public static readonly Vector2d UnitY = new Vector2d(0, 1);
-
-        /// <summary>
-        /// Defines a zero-length Vector2d.
-        /// </summary>
-        public static readonly Vector2d Zero = new Vector2d(0, 0);
-
-        /// <summary>
-        /// Defines an instance with all components set to 1.
-        /// </summary>
-        public static readonly Vector2d One = new Vector2d(1, 1);
-
-        /// <summary>
-        /// Defines the size of the Vector2d struct in bytes.
-        /// </summary>
-        public static readonly int SizeInBytes = Marshal.SizeOf(new Vector2d());
-
         /// <summary>Constructs left vector with the given coordinates.</summary>
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
@@ -173,7 +148,5 @@ namespace osuTK
         {
             return new Vector2((float)v2d.X, (float)v2d.Y);
         }
-
-        private static string listSeparator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
     }
 }
