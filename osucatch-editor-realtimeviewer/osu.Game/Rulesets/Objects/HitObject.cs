@@ -39,12 +39,6 @@ namespace osu.Game.Rulesets.Objects
         public double StartTime = 0;
 
         /// <summary>
-        /// Whether this <see cref="HitObject"/> is in Kiai time.
-        /// </summary>
-
-        public bool Kiai { get; private set; }
-
-        /// <summary>
         /// The hit windows for this <see cref="HitObject"/>.
         /// </summary>
 
@@ -91,7 +85,6 @@ namespace osu.Game.Rulesets.Objects
 
         protected virtual void ApplyDefaultsToSelf(ControlPointInfo controlPointInfo, IBeatmapDifficultyInfo difficulty)
         {
-            Kiai = controlPointInfo.EffectPointAt(StartTime + control_point_leniency).KiaiMode;
         }
 
         protected virtual void CreateNestedHitObjects(CancellationToken cancellationToken)
