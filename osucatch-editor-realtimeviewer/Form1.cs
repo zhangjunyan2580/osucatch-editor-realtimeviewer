@@ -421,6 +421,8 @@ namespace osucatch_editor_realtimeviewer
                     }
                 }
 
+                ConsoleLog("Build new beatmap successfully.", LogType.BeatmapBuilder, LogLevel.Debug);
+
                 if (cancellationToken.IsCancellationRequested)
                 {
                     ConsoleLog("Task Timeout, cancelled before backup or beatmap prasing.", LogType.Program, LogLevel.Warning);

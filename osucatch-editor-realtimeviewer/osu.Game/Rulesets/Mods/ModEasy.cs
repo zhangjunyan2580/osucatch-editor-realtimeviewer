@@ -9,10 +9,6 @@ namespace osu.Game.Rulesets.Mods
     {
         public override string Name => "Easy";
         public override string Acronym => "EZ";
-        public override ModType Type => ModType.DifficultyReduction;
-        public virtual void ReadFromDifficulty(BeatmapDifficulty difficulty)
-        {
-        }
 
         public virtual void ApplyToDifficulty(BeatmapDifficulty difficulty)
         {

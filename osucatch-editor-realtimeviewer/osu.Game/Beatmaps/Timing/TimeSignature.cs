@@ -26,10 +26,7 @@ namespace osu.Game.Beatmaps.Timing
             Numerator = numerator;
         }
 
-        public static TimeSignature SimpleTriple { get; } = new TimeSignature(3);
         public static TimeSignature SimpleQuadruple { get; } = new TimeSignature(4);
-
-        public override string ToString() => $"{Numerator}/4";
 
         public bool Equals(TimeSignature other)
         {
@@ -38,7 +35,5 @@ namespace osu.Game.Beatmaps.Timing
 
             return Numerator == other.Numerator;
         }
-
-        public override int GetHashCode() => Numerator;
     }
 }

@@ -32,9 +32,6 @@ namespace osu.Game.Beatmaps.Formats
         private Beatmap beatmap = null!;
         private ConvertHitObjectParser parser = null!;
 
-        private LegacySampleBank defaultSampleBank;
-        private int defaultSampleVolume = 100;
-
         /// <summary>
         /// Whether beatmap or runtime offsets should be applied. Defaults on; only disable for testing purposes.
         /// </summary>
@@ -140,10 +137,6 @@ namespace osu.Game.Beatmaps.Formats
         {
             switch (section)
             {
-                case Section.General:
-                    handleGeneral(line);
-                    return;
-
                 case Section.Editor:
                     handleEditor(line);
                     return;
@@ -175,31 +168,6 @@ namespace osu.Game.Beatmaps.Formats
             }
 
             base.ParseLine(beatmap, section, line);
-        }
-
-        private void handleGeneral(string line)
-        {
-            var pair = SplitKeyVal(line);
-
-            var metadata = beatmap.BeatmapInfo.Metadata;
-
-            switch (pair.Key)
-            {
-
-                case @"SampleSet":
-                    defaultSampleBank = Enum.Parse<LegacySampleBank>(pair.Value);
-                    break;
-
-                case @"SampleVolume":
-                    defaultSampleVolume = Parsing.ParseInt(pair.Value);
-                    break;
-
-                /*
-            case @"Mode":
-                beatmap.BeatmapInfo.Ruleset = RulesetStore?.GetRuleset(Parsing.ParseInt(pair.Value)) ?? throw new ArgumentException("Ruleset is not available locally.");
-                break;
-                */
-            }
         }
 
         private void handleEditor(string line)
@@ -343,18 +311,6 @@ namespace osu.Game.Beatmaps.Formats
             if (split.Length >= 3)
                 timeSignature = split[2][0] == '0' ? TimeSignature.SimpleQuadruple : new TimeSignature(Parsing.ParseInt(split[2]));
 
-            LegacySampleBank sampleSet = defaultSampleBank;
-            if (split.Length >= 4)
-                sampleSet = (LegacySampleBank)Parsing.ParseInt(split[3]);
-
-            int customSampleBank = 0;
-            if (split.Length >= 5)
-                customSampleBank = Parsing.ParseInt(split[4]);
-
-            int sampleVolume = defaultSampleVolume;
-            if (split.Length >= 6)
-                sampleVolume = Parsing.ParseInt(split[5]);
-
             bool timingChange = true;
             if (split.Length >= 7)
                 timingChange = split[6][0] == '1';
@@ -368,10 +324,6 @@ namespace osu.Game.Beatmaps.Formats
                 kiaiMode = effectFlags.HasFlag(LegacyEffectFlags.Kiai);
                 omitFirstBarSignature = effectFlags.HasFlag(LegacyEffectFlags.OmitFirstBarLine);
             }
-
-            string stringSampleSet = sampleSet.ToString().ToLowerInvariant();
-            //if (stringSampleSet == @"none")
-            //    stringSampleSet = HitSampleInfo.BANK_NORMAL;
 
             if (timingChange)
             {

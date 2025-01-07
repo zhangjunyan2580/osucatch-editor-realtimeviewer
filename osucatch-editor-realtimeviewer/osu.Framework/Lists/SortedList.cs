@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using osu.Framework.Extensions.TypeExtensions;
 using System.Collections;
 
 namespace osu.Framework.Lists
@@ -118,8 +117,6 @@ namespace osu.Framework.Lists
         /// This can be used to re-sort the <see cref="SortedList{T}"/> if the comparer result has changed.
         /// </remarks>
         public void Sort() => list.Sort(Comparer);
-
-        public override string ToString() => $@"{GetType().ReadableName()} ({Count} items)";
 
         #region ICollection<T> Implementation
 

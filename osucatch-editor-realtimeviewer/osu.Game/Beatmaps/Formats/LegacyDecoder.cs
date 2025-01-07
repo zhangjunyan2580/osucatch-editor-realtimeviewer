@@ -48,8 +48,6 @@ namespace osu.Game.Beatmaps.Formats
                 {
                     if (!Enum.TryParse(line[1..^1], out section))
                         Form1.ConsoleLog($"Unknown section \"{line}\" in \"{output}\"", Form1.LogType.BeatmapParser, Form1.LogLevel.Warning);
-
-                    OnBeginNewSection(section);
                     continue;
                 }
 
@@ -66,21 +64,8 @@ namespace osu.Game.Beatmaps.Formats
 
         protected virtual bool ShouldSkipLine(string line) => string.IsNullOrWhiteSpace(line) || line.AsSpan().TrimStart().StartsWith("//".AsSpan(), StringComparison.Ordinal);
 
-        /// <summary>
-        /// Invoked when a new <see cref="Section"/> has been entered.
-        /// </summary>
-        /// <param name="section">The entered <see cref="Section"/>.</param>
-        protected virtual void OnBeginNewSection(Section section)
-        {
-        }
-
         protected virtual void ParseLine(T output, Section section, string line)
         {
-            switch (section)
-            {
-                case Section.Colours:
-                    return;
-            }
         }
 
         protected string StripComments(string line)
@@ -102,12 +87,6 @@ namespace osu.Game.Beatmaps.Formats
                 split.Length > 1 ? split[1] : string.Empty
             );
         }
-
-        protected string CleanFilename(string path) => path
-                                                       // User error which is supported by stable (https://github.com/ppy/osu/issues/21204)
-                                                       .Replace(@"\\", @"\")
-                                                       .Trim('"')
-                                                       .ToStandardisedPath();
 
         public enum Section
         {

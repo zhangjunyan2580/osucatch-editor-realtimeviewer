@@ -10,11 +10,10 @@ namespace osu.Game.Beatmaps.Formats
     {
         protected virtual TOutput CreateTemplateObject() => new TOutput();
 
-        public TOutput Decode(LineBufferedReader primaryStream, params LineBufferedReader[] otherStreams)
+        public TOutput Decode(LineBufferedReader stream)
         {
             var output = CreateTemplateObject();
-            foreach (LineBufferedReader stream in otherStreams.Prepend(primaryStream))
-                ParseStreamInto(stream, output);
+            ParseStreamInto(stream, output);
             return output;
         }
 

@@ -23,8 +23,6 @@ namespace osu.Game.Rulesets.Objects
         /// </summary>
         public double? ExpectedDistance = 0;
 
-        public bool HasValidLength => Precision.DefinitelyBigger(Distance, 0);
-
         /// <summary>
         /// The control points of the path.
         /// </summary>
@@ -69,11 +67,6 @@ namespace osu.Game.Rulesets.Objects
             ExpectedDistance = expectedDistance;
         }
 
-        public SliderPath(PathType type, Vector2[] controlPoints, double? expectedDistance = null)
-            : this(controlPoints.Select((c, i) => new PathControlPoint(c, i == 0 ? type : null)).ToArray(), expectedDistance)
-        {
-        }
-
         /// <summary>
         /// The distance of the path after lengthening/shortening to account for <see cref="ExpectedDistance"/>.
         /// </summary>
@@ -84,18 +77,6 @@ namespace osu.Game.Rulesets.Objects
             {
                 ensureValid();
                 return cumulativeLength.Count == 0 ? 0 : cumulativeLength[^1];
-            }
-        }
-
-        /// <summary>
-        /// The distance of the path prior to lengthening/shortening to account for <see cref="ExpectedDistance"/>.
-        /// </summary>
-        public double CalculatedDistance
-        {
-            get
-            {
-                ensureValid();
-                return calculatedLength;
             }
         }
 
@@ -118,36 +99,6 @@ namespace osu.Game.Rulesets.Objects
         }
 
         /// <summary>
-        /// Computes the slider path until a given progress that ranges from 0 (beginning of the slider)
-        /// to 1 (end of the slider) and stores the generated path in the given list.
-        /// </summary>
-        /// <param name="path">The list to be filled with the computed path.</param>
-        /// <param name="p0">Start progress. Ranges from 0 (beginning of the slider) to 1 (end of the slider).</param>
-        /// <param name="p1">End progress. Ranges from 0 (beginning of the slider) to 1 (end of the slider).</param>
-        public void GetPathToProgress(List<Vector2> path, double p0, double p1)
-        {
-            ensureValid();
-
-            double d0 = progressToDistance(p0);
-            double d1 = progressToDistance(p1);
-
-            path.Clear();
-
-            int i = 0;
-
-            for (; i < calculatedPath.Count && cumulativeLength[i] < d0; ++i)
-            {
-            }
-
-            path.Add(interpolateVertices(i, d0));
-
-            for (; i < calculatedPath.Count && cumulativeLength[i] <= d1; ++i)
-                path.Add(calculatedPath[i]);
-
-            path.Add(interpolateVertices(i, d1));
-        }
-
-        /// <summary>
         /// Computes the position on the slider at a given progress that ranges from 0 (beginning of the path)
         /// to 1 (end of the path).
         /// </summary>
@@ -158,63 +109,6 @@ namespace osu.Game.Rulesets.Objects
 
             double d = progressToDistance(progress);
             return interpolateVertices(indexOfDistance(d), d);
-        }
-
-        /// <summary>
-        /// Returns the control points belonging to the same segment as the one given.
-        /// The first point has a PathType which all other points inherit.
-        /// </summary>
-        /// <param name="controlPoint">One of the control points in the segment.</param>
-        public List<PathControlPoint> PointsInSegment(PathControlPoint controlPoint)
-        {
-            bool found = false;
-            List<PathControlPoint> pointsInCurrentSegment = new List<PathControlPoint>();
-
-            foreach (PathControlPoint point in ControlPoints)
-            {
-                if (point.Type != null)
-                {
-                    if (!found)
-                        pointsInCurrentSegment.Clear();
-                    else
-                    {
-                        pointsInCurrentSegment.Add(point);
-                        break;
-                    }
-                }
-
-                pointsInCurrentSegment.Add(point);
-
-                if (point == controlPoint)
-                    found = true;
-            }
-
-            return pointsInCurrentSegment;
-        }
-
-        /// <summary>
-        /// Returns the progress values at which (control point) segments of the path end.
-        /// Ranges from 0 (beginning of the path) to 1 (end of the path) to infinity (beyond the end of the path).
-        /// </summary>
-        /// <remarks>
-        /// <see cref="PositionAt"/> truncates the progression values to [0,1],
-        /// so you can't use this method in conjunction with that one to retrieve the positions of segment ends beyond the end of the path.
-        /// </remarks>
-        /// <example>
-        /// <para>
-        /// In case <see cref="Distance"/> is less than <see cref="CalculatedDistance"/>,
-        /// the last segment ends after the end of the path, hence it returns a value greater than 1.
-        /// </para>
-        /// <para>
-        /// In case <see cref="Distance"/> is greater than <see cref="CalculatedDistance"/>,
-        /// the last segment ends before the end of the path, hence it returns a value less than 1.
-        /// </para>
-        /// </example>
-        public IEnumerable<double> GetSegmentEnds()
-        {
-            ensureValid();
-
-            return segmentEndDistances.Select(d => d / Distance);
         }
 
         private void invalidate()

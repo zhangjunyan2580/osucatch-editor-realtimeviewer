@@ -209,41 +209,6 @@ namespace osu.Framework.Utils
             return result;
         }
 
-        private static float[] linspace(float start, float end, int count)
-        {
-            float[] result = new float[count];
-
-            for (int i = 0; i < count; i++)
-            {
-                result[i] = start + (end - start) * i / (count - 1);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Calculates a normalized cumulative distribution for the Euclidean distance between points on a piecewise-linear path.
-        /// </summary>
-        /// <param name="points">(2, n) shape array which represents the points of the piecewise-linear path.</param>
-        /// <param name="result">n-length array to write the result to.</param>
-        /// <param name="regularizingFactor">Factor to be added to each computed distance between points.</param>
-        private static void getDistanceDistribution(float[,] points, float[] result, float regularizingFactor = 0f)
-        {
-            int m = points.GetLength(1);
-            float accumulator = 0;
-            result[0] = 0;
-
-            for (int i = 1; i < m; i++)
-            {
-                float dist = MathF.Sqrt(MathF.Pow(points[0, i] - points[0, i - 1], 2) + MathF.Pow(points[1, i] - points[1, i - 1], 2));
-                accumulator += dist + regularizingFactor;
-                result[i] = accumulator;
-            }
-
-            var spanR = result.AsSpan();
-            TensorPrimitives.Divide(spanR, accumulator, spanR);
-        }
-
         private static Stack<Vector2[]> bSplineToBezierInternal(ReadOnlySpan<Vector2> controlPoints, ref int degree)
         {
             Stack<Vector2[]> result = new Stack<Vector2[]>();
