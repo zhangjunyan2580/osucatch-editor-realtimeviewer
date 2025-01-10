@@ -11,8 +11,8 @@ namespace osucatch_editor_realtimeviewer
         public List<WithDistancePalpableCatchHitObject>? CatchHitObjects { get; set; }
         public List<WithDistancePalpableCatchHitObject> NearbyHitObjects { get; set; }
         public int ApproachTime { get; set; }
+        public float TimePerPixels { get; set; }
         private int CircleDiameter { get; set; }
-        public float State_ARMul { get; set; }
         public DistanceType DistanceType { get; set; }
         public List<Color4>? CustomComboColours { get; set; }
 
@@ -23,18 +23,17 @@ namespace osucatch_editor_realtimeviewer
             currentTime = 0;
             NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
 
-            State_ARMul = 2.7f;
             LoadBeatmap(beatmap, modsWhenOnlyBeatmap);
         }
 
         public void LoadBeatmap(string beatmap, int mods = 0)
         {
-
             Beatmap = CatchBeatmapAPI.GetBeatmap(beatmap, mods);
             CatchHitObjects = CatchBeatmapAPI.GetPalpableObjects(Beatmap, (DistanceType != DistanceType.None));
 
             float moddedAR = Beatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);
+            TimePerPixels = ApproachTime / 384.0f;
             float moddedCS = Beatmap.Difficulty.CircleSize;
             CircleDiameter = (int)(108.848 - moddedCS * 8.9646);
             CustomComboColours = Beatmap.CustomComboColours;
@@ -42,12 +41,14 @@ namespace osucatch_editor_realtimeviewer
 
 
 
-        public void BuildNearby()
+        public void BuildNearby(int screensContain)
         {
-            NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
+            NearbyHitObjects.Clear();
             if (this.CatchHitObjects == null) return;
-            int startIndex = this.HitObjectsLowerBound(currentTime);
-            int endIndex = this.HitObjectsUpperBound(currentTime);
+            double timeSpan = screensContain * ApproachTime * 1.25 + CircleDiameter * TimePerPixels * 2;
+            int startIndex = (screensContain <= 1) ? this.HitObjectsLowerBound(currentTime - ApproachTime / 4 - CircleDiameter * TimePerPixels) : this.HitObjectsLowerBound(currentTime - timeSpan / 2);
+            int endIndex = (screensContain <= 1) ? this.HitObjectsUpperBound(currentTime + ApproachTime + CircleDiameter * TimePerPixels) : this.HitObjectsUpperBound(currentTime + timeSpan / 2);
+            // Console.WriteLine(startIndex + "->" + endIndex);
             for (int k = startIndex; k <= endIndex; k++)
             {
                 if (k < 0)
@@ -62,11 +63,11 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private int HitObjectsLowerBound(float target)
+        private int HitObjectsLowerBound(double target)
         {
             if (this.CatchHitObjects == null) return 0;
             int first = 0;
-            int last = this.CatchHitObjects.Count;
+            int last = this.CatchHitObjects.Count - 1;
             int count = last - first;
             while (count > 0)
             {
@@ -74,8 +75,7 @@ namespace osucatch_editor_realtimeviewer
                 int it = first + step;
                 var hitObject = this.CatchHitObjects[it];
                 float endTime = (float)hitObject.currentObject.StartTime;
-                float animationEnd = endTime + this.ApproachTime * this.State_ARMul;
-                if (animationEnd < target)
+                if (endTime < target)
                 {
                     first = ++it;
                     count -= step + 1;
@@ -88,18 +88,18 @@ namespace osucatch_editor_realtimeviewer
             return first;
         }
 
-        private int HitObjectsUpperBound(float target)
+        private int HitObjectsUpperBound(double target)
         {
             if (this.CatchHitObjects == null) return 0;
             int first = 0;
-            int last = this.CatchHitObjects.Count;
+            int last = this.CatchHitObjects.Count - 1;
             int count = last - first;
             while (count > 0)
             {
                 int step = count / 2;
                 int it = first + step;
-                float animationStart = (float)(this.CatchHitObjects[it].currentObject.StartTime - this.ApproachTime * this.State_ARMul);
-                if (!(target < animationStart))
+                float startTime = (float)(this.CatchHitObjects[it].currentObject.StartTime);
+                if (!(target < startTime))
                 {
                     first = ++it;
                     count -= step + 1;

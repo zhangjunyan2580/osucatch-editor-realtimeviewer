@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using Editor_Reader;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Rulesets.Catch.Objects;
@@ -10,11 +11,42 @@ namespace osucatch_editor_realtimeviewer
 
     public class Canvas : OpenTK.GLControl
     {
+        /*
+         * screen size: 640x480
+         * playfield size: 512x384
+         * 
+         * TimePerPixels = ApproachTime / 384
+         * 
+         * |                  |
+         * |==================|
+         * |<---width: 640--->|
+         * |                  |
+         * |                  |
+         * |------------------| N screen catcher | ΔTime = N * ApproachTime * 1.25
+         * |                  |
+         * |==================| (screen top) | ΔTime = ApproachTime
+         * |                  |
+         * |                  |
+         * |                  |
+         * |------------------| catcher height: 384 (current time) | ΔTime = 0
+         * |                  | 
+         * |==================| screen height: 480 (screen bottom) | ΔTime = -TimePerPixels * (480 - 384) = -ApproachTime / 4
+         * |                  |
+         * |                  |
+         * |                  |
+         * |------------------| -N screen catcher | ΔTime = -N * ApproachTime * 1.25
+         * |                  |
+         * |==================|
+         * |                  |
+         */
+
+
+
+        public int screensContain = 4;
+
         public ViewerManager? viewerManager;
 
         public float fontScale = 1;
-
-        public float CatcherAreaHeight { get; set; }
 
         private Texture2D? hitCircleTexture;
         private Texture2D? DropTexture;
@@ -47,7 +79,7 @@ namespace osucatch_editor_realtimeviewer
 
             if (viewerManager != null)
             {
-                viewerManager.BuildNearby();
+                viewerManager.BuildNearby(screensContain);
 
                 this.DrawJudgementLine();
                 this.Draw();
@@ -62,14 +94,17 @@ namespace osucatch_editor_realtimeviewer
             int h = this.Size.Height;
             int x = 0;
             int y = 0;
-            if (w * 4 > h)
+            float border_Height = 32;
+            float border_Width = 2 * 32;
+            double width_height = (640.0 + 2 * border_Width) / (480.0 * this.screensContain + 2 * border_Height);
+            if (w / width_height > h)
             {
-                w = h / 4;
+                w = (int)(h * width_height);
                 x = (this.Size.Width - w) / 2;
             }
-            if (h / 4 > w)
+            else if (h * width_height > w)
             {
-                h = w * 4;
+                h = (int)(w / width_height);
                 y = (this.Size.Height - h) / 2;
             }
             GL.Viewport(x, y, w, h);
@@ -77,9 +112,6 @@ namespace osucatch_editor_realtimeviewer
 
         public void Init()
         {
-            // 盘子区间
-            this.CatcherAreaHeight = 384f - 350f;
-
             this.hitCircleTexture = this.TextureFromFile(Form1.Path_Img_Hitcircle);
             this.DropTexture = this.TextureFromFile(Form1.Path_Img_Drop);
             this.BananaTexture = this.TextureFromFile(Form1.Path_Img_Banana);
@@ -92,10 +124,19 @@ namespace osucatch_editor_realtimeviewer
             this.Canvas_Resize(this, null);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            Vector2 border = new Vector2(1.0f, 4.0f) * 32.0f;
-            GL.Ortho(-border.X, 512.0 + border.X, 2048 + border.Y, -border.Y, 0.0, 1.0);
+            Vector2 border = new Vector2(2.0f, 1.0f) * ((screensContain > 1) ? 32.0f : 0);
+            GL.Ortho(-border.X, 640.0 + border.X, 480 * screensContain + border.Y, -border.Y, 0.0, 1.0);
             GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit);
+        }
+
+        public void ScreensContainChanged()
+        {
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            Vector2 border = new Vector2(2.0f, 1.0f) * ((screensContain > 1) ? 32.0f : 0);
+            GL.Ortho(-border.X, 640.0 + border.X, 480 * screensContain + border.Y, -border.Y, 0.0, 1.0);
+            this.Canvas_Resize(this, null);
         }
 
         private Texture2D? TextureFromFile(string path)
@@ -138,22 +179,32 @@ namespace osucatch_editor_realtimeviewer
             List<DifficultyControlPoint> difficultyControlPoints = new List<DifficultyControlPoint>();
 
             double MaxStartTime = -1;
-            double MinStartTime = -1;
 
             for (int b = viewerManager.NearbyHitObjects.Count - 1; b >= 0; b--)
             {
                 WithDistancePalpableCatchHitObject hitObject = viewerManager.NearbyHitObjects[b];
 
                 if (MaxStartTime < 0 || hitObject.currentObject.StartTime > MaxStartTime) MaxStartTime = hitObject.currentObject.StartTime;
-                if (MinStartTime < 0 || hitObject.currentObject.StartTime < MinStartTime) MinStartTime = hitObject.currentObject.StartTime;
-                float diff = (float)(hitObject.currentObject.StartTime - viewerManager.currentTime);
-                // 0=在顶端 1=在判定线上 >1=超过判定线
-                float alpha = 1.0f;
-                if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
+
+                double deltaTime = hitObject.currentObject.StartTime - viewerManager.currentTime;
+                if (screensContain > 1)
                 {
-                    alpha = 1 - (diff / (float)viewerManager.ApproachTime);
-                    this.DrawHitcircle(hitObject, alpha, circleDiameter, viewerManager.DistanceType);
+                    double timeSpan = screensContain * viewerManager.ApproachTime * 1.25;
+                    if (deltaTime <= timeSpan && deltaTime >= -timeSpan)
+                    {
+                        this.DrawHitcircle(hitObject, deltaTime, circleDiameter, viewerManager.DistanceType);
+                    }
                 }
+                else
+                {
+                    double upTime = this.viewerManager.ApproachTime + circleDiameter * this.viewerManager.TimePerPixels;
+                    double bottomTime = this.viewerManager.ApproachTime / 4 + circleDiameter * this.viewerManager.TimePerPixels;
+                    if (deltaTime <= upTime && deltaTime >= -bottomTime)
+                    {
+                        this.DrawHitcircle(hitObject, deltaTime, circleDiameter, viewerManager.DistanceType);
+                    }
+                }
+
 
                 if (app.Default.TimingLine_ShowRed)
                 {
@@ -200,10 +251,11 @@ namespace osucatch_editor_realtimeviewer
             GL.Enable(EnableCap.Texture2D);
         }
 
-        private void DrawHitcircle(WithDistancePalpableCatchHitObject wdpch, float alpha, int circleDiameter, DistanceType distanceType)
+        private void DrawHitcircle(WithDistancePalpableCatchHitObject wdpch, double deltaTime, int circleDiameter, DistanceType distanceType)
         {
             PalpableCatchHitObject hitObject = wdpch.currentObject;
-            Vector2 pos = new Vector2(hitObject.EffectiveX, 384 * alpha - this.CatcherAreaHeight + 640);
+            double baseY = (screensContain <= 1) ? 384 : 240.0 * this.screensContain;
+            Vector2 pos = new Vector2(64 + hitObject.EffectiveX, (float)(baseY - deltaTime / this.viewerManager.TimePerPixels));
             if (Form1.Combo_Colour)
             {
                 int comboColorIndex = (hitObject.ComboIndex) % Combo_Colors.Length;
@@ -275,7 +327,7 @@ namespace osucatch_editor_realtimeviewer
             labelPosStart.Y -= diameter / 2;
 
             float textureRightX = labelPosStart.X + texture.Width;
-            if (textureRightX > 512) labelPosStart.X -= diameter + texture.Width;
+            if (textureRightX > 640) labelPosStart.X -= diameter + texture.Width;
             labelPosStart.Y += ((float)diameter - texture.Height) / 2;
             texture.Draw(labelPosStart, new Vector2(0, 0), color);
         }
@@ -301,9 +353,18 @@ namespace osucatch_editor_realtimeviewer
 
         private void DrawJudgementLine()
         {
-            Vector2 rp0 = new Vector2(0, 384 - CatcherAreaHeight + 640);
-            Vector2 rp1 = new Vector2(512, 384 - CatcherAreaHeight + 640);
-            DrawLine(rp0, rp1, Color.White);
+            if (screensContain > 1)
+            {
+                Vector2 rp0 = new Vector2(64, (float)(240.0 * this.screensContain));
+                Vector2 rp1 = new Vector2(576, (float)(240.0 * this.screensContain));
+                DrawLine(rp0, rp1, Color.White);
+            }
+            else
+            {
+                Vector2 rp0 = new Vector2(64, 384);
+                Vector2 rp1 = new Vector2(576, 384);
+                DrawLine(rp0, rp1, Color.White);
+            }
         }
 
         public void DrawTimingPoints(List<TimingControlPoint> timingControlPoints)
@@ -312,21 +373,38 @@ namespace osucatch_editor_realtimeviewer
             timingControlPoints.ForEach(timingControlPoint =>
             {
                 if (timingControlPoint.Time < 0 || timingControlPoint.BPM <= 0) return;
-                float diff = (float)(timingControlPoint.Time - viewerManager.currentTime);
-                // 0=在顶端 1=在判定线上 >1=超过判定线
-                float alpha = 1.0f;
-                if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
+                double deltaTime = timingControlPoint.Time - viewerManager.currentTime;
+                if (screensContain > 1)
                 {
-                    alpha = 1 - (diff / (float)viewerManager.ApproachTime);
-                    Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
-                    Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
-                    DrawLine(rp0, rp1, Color.Red);
-                    Texture2D? BPMTexture = TextureFromString(timingControlPoint.BPM.ToString("F0"), fontScale);
-                    if (BPMTexture == null) return;
-                    this.DrawLabel(BPMTexture, rp0, true, Color.Red);
-                    BPMTexture.Dispose();
+                    double timeSpan = screensContain * viewerManager.ApproachTime * 1.25;
+                    if (deltaTime <= timeSpan && deltaTime >= -timeSpan)
+                    {
+                        int posY = (int)(240.0 * this.screensContain - deltaTime / this.viewerManager.TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        DrawLine(rp0, rp1, Color.Red);
+                        Texture2D? BPMTexture = TextureFromString(timingControlPoint.BPM.ToString("F0"), fontScale);
+                        if (BPMTexture == null) return;
+                        this.DrawLabel(BPMTexture, rp0, true, Color.Red);
+                        BPMTexture.Dispose();
+                    }
                 }
-
+                else
+                {
+                    double upTime = this.viewerManager.ApproachTime;
+                    double bottomTime = this.viewerManager.ApproachTime / 4;
+                    if (deltaTime <= upTime && deltaTime >= -bottomTime)
+                    {
+                        int posY = (int)(384 - deltaTime / this.viewerManager.TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        DrawLine(rp0, rp1, Color.Red);
+                        Texture2D? BPMTexture = TextureFromString(timingControlPoint.BPM.ToString("F0"), fontScale);
+                        if (BPMTexture == null) return;
+                        this.DrawLabel(BPMTexture, rp0, true, Color.Red);
+                        BPMTexture.Dispose();
+                    }
+                }
             });
         }
 
@@ -336,21 +414,38 @@ namespace osucatch_editor_realtimeviewer
             difficultyControlPoints.ForEach(difficultyControlPoint =>
             {
                 if (difficultyControlPoint.Time < 0 || difficultyControlPoint.SliderVelocity <= 0) return;
-                float diff = (float)(difficultyControlPoint.Time - viewerManager.currentTime);
-                // 0=在顶端 1=在判定线上 >1=超过判定线
-                float alpha = 1.0f;
-                if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
+                double deltaTime = difficultyControlPoint.Time - viewerManager.currentTime;
+                if (screensContain > 1)
                 {
-                    alpha = 1 - (diff / (float)viewerManager.ApproachTime);
-                    Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
-                    Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
-                    DrawLine(rp0, rp1, Color.LightGreen);
-                    Texture2D? BPMTexture = TextureFromString(difficultyControlPoint.SliderVelocity.ToString("F2"), fontScale);
-                    if (BPMTexture == null) return;
-                    this.DrawLabel(BPMTexture, rp1, false, Color.LightGreen);
-                    BPMTexture.Dispose();
+                    double timeSpan = screensContain * viewerManager.ApproachTime * 1.25;
+                    if (deltaTime <= timeSpan && deltaTime >= -timeSpan)
+                    {
+                        int posY = (int)(240.0 * this.screensContain - deltaTime / this.viewerManager.TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        DrawLine(rp0, rp1, Color.LightGreen);
+                        Texture2D? BPMTexture = TextureFromString(difficultyControlPoint.SliderVelocity.ToString("F2"), fontScale);
+                        if (BPMTexture == null) return;
+                        this.DrawLabel(BPMTexture, rp1, false, Color.LightGreen);
+                        BPMTexture.Dispose();
+                    }
                 }
-
+                else
+                {
+                    double upTime = this.viewerManager.ApproachTime;
+                    double bottomTime = this.viewerManager.ApproachTime / 4;
+                    if (deltaTime <= upTime && deltaTime >= -bottomTime)
+                    {
+                        int posY = (int)(384 - deltaTime / this.viewerManager.TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        DrawLine(rp0, rp1, Color.LightGreen);
+                        Texture2D? BPMTexture = TextureFromString(difficultyControlPoint.SliderVelocity.ToString("F2"), fontScale);
+                        if (BPMTexture == null) return;
+                        this.DrawLabel(BPMTexture, rp1, false, Color.LightGreen);
+                        BPMTexture.Dispose();
+                    }
+                }
             });
         }
 
@@ -360,18 +455,32 @@ namespace osucatch_editor_realtimeviewer
             barLines.ForEach(barLine =>
             {
                 if (barLine.StartTime < 0) return;
-                float diff = (float)(barLine.StartTime - viewerManager.currentTime);
-                // 0=在顶端 1=在判定线上 >1=超过判定线
-                float alpha = 1.0f;
-                if (diff < viewerManager.ApproachTime * viewerManager.State_ARMul && diff > -(viewerManager.ApproachTime * (viewerManager.State_ARMul + 1)))
+                double deltaTime = barLine.StartTime - viewerManager.currentTime;
+                if (screensContain > 1)
                 {
-                    alpha = 1 - (diff / (float)viewerManager.ApproachTime);
-                    Vector2 rp0 = new Vector2(0, 384 * alpha - this.CatcherAreaHeight + 640);
-                    Vector2 rp1 = new Vector2(512, 384 * alpha - this.CatcherAreaHeight + 640);
-                    if (barLine.Major) DrawLine(rp0, rp1, Color.LightGray);
-                    else DrawLine(rp0, rp1, Color.Gray);
+                    double timeSpan = screensContain * viewerManager.ApproachTime * 1.25;
+                    if (deltaTime <= timeSpan && deltaTime >= -timeSpan)
+                    {
+                        int posY = (int)(240.0 * this.screensContain - deltaTime / this.viewerManager.TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        if (barLine.Major) DrawLine(rp0, rp1, Color.LightGray);
+                        else DrawLine(rp0, rp1, Color.Gray);
+                    }
                 }
-
+                else
+                {
+                    double upTime = this.viewerManager.ApproachTime;
+                    double bottomTime = this.viewerManager.ApproachTime / 4;
+                    if (deltaTime <= upTime && deltaTime >= -bottomTime)
+                    {
+                        int posY = (int)(384 - deltaTime / this.viewerManager.TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        if (barLine.Major) DrawLine(rp0, rp1, Color.LightGray);
+                        else DrawLine(rp0, rp1, Color.Gray);
+                    }
+                }
             });
         }
 

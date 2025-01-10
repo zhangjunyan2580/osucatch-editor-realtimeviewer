@@ -331,7 +331,17 @@ namespace osucatch_editor_realtimeviewer
 
                 ConsoleLog("Start FetchAll().", LogType.EditorReader, LogLevel.Debug);
 
-                reader.FetchAll();
+                try
+                {
+                    reader.FetchAll();
+                }
+                catch (Exception ex)
+                {
+                    ConsoleLog("FetchAll failed.\r\n" + ex.ToString(), LogType.EditorReader, LogLevel.Error);
+                    reader_timer.Interval = Idle_Interval;
+                    return;
+                }
+
 
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -713,6 +723,126 @@ namespace osucatch_editor_realtimeviewer
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void Screens1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = true;
+            Screens2ToolStripMenuItem.Checked = false;
+            Screens3ToolStripMenuItem.Checked = false;
+            Screens4ToolStripMenuItem.Checked = false;
+            Screens5ToolStripMenuItem.Checked = false;
+            Screens6ToolStripMenuItem.Checked = false;
+            Screens7ToolStripMenuItem.Checked = false;
+            Screens8ToolStripMenuItem.Checked = false;
+
+            this.Canvas.screensContain = 1;
+            this.Canvas.ScreensContainChanged();
+        }
+
+        private void Screens2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = false;
+            Screens2ToolStripMenuItem.Checked = true;
+            Screens3ToolStripMenuItem.Checked = false;
+            Screens4ToolStripMenuItem.Checked = false;
+            Screens5ToolStripMenuItem.Checked = false;
+            Screens6ToolStripMenuItem.Checked = false;
+            Screens7ToolStripMenuItem.Checked = false;
+            Screens8ToolStripMenuItem.Checked = false;
+
+            this.Canvas.screensContain = 2;
+            this.Canvas.ScreensContainChanged();
+        }
+
+        private void Screens3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = false;
+            Screens2ToolStripMenuItem.Checked = false;
+            Screens3ToolStripMenuItem.Checked = true;
+            Screens4ToolStripMenuItem.Checked = false;
+            Screens5ToolStripMenuItem.Checked = false;
+            Screens6ToolStripMenuItem.Checked = false;
+            Screens7ToolStripMenuItem.Checked = false;
+            Screens8ToolStripMenuItem.Checked = false;
+
+            this.Canvas.screensContain = 3;
+            this.Canvas.ScreensContainChanged();
+        }
+
+        private void Screens4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = false;
+            Screens2ToolStripMenuItem.Checked = false;
+            Screens3ToolStripMenuItem.Checked = false;
+            Screens4ToolStripMenuItem.Checked = true;
+            Screens5ToolStripMenuItem.Checked = false;
+            Screens6ToolStripMenuItem.Checked = false;
+            Screens7ToolStripMenuItem.Checked = false;
+            Screens8ToolStripMenuItem.Checked = false;
+
+            this.Canvas.screensContain = 4;
+            this.Canvas.ScreensContainChanged();
+        }
+
+        private void Screens5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = false;
+            Screens2ToolStripMenuItem.Checked = false;
+            Screens3ToolStripMenuItem.Checked = false;
+            Screens4ToolStripMenuItem.Checked = false;
+            Screens5ToolStripMenuItem.Checked = true;
+            Screens6ToolStripMenuItem.Checked = false;
+            Screens7ToolStripMenuItem.Checked = false;
+            Screens8ToolStripMenuItem.Checked = false;
+
+            this.Canvas.screensContain = 5;
+            this.Canvas.ScreensContainChanged();
+        }
+
+        private void Screens6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = false;
+            Screens2ToolStripMenuItem.Checked = false;
+            Screens3ToolStripMenuItem.Checked = false;
+            Screens4ToolStripMenuItem.Checked = false;
+            Screens5ToolStripMenuItem.Checked = false;
+            Screens6ToolStripMenuItem.Checked = true;
+            Screens7ToolStripMenuItem.Checked = false;
+            Screens8ToolStripMenuItem.Checked = false;
+
+            this.Canvas.screensContain = 6;
+            this.Canvas.ScreensContainChanged();
+        }
+
+        private void Screens7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = false;
+            Screens2ToolStripMenuItem.Checked = false;
+            Screens3ToolStripMenuItem.Checked = false;
+            Screens4ToolStripMenuItem.Checked = false;
+            Screens5ToolStripMenuItem.Checked = false;
+            Screens6ToolStripMenuItem.Checked = false;
+            Screens7ToolStripMenuItem.Checked = true;
+            Screens8ToolStripMenuItem.Checked = false;
+
+            this.Canvas.screensContain = 7;
+            this.Canvas.ScreensContainChanged();
+        }
+
+        private void Screens8ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Screens1ToolStripMenuItem.Checked = false;
+            Screens2ToolStripMenuItem.Checked = false;
+            Screens3ToolStripMenuItem.Checked = false;
+            Screens4ToolStripMenuItem.Checked = false;
+            Screens5ToolStripMenuItem.Checked = false;
+            Screens6ToolStripMenuItem.Checked = false;
+            Screens7ToolStripMenuItem.Checked = false;
+            Screens8ToolStripMenuItem.Checked = true;
+
+            this.Canvas.screensContain = 8;
+            this.Canvas.ScreensContainChanged();
         }
     }
 
