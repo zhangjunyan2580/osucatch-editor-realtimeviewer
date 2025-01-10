@@ -44,7 +44,7 @@ namespace osucatch_editor_realtimeviewer
 
         public void BuildNearby()
         {
-            NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
+            NearbyHitObjects.Clear();
             if (this.CatchHitObjects == null) return;
             int startIndex = this.HitObjectsLowerBound(currentTime);
             int endIndex = this.HitObjectsUpperBound(currentTime);
