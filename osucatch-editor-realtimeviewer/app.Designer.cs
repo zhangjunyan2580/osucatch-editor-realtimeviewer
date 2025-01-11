@@ -274,5 +274,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["BarLine_Show"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int ScreensContain {
+            get {
+                return ((int)(this["ScreensContain"]));
+            }
+            set {
+                this["ScreensContain"] = value;
+            }
+        }
     }
 }

@@ -66,6 +66,9 @@ namespace osucatch_editor_realtimeviewer
 
         public Color[] Combo_Colors = new Color[8] { Default_Colors[1], Default_Colors[3], Default_Colors[5], Default_Colors[7], Default_Colors[6], Default_Colors[4], Default_Colors[0], Default_Colors[2] };
 
+        private readonly float Border_Height = 32;
+        private readonly float Border_Width = 32;
+
         public Canvas()
             : base()
         {
@@ -94,9 +97,7 @@ namespace osucatch_editor_realtimeviewer
             int h = this.Size.Height;
             int x = 0;
             int y = 0;
-            float border_Height = 32;
-            float border_Width = 2 * 32;
-            double width_height = (640.0 + 2 * border_Width) / (480.0 * this.screensContain + 2 * border_Height);
+            double width_height = (640.0 + 2 * Border_Width) / (480.0 * this.screensContain + 2 * Border_Height);
             if (w / width_height > h)
             {
                 w = (int)(h * width_height);
@@ -124,7 +125,7 @@ namespace osucatch_editor_realtimeviewer
             this.Canvas_Resize(this, null);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            Vector2 border = new Vector2(2.0f, 1.0f) * ((screensContain > 1) ? 32.0f : 0);
+            Vector2 border = new Vector2(Border_Width, Border_Height) * ((screensContain > 1) ? 1 : 0);
             GL.Ortho(-border.X, 640.0 + border.X, 480 * screensContain + border.Y, -border.Y, 0.0, 1.0);
             GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit);
@@ -134,7 +135,7 @@ namespace osucatch_editor_realtimeviewer
         {
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            Vector2 border = new Vector2(2.0f, 1.0f) * ((screensContain > 1) ? 32.0f : 0);
+            Vector2 border = new Vector2(Border_Width, Border_Height) * ((screensContain > 1) ? 1 : 0);
             GL.Ortho(-border.X, 640.0 + border.X, 480 * screensContain + border.Y, -border.Y, 0.0, 1.0);
             this.Canvas_Resize(this, null);
         }
