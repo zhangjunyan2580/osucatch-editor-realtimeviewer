@@ -18,12 +18,12 @@ namespace osucatch_editor_realtimeviewer
 
 
 
-        public ViewerManager(string beatmap, int modsWhenOnlyBeatmap = 0)
+        public ViewerManager(string beatmap, int mods = 0)
         {
             currentTime = 0;
             NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
 
-            LoadBeatmap(beatmap, modsWhenOnlyBeatmap);
+            LoadBeatmap(beatmap, mods);
         }
 
         public void LoadBeatmap(string beatmap, int mods = 0)
