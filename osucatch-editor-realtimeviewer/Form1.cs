@@ -216,6 +216,7 @@ namespace osucatch_editor_realtimeviewer
                         this.Text = "Osu!.exe is not running";
                     }));
                     reader_timer.Interval = app.Default.Idle_Interval;
+                    beatmap_path = "";
                     return;
                 }
 
@@ -236,6 +237,7 @@ namespace osucatch_editor_realtimeviewer
                         this.Text = "Editor is not running";
                     }));
                     reader_timer.Interval = app.Default.Idle_Interval;
+                    beatmap_path = "";
                     return;
                 }
                 else
@@ -568,7 +570,6 @@ namespace osucatch_editor_realtimeviewer
 
         private void backup_timer_Tick(object? source, ElapsedEventArgs? e)
         {
-            Console.WriteLine("0");
             Need_Backup = true;
         }
 

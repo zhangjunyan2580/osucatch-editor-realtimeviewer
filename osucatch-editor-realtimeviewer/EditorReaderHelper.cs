@@ -185,7 +185,9 @@ namespace osucatch_editor_realtimeviewer
             SliderMultiplier = reader.SliderMultiplier;
             SliderTickRate = reader.SliderTickRate;
             Bookmarks = reader.bookmarks;
+            // TODO: Deep Copy
             ControlPoints = reader.controlPoints;
+            // TODO: Deep Copy
             HitObjects = reader.hitObjects;
         }
     }
