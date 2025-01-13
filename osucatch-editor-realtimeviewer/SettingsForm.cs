@@ -9,19 +9,19 @@
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            numericUpDown_width.Value = Form1.Window_Width;
-            numericUpDown_height.Value = Form1.Window_Height;
-            numericUpDown_idleInterval.Value = Form1.Idle_Interval;
-            numericUpDown_drawingInterval.Value = Form1.Drawing_Interval;
-            numericUpDown_backupInterval.Value = Form1.Backup_Interval / 1000;
-            textBox_osuFolder.Text = Form1.osu_path;
-            textBox_backupFolder.Text = Form1.Backup_Folder;
+            numericUpDown_width.Value = app.Default.Window_Width;
+            numericUpDown_height.Value = app.Default.Window_Height;
+            numericUpDown_idleInterval.Value = app.Default.Idle_Interval;
+            numericUpDown_drawingInterval.Value = app.Default.Drawing_Interval;
+            numericUpDown_backupInterval.Value = app.Default.Backup_Interval / 1000;
+            textBox_osuFolder.Text = app.Default.osu_path;
+            textBox_backupFolder.Text = app.Default.Backup_Folder;
             if (textBox_backupFolder.Text == "" && textBox_osuFolder.Text != "")
             {
                 textBox_backupFolder.Text = Path.Combine(textBox_osuFolder.Text, "EditorBackups");
             }
-            checkBox_enableBackup.Checked = Form1.Backup_Enabled;
-            checkBox_withColor.Checked = Form1.Combo_Colour;
+            checkBox_enableBackup.Checked = app.Default.Backup_Enabled;
+            checkBox_withColor.Checked = app.Default.Combo_Colour;
 
             checkBox_showConsole.Checked = app.Default.Show_Console;
             checkBox_Log_Program.Checked = app.Default.Log_Program;
@@ -87,24 +87,15 @@
                 return;
             }
 
-            Form1.Window_Width = (int)numericUpDown_width.Value;
-            app.Default.Window_Width = Form1.Window_Width;
-            Form1.Window_Height = (int)numericUpDown_height.Value;
-            app.Default.Window_Height = Form1.Window_Height;
-            Form1.Idle_Interval = (int)numericUpDown_idleInterval.Value;
-            app.Default.Idle_Interval = Form1.Idle_Interval;
-            Form1.Drawing_Interval = (int)numericUpDown_drawingInterval.Value;
-            app.Default.Drawing_Interval = Form1.Drawing_Interval;
-            Form1.Backup_Interval = (int)numericUpDown_backupInterval.Value * 1000;
-            app.Default.Backup_Interval = Form1.Backup_Interval;
-            Form1.osu_path = textBox_osuFolder.Text;
-            app.Default.osu_path = Form1.osu_path;
-            Form1.Backup_Folder = textBox_backupFolder.Text;
-            app.Default.Backup_Folder = Form1.Backup_Folder;
-            Form1.Backup_Enabled = checkBox_enableBackup.Checked;
-            app.Default.Backup_Enabled = Form1.Backup_Enabled;
-            Form1.Combo_Colour = checkBox_withColor.Checked;
-            app.Default.Combo_Colour = Form1.Combo_Colour;
+            app.Default.Window_Width = (int)numericUpDown_width.Value;
+            app.Default.Window_Height = (int)numericUpDown_height.Value;
+            app.Default.Idle_Interval = (int)numericUpDown_idleInterval.Value;
+            app.Default.Drawing_Interval = (int)numericUpDown_drawingInterval.Value;
+            app.Default.Backup_Interval = (int)numericUpDown_backupInterval.Value * 1000;
+            app.Default.osu_path = textBox_osuFolder.Text;
+            app.Default.Backup_Folder = textBox_backupFolder.Text;
+            app.Default.Backup_Enabled = checkBox_enableBackup.Checked;
+            app.Default.Combo_Colour = checkBox_withColor.Checked;
 
             app.Default.Show_Console = checkBox_showConsole.Checked;
             app.Default.Log_Program = checkBox_Log_Program.Checked;

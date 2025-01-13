@@ -47,7 +47,7 @@ namespace osu.Game.Beatmaps.Formats
                 if (line.StartsWith('[') && line.EndsWith(']'))
                 {
                     if (!Enum.TryParse(line[1..^1], out section))
-                        Form1.ConsoleLog($"Unknown section \"{line}\" in \"{output}\"", Form1.LogType.BeatmapParser, Form1.LogLevel.Warning);
+                        Log.ConsoleLog($"Unknown section \"{line}\" in \"{output}\"", Log.LogType.BeatmapParser, Log.LogLevel.Warning);
                     continue;
                 }
 
@@ -57,7 +57,7 @@ namespace osu.Game.Beatmaps.Formats
                 }
                 catch (Exception e)
                 {
-                    Form1.ConsoleLog($"Failed to process line \"{line}\" into \"{output}\": {e.Message}", Form1.LogType.BeatmapParser, Form1.LogLevel.Warning);
+                    Log.ConsoleLog($"Failed to process line \"{line}\" into \"{output}\": {e.Message}", Log.LogType.BeatmapParser, Log.LogLevel.Warning);
                 }
             }
         }

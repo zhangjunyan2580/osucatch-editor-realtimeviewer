@@ -148,7 +148,7 @@ namespace osucatch_editor_realtimeviewer
             }
             catch (Exception ex)
             {
-                Form1.ConsoleLog("Read texture file failed: " + path + "\r\n" + ex, Form1.LogType.Drawing, Form1.LogLevel.Error);
+                Log.ConsoleLog("Read texture file failed: " + path + "\r\n" + ex, Log.LogType.Drawing, Log.LogLevel.Error);
                 return null;
             }
         }
@@ -161,7 +161,7 @@ namespace osucatch_editor_realtimeviewer
             }
             catch (Exception ex)
             {
-                Form1.ConsoleLog("Build text texture failed: " + s + "\r\n" + ex, Form1.LogType.Drawing, Form1.LogLevel.Error);
+                Log.ConsoleLog("Build text texture failed: " + s + "\r\n" + ex, Log.LogType.Drawing, Log.LogLevel.Error);
                 return null;
             }
         }
@@ -257,7 +257,7 @@ namespace osucatch_editor_realtimeviewer
             PalpableCatchHitObject hitObject = wdpch.currentObject;
             double baseY = (screensContain <= 1) ? 384 : 240.0 * this.screensContain;
             Vector2 pos = new Vector2(64 + hitObject.EffectiveX, (float)(baseY - deltaTime / this.viewerManager.TimePerPixels));
-            if (Form1.Combo_Colour)
+            if (app.Default.Combo_Colour)
             {
                 int comboColorIndex = (hitObject.ComboIndex) % Combo_Colors.Length;
                 Color color = Combo_Colors[comboColorIndex];

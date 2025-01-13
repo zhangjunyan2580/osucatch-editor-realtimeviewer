@@ -59,11 +59,11 @@ namespace osucatch_editor_realtimeviewer
 
         public static IBeatmap Execute(string file, Mod[] mods)
         {
-            Form1.ConsoleLog("Reading beatmap.", Form1.LogType.BeatmapParser, Form1.LogLevel.Debug);
+            Log.ConsoleLog("Reading beatmap.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
             Ruleset ruleset = catchRulest;
             Beatmap beatmap = readFromFile(file);
             FlatWorkingBeatmap workingBeatmap = new FlatWorkingBeatmap(beatmap);
-            Form1.ConsoleLog("Converting beatmap.", Form1.LogType.BeatmapParser, Form1.LogLevel.Debug);
+            Log.ConsoleLog("Converting beatmap.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
             IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(ruleset, mods);
             if (playableBeatmap == null) throw new Exception("This beatmap is invalid or is not a ctb beatmap.");
             return playableBeatmap;
@@ -83,7 +83,7 @@ namespace osucatch_editor_realtimeviewer
 
         public static List<WithDistancePalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap, bool isCalDistance)
         {
-            Form1.ConsoleLog("Building hitobjects.", Form1.LogType.BeatmapParser, Form1.LogLevel.Debug);
+            Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
 
             List<PalpableCatchHitObject> palpableObjects = new List<PalpableCatchHitObject>();
 
