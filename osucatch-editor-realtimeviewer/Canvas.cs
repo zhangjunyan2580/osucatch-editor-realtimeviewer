@@ -148,7 +148,7 @@ namespace osucatch_editor_realtimeviewer
             }
             catch (Exception ex)
             {
-                Form1.ConsoleLog("Read texture file failed: " + path + "\r\n" + ex, Form1.LogType.Drawing, Form1.LogLevel.Error);
+                Log.ConsoleLog("Read texture file failed: " + path + "\r\n" + ex, Log.LogType.Drawing, Log.LogLevel.Error);
                 return null;
             }
         }
@@ -161,7 +161,7 @@ namespace osucatch_editor_realtimeviewer
             }
             catch (Exception ex)
             {
-                Form1.ConsoleLog("Build text texture failed: " + s + "\r\n" + ex, Form1.LogType.Drawing, Form1.LogLevel.Error);
+                Log.ConsoleLog("Build text texture failed: " + s + "\r\n" + ex, Log.LogType.Drawing, Log.LogLevel.Error);
                 return null;
             }
         }
