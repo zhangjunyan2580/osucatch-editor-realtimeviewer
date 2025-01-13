@@ -389,7 +389,7 @@ namespace osucatch_editor_realtimeviewer
 
 
                 // Backup
-                if (!isSameBeatmap && Need_Backup)
+                if (Need_Backup)
                 {
                     if (editorReaderHelper.Is_Editor_Running && newBeatmap != "")
                     {
