@@ -526,7 +526,7 @@ namespace osucatch_editor_realtimeviewer
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             reader_timer.Stop();
-            backup_timer.Stop();
+            backup_timer?.Stop();
         }
 
         private void noneToolStripMenuItem_Click(object sender, EventArgs e)
