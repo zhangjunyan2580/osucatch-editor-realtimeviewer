@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace osucatch_editor_realtimeviewer
 {
-    public class Log
+    public static class Log
     {
         public enum LogType
         {

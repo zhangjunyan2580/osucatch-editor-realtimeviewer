@@ -12,11 +12,8 @@ namespace osucatch_editor_realtimeviewer
     {
         public static string Path_Settings = "settings.txt";
 
-        EditorReader reader = new EditorReader();
-        bool Is_Doing_SetProcess = false;
-        bool Is_Doing_FetchEditor = false;
-        bool Is_Osu_Running = false;
-        bool Is_Editor_Running = false;
+        public EditorReaderHelper editorReaderHelper = new();
+        
         string beatmap_path = "";
         string lastBeatmap = "";
         string newBeatmap = "";
@@ -79,12 +76,16 @@ namespace osucatch_editor_realtimeviewer
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // -----------------------reading settings-----------------------
+            // show log console
             if (app.Default.Show_Console) Program.ShowConsole();
 
+            // window size
             this.Width = app.Default.Window_Width;
             this.Height = app.Default.Window_Height;
             SizeChanged += Form1_SizeChanged;
 
+            // osu path
             if (app.Default.osu_path == "")
             {
                 string osu_path = "";
@@ -97,13 +98,7 @@ namespace osucatch_editor_realtimeviewer
                 app.Default.Save();
             }
 
-            Graphics graphics = this.CreateGraphics();
-            dpi = (Int32)graphics.DpiX;
-            Log.ConsoleLog("DPI: " + dpi, Log.LogType.Program, Log.LogLevel.Info);
-            fontscale = 96f / dpi;
-            Log.ConsoleLog("Text Scale x" + fontscale.ToString("F2"), Log.LogType.Program, Log.LogLevel.Info);
-            this.Canvas.fontScale = fontscale;
-
+            // contain screens count
             this.Canvas.screensContain = app.Default.ScreensContain;
             ToolStripMenuItem[] screensMenuItems = {
                 Screens1ToolStripMenuItem,
@@ -120,18 +115,33 @@ namespace osucatch_editor_realtimeviewer
                 if (i == app.Default.ScreensContain - 1) screensMenuItems[i].Checked = true;
                 else screensMenuItems[i].Checked = false;
             }
+            // --------------------------------------------------------------
 
+            // ----------------------------get dpi---------------------------
+            Graphics graphics = this.CreateGraphics();
+            dpi = (Int32)graphics.DpiX;
+            Log.ConsoleLog("DPI: " + dpi, Log.LogType.Program, Log.LogLevel.Info);
+            fontscale = 96f / dpi;
+            Log.ConsoleLog("Text Scale x" + fontscale.ToString("F2"), Log.LogType.Program, Log.LogLevel.Info);
+            this.Canvas.fontScale = fontscale;
+            graphics.Dispose();
+            // --------------------------------------------------------------
+
+            // canvas init
+            this.Canvas.Init();
+
+            // reader timer
             reader_timer.Interval = app.Default.Idle_Interval;
             reader_timer.Start();
 
-            this.Canvas.Init();
-
+            // backup timer
             if (app.Default.Backup_Enabled == true)
             {
                 backup_timer.Interval = app.Default.Backup_Interval;
                 backup_timer.Start();
             }
 
+            // memory monitor timer
             System.Windows.Forms.Timer Memory_Monitor_Timer = new System.Windows.Forms.Timer();
             Memory_Monitor_Timer.Interval = 200;
             Memory_Monitor_Timer.Tick += Memory_Monitor;
@@ -178,360 +188,306 @@ namespace osucatch_editor_realtimeviewer
                 NeedReapplySettings = false;
             }
 
+
+            // fetch osu! process
+            if (!editorReaderHelper.FetchProcess())
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Text = "Osu!.exe is not running";
+                }));
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Log.ConsoleLog("Task Timeout, cancelled after fetching osu! process.", Log.LogType.Program, Log.LogLevel.Error);
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+
+
+            // fetch editor
+            if (!editorReaderHelper.FetchEditor())
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Text = "Editor is not running";
+                }));
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+            else
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Text = editorReaderHelper.beatmap_title;
+                }));
+            }
+
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Log.ConsoleLog("Task Timeout, cancelled after fetching editor.", Log.LogType.Program, Log.LogLevel.Error);
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+
+
+            // fetch all
+            Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
+            var thisReader = editorReaderHelper.FetchAll();
+            if (thisReader == null)
+            {
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+            Log.ConsoleLog("FetchAll complete.", Log.LogType.EditorReader, Log.LogLevel.Debug);
+
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Log.ConsoleLog("Task Timeout, cancelled after FetchAll().", Log.LogType.Program, Log.LogLevel.Error);
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+
+
+            // Build osu file Path
+            string newpath = "";
             try
             {
-                if (!Is_Osu_Running || reader.ProcessNeedsReload())
-                {
-                    try
-                    {
-                        Log.ConsoleLog("Osu! process needs Refetch.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                        if (Is_Doing_SetProcess)
-                        {
-                            Log.ConsoleLog("Already fetching osu!.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                            reader_timer.Interval = app.Default.Idle_Interval;
-                            return;
-                        }
-                        Log.ConsoleLog("Try to fetch osu! process.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                        Is_Doing_SetProcess = true;
-                        reader.SetProcess();
-                        Is_Doing_SetProcess = false;
-                        Log.ConsoleLog("Fetch osu! process successfully.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                        Is_Osu_Running = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ConsoleLog("No Osu!.exe found.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                        Log.ConsoleLog(ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Debug);
-                        Is_Doing_SetProcess = false;
-                        Invoke(new MethodInvoker(delegate ()
-                        {
-                            this.Text = "Osu!.exe is not running";
-                        }));
-                        reader_timer.Interval = app.Default.Idle_Interval;
-                        Is_Osu_Running = false;
-                        Is_Editor_Running = false;
-                        beatmap_path = "";
-                        return;
-                    }
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled before fetching editor.", Log.LogType.Program, Log.LogLevel.Warning);
-                    return;
-                }
-
-                string title = reader.ProcessTitle();
-                if (title == "")
-                {
-                    Log.ConsoleLog("Empty osu title.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                    Invoke(new MethodInvoker(delegate ()
-                    {
-                        this.Text = "Osu!.exe is not running";
-                    }));
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    Is_Osu_Running = false;
-                    Is_Editor_Running = false;
-                    beatmap_path = "";
-                    return;
-                }
-                if (!title.EndsWith(".osu"))
-                {
-                    Log.ConsoleLog("Osu title is not editor: " + title, Log.LogType.EditorReader, Log.LogLevel.Info);
-                    Invoke(new MethodInvoker(delegate ()
-                    {
-                        this.Text = "Editor is not running";
-                    }));
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    Is_Editor_Running = false;
-                    beatmap_path = "";
-                    return;
-                }
-                if (reader.EditorNeedsReload())
-                {
-                    Log.ConsoleLog("Editor needs Reload.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                    try
-                    {
-                        if (Is_Doing_SetProcess || Is_Doing_FetchEditor)
-                        {
-                            Log.ConsoleLog("Already reloading editor.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                            reader_timer.Interval = app.Default.Idle_Interval;
-                            return;
-                        }
-                        if (reader.ProcessNeedsReload())
-                        {
-                            Log.ConsoleLog("Process needs Reload.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                            return;
-                        }
-                        Log.ConsoleLog("Try fetch editor.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                        Is_Doing_FetchEditor = true;
-                        reader.FetchEditor();
-                        Is_Doing_FetchEditor = false;
-                        Log.ConsoleLog("Fetch editor successfully.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                        Is_Osu_Running = true;
-                        Is_Editor_Running = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ConsoleLog("Fetch editor failed.\r\n" + ex, Log.LogType.EditorReader, Log.LogLevel.Error);
-                        Is_Doing_FetchEditor = false;
-                        Invoke(new MethodInvoker(delegate ()
-                        {
-                            this.Text = "Editor is not running";
-                        }));
-                        reader_timer.Interval = app.Default.Idle_Interval;
-                        Is_Editor_Running = false;
-                        beatmap_path = "";
-                        return;
-                    }
-                }
-                else
-                {
-                    Invoke(new MethodInvoker(delegate ()
-                    {
-                        this.Text = title;
-                    }));
-                    Is_Editor_Running = true;
-                    if (reader_timer.Interval != app.Default.Drawing_Interval)
-                    {
-                        reader_timer.Interval = app.Default.Drawing_Interval;
-                    }
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled before FetchAll().", Log.LogType.Program, Log.LogLevel.Warning);
-                    return;
-                }
-
-                Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
-
-                try
-                {
-                    reader.FetchAll();
-                }
-                catch (Exception ex)
-                {
-                    Log.ConsoleLog("FetchAll failed.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
-                }
+                newpath = Path.Combine(app.Default.osu_path, "Songs", thisReader.ContainingFolder, thisReader.Filename);
+            }
+            catch (Exception ex)
+            {
+                Log.ConsoleLog("Path is invalid.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
+                Log.ConsoleLog("ContainingFolder: " + thisReader.ContainingFolder, Log.LogType.EditorReader, Log.LogLevel.Error);
+                Log.ConsoleLog("Filename: " + thisReader.Filename, Log.LogType.EditorReader, Log.LogLevel.Error);
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
 
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled before checking Editor_Reader's data.", Log.LogType.Program, Log.LogLevel.Warning);
-                    return;
-                }
-
-                // 读取editor reader的内容一定要进行检查
-                // reader数据在程序运行种可能会变的
-
-                var thisReader = new BeatmapInfoCollection(reader);
-
-                string newpath = "";
-                try
-                {
-                    newpath = Path.Combine(app.Default.osu_path, "Songs", thisReader.ContainingFolder, thisReader.Filename);
-                }
-                catch (Exception ex)
-                {
-                    Log.ConsoleLog("Path is invalid.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
-                    Log.ConsoleLog("ContainingFolder: " + thisReader.ContainingFolder, Log.LogType.EditorReader, Log.LogLevel.Error);
-                    Log.ConsoleLog("Filename: " + thisReader.Filename, Log.LogType.EditorReader, Log.LogLevel.Error);
-                    return;
-                }
-
-                float readerTime = thisReader.EditorTime;
-
-                if (thisReader.HitObjects == null || thisReader.HitObjects.Count <= 0)
-                {
-                    Log.ConsoleLog("HitObjects is empty.", Log.LogType.EditorReader, Log.LogLevel.Warning);
-                    return;
-                }
-
-                Log.ConsoleLog("FetchAll complete.", Log.LogType.EditorReader, Log.LogLevel.Debug);
-
-                // Fix Editor Reader
-                // Modified from Mapping_Tools
-                // https://github.com/OliBomby/Mapping_Tools/tree/master/Mapping_Tools/Classes/ToolHelpers/EditorReaderStuff.cs
-                // Under MIT Licnece https://github.com/OliBomby/Mapping_Tools/blob/master/LICENCE
-                if (!(thisReader.NumControlPoints > 0 &&
+            // Check editor reader's data
+            if (thisReader.HitObjects == null || thisReader.HitObjects.Count <= 0)
+            {
+                Log.ConsoleLog("HitObjects is empty.", Log.LogType.EditorReader, Log.LogLevel.Warning);
+                return;
+            }
+            // Fix Editor Reader
+            // Modified from Mapping_Tools
+            // https://github.com/OliBomby/Mapping_Tools/tree/master/Mapping_Tools/Classes/ToolHelpers/EditorReaderStuff.cs
+            // Under MIT Licnece https://github.com/OliBomby/Mapping_Tools/blob/master/LICENCE
+            if (!(thisReader.NumControlPoints > 0 &&
                 thisReader.ControlPoints != null && thisReader.HitObjects != null &&
                 thisReader.NumControlPoints == thisReader.ControlPoints.Count && thisReader.NumObjects == thisReader.HitObjects.Count))
+            {
+                Log.ConsoleLog("Fetched data is invalid.", Log.LogType.EditorReader, Log.LogLevel.Error);
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+            int removeCount = thisReader.HitObjects.RemoveAll(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
+            readerHitObject.SegmentCount > 9000 || readerHitObject.Type == 0 || readerHitObject.SampleSet > 1000 ||
+            readerHitObject.SampleSetAdditions > 1000 || readerHitObject.SampleVolume > 1000);
+            if (removeCount > 0) Log.ConsoleLog("Removed " + removeCount + " invalid hitObject(s).", Log.LogType.BeatmapBuilder, Log.LogLevel.Warning);
+            // -----------------------
+
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Log.ConsoleLog("Task Timeout, cancelled after checking editor reader's data.", Log.LogType.Program, Log.LogLevel.Error);
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+
+
+            // build new beatmap
+            Log.ConsoleLog("Start build new beatmap.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
+            if (beatmap_path != newpath || lastBeatmap == "")
+            {
+                // new beatmap
+                beatmap_path = newpath;
+                try
                 {
-                    Log.ConsoleLog("Fetched data is invalid.", Log.LogType.EditorReader, Log.LogLevel.Error);
+                    newBeatmap = BeatmapBuilder.BuildNewBeatmapFromFilepath(beatmap_path, thisReader);
+                }
+                catch (Exception ex)
+                {
+                    Log.ConsoleLog("Build new beatmap from file failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
+                    reader_timer.Interval = app.Default.Idle_Interval;
                     return;
                 }
-
-                int removeCount = thisReader.HitObjects.RemoveAll(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
-                readerHitObject.SegmentCount > 9000 || readerHitObject.Type == 0 || readerHitObject.SampleSet > 1000 ||
-                readerHitObject.SampleSetAdditions > 1000 || readerHitObject.SampleVolume > 1000);
-                // -----------------------
-
-                if (removeCount > 0) Log.ConsoleLog("Removed " + removeCount + " invalid hitObject(s).", Log.LogType.BeatmapBuilder, Log.LogLevel.Warning);
-
-                if (cancellationToken.IsCancellationRequested)
+            }
+            else
+            {
+                try
                 {
-                    Log.ConsoleLog("Task Timeout, cancelled before building new beatmap.", Log.LogType.Program, Log.LogLevel.Warning);
+                    newBeatmap = BeatmapBuilder.BuildNewBeatmapFromString(newBeatmap, thisReader);
+                }
+                catch (Exception ex)
+                {
+                    Log.ConsoleLog("Build new beatmap from string failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
+                    reader_timer.Interval = app.Default.Idle_Interval;
                     return;
                 }
+            }
+            Log.ConsoleLog("Build new beatmap successfully.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
 
-                Log.ConsoleLog("Start build new beatmap.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
 
-                // 新文件
-                if (beatmap_path != newpath || lastBeatmap == "")
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Log.ConsoleLog("Task Timeout, cancelled after building new beatmap.", Log.LogType.Program, Log.LogLevel.Error);
+                reader_timer.Interval = app.Default.Idle_Interval;
+                return;
+            }
+
+
+            // cache beatmap & mods & distanceType
+            bool isSameBeatmap = false;
+            bool isSameMods = false;
+            bool isSameDistanceType = false;
+            // isSameBeatmap
+            if (string.Compare(newBeatmap, lastBeatmap, StringComparison.Ordinal) == 0)
+            {
+                isSameBeatmap = true;
+            }
+            else
+            {
+                lastBeatmap = newBeatmap;
+            }
+            // isSameMods
+            int mods = 0;
+            if (hRToolStripMenuItem.Checked) mods = (1 << 4);
+            else if (eZToolStripMenuItem.Checked) mods = (1 << 1);
+            if (mods == lastMods)
+            {
+                isSameMods = true;
+            }
+            else
+            {
+                lastMods = mods;
+            }
+            // isSameDistanceType
+            if (this.Canvas.viewerManager != null)
+            {
+                if (hideToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.None;
+                else if (sameWithEditorToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.SameWithEditor;
+                else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.NoSliderVelocityMultiplier;
+                else if (compareWithWalkSpeedToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.CompareWithWalkSpeed;
+                else this.Canvas.viewerManager.DistanceType = DistanceType.None;
+                if (this.Canvas.viewerManager.DistanceType == lastDistanceType)
                 {
-                    beatmap_path = newpath;
+                    isSameDistanceType = true;
+                }
+            }
+
+
+            // Backup
+            if (!isSameBeatmap && Need_Backup)
+            {
+                if (editorReaderHelper.Is_Editor_Running && newBeatmap != "")
+                {
                     try
                     {
-                        newBeatmap = BuildNewBeatmapFromFilepath(beatmap_path, thisReader);
+                        Log.ConsoleLog("Start backup.", Log.LogType.Backup, Log.LogLevel.Info);
+                        string backupFilePath = Path.Combine(app.Default.Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
+                        string? directoryPath = Path.GetDirectoryName(backupFilePath);
+                        if (directoryPath == null)
+                        {
+                            Log.ConsoleLog("Backup failed. Path is invalid: " + backupFilePath, Log.LogType.Backup, Log.LogLevel.Error);
+                        }
+                        else
+                        {
+                            Directory.CreateDirectory(directoryPath);
+                            File.WriteAllText(backupFilePath, newBeatmap);
+                            Need_Backup = false;
+                            Log.ConsoleLog("Backup successfully.", Log.LogType.Backup, Log.LogLevel.Info);
+                        }
                     }
                     catch (Exception ex)
                     {
-                        Log.ConsoleLog("Build new beatmap from file failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
-                        return;
+                        Log.ConsoleLog("Backup failed.\r\n" + ex.ToString(), Log.LogType.Backup, Log.LogLevel.Error);
+                        Need_Backup = false;
                     }
                 }
-                else
-                {
-                    try
-                    {
-                        newBeatmap = BuildNewBeatmapFromString(newBeatmap, thisReader);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ConsoleLog("Build new beatmap from string failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
-                        return;
-                    }
-                }
+            }
 
-                Log.ConsoleLog("Build new beatmap successfully.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Log.ConsoleLog("Task Timeout, cancelled after backup.", Log.LogType.Program, Log.LogLevel.Error);
+                return;
+            }
+
+
+            // drop outdated data
+            if (DateTime.Now.Ticks <= LastDrawingTimeStamp)
+            {
+                Log.ConsoleLog("Drop an outdated data.", Log.LogType.Program, Log.LogLevel.Warning);
+                return;
+            }
+
+
+            if (this.Canvas.viewerManager != null && isSameBeatmap && isSameMods && isSameDistanceType)
+            {
+                Log.ConsoleLog("Beatmap no changes. Using last data.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            }
+            else
+            {
+                Log.ConsoleLog("Try parse beatmap.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+                if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(newBeatmap, mods);
+                else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
+                lastDistanceType = this.Canvas.viewerManager.DistanceType;
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    Log.ConsoleLog("Task Timeout, cancelled before backup or beatmap prasing.", Log.LogType.Program, Log.LogLevel.Warning);
+                    Log.ConsoleLog("Task Timeout, cancelled before drawing.", Log.LogType.Program, Log.LogLevel.Warning);
                     return;
                 }
 
-                bool isSameBeatmap = false;
-                bool isSameMods = false;
-                bool isSameDistanceType = false;
+                Log.ConsoleLog("Parse beatmap successfully.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            }
 
-                if (string.Compare(newBeatmap, lastBeatmap, StringComparison.Ordinal) == 0)
-                {
-                    isSameBeatmap = true;
-                }
-                else
-                {
-                    lastBeatmap = newBeatmap;
-                }
 
-                int mods = 0;
-                if (hRToolStripMenuItem.Checked) mods = (1 << 4);
-                else if (eZToolStripMenuItem.Checked) mods = (1 << 1);
-                if (mods == lastMods)
-                {
-                    isSameMods = true;
-                }
-                else
-                {
-                    lastMods = mods;
-                }
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Log.ConsoleLog("Task Timeout, cancelled before beatmap prasing.", Log.LogType.Program, Log.LogLevel.Warning);
+                return;
+            }
 
-                if (this.Canvas.viewerManager != null)
-                {
-                    if (hideToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.None;
-                    else if (sameWithEditorToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.SameWithEditor;
-                    else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.NoSliderVelocityMultiplier;
-                    else if (compareWithWalkSpeedToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.CompareWithWalkSpeed;
-                    else this.Canvas.viewerManager.DistanceType = DistanceType.None;
-                    if (this.Canvas.viewerManager.DistanceType == lastDistanceType)
-                    {
-                        isSameDistanceType = true;
-                    }
-                }
 
-                // Backup
-                if (!isSameBeatmap && Need_Backup)
-                {
-                    if (Is_Editor_Running && newBeatmap != "")
-                    {
-                        try
-                        {
-                            Log.ConsoleLog("Start backup.", Log.LogType.Backup, Log.LogLevel.Info);
-                            string backupFilePath = Path.Combine(app.Default.Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
-                            string? directoryPath = Path.GetDirectoryName(backupFilePath);
-                            if (directoryPath == null)
-                            {
-                                Log.ConsoleLog("Backup failed. Path is invalid: " + backupFilePath, Log.LogType.Backup, Log.LogLevel.Error);
-                            }
-                            else
-                            {
-                                Directory.CreateDirectory(directoryPath);
-                                File.WriteAllText(backupFilePath, newBeatmap);
-                                Need_Backup = false;
-                                Log.ConsoleLog("Backup successfully.", Log.LogType.Backup, Log.LogLevel.Info);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.ConsoleLog("Backup failed.\r\n" + ex.ToString(), Log.LogType.Backup, Log.LogLevel.Error);
-                        }
-                    }
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled before beatmap prasing.", Log.LogType.Program, Log.LogLevel.Warning);
-                    return;
-                }
-
-                // 丢弃旧帧
-                if (DateTime.Now.Ticks <= LastDrawingTimeStamp)
-                {
-                    Log.ConsoleLog("Drop an outdated data.", Log.LogType.Program, Log.LogLevel.Warning);
-                    return;
-                }
-
-                if (this.Canvas.viewerManager != null && isSameBeatmap && isSameMods && isSameDistanceType)
-                {
-                    Log.ConsoleLog("Beatmap no changes. Using last data.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
-                }
-                else
-                {
-                    Log.ConsoleLog("Try parse beatmap.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
-                    if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(newBeatmap, mods);
-                    else this.Canvas.viewerManager.LoadBeatmap(newBeatmap, mods);
-                    lastDistanceType = this.Canvas.viewerManager.DistanceType;
-
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        Log.ConsoleLog("Task Timeout, cancelled before drawing.", Log.LogType.Program, Log.LogLevel.Warning);
-                        return;
-                    }
-
-                    Log.ConsoleLog("Parse beatmap successfully.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
-                }
-
-                this.Canvas.viewerManager.currentTime = readerTime;
-                Log.ConsoleLog("Start paint.", Log.LogType.Drawing, Log.LogLevel.Debug);
-
+            // draw
+            try
+            {
+                this.Canvas.viewerManager.currentTime = thisReader.EditorTime;
+                Log.ConsoleLog("Start drawing.", Log.LogType.Drawing, Log.LogLevel.Debug);
                 Invoke(new MethodInvoker(delegate ()
                 {
                     this.Canvas.Canvas_Paint(null, null);
                 }));
+                Log.ConsoleLog("Draw a frame successful.", Log.LogType.Drawing, Log.LogLevel.Debug);
+            }
+            catch (Exception ex)
+            {
+                Log.ConsoleLog("Draw a frame failed.\r\n" + ex, Log.LogType.Drawing, Log.LogLevel.Debug);
+            }
 
-                Log.ConsoleLog("Paint a frame successful.", Log.LogType.Drawing, Log.LogLevel.Debug);
+            /*
+            try
+            {
+
             }
             catch (Exception ex)
             {
                 Log.ConsoleLog(ex.ToString(), Log.LogType.Program, Log.LogLevel.Error);
-                Is_Osu_Running = false;
-                Is_Editor_Running = false;
             }
+            */
 
             if (DateTime.Now.Ticks > LastDrawingTimeStamp) LastDrawingTimeStamp = DateTime.Now.Ticks;
+            reader_timer.Interval = app.Default.Drawing_Interval;
         }
 
         private async void reader_timer_Tick(object sender, EventArgs e)
@@ -548,106 +504,7 @@ namespace osucatch_editor_realtimeviewer
         }
 
 
-        private string BuildNewBeatmapFromString(string orgbeatmap, BeatmapInfoCollection thisReader)
-        {
-            byte[] byteArray = Encoding.UTF8.GetBytes(orgbeatmap);
-            MemoryStream stream = new MemoryStream(byteArray);
-            StreamReader file = new StreamReader(stream);
-            return BuildNewBeatmap(file, thisReader);
-        }
-        private string BuildNewBeatmapFromFilepath(string orgpath, BeatmapInfoCollection thisReader)
-        {
-            StreamReader file = File.OpenText(orgpath);
-            return BuildNewBeatmap(file, thisReader);
-        }
 
-        /*
-         * MUCH BOOST BUT IT CAUSE RANDOM ERROR >_<
-         * 
-        private List<HitObject> FilterNearbyHitObjects(List<HitObject> hitObject, float? editorTime)
-        {
-            if (editorTime == null) return hitObject;
-            double halfDuring = 10 * 1000;
-            if (hRToolStripMenuItem.Checked) halfDuring /= 1.5;
-            else if (eZToolStripMenuItem.Checked) halfDuring *= 2;
-            return hitObject.Where(ho =>
-            {
-                // 保留当前滑条和spin
-                if (editorTime - ho.StartTime >= 0 && ho.EndTime - editorTime >= 0) return true;
-                // 只保留Endtime距当前时间小于10秒前的物件，或者StartTime距当前时间小于10秒后的物件
-                if (editorTime - ho.EndTime >= 0 && editorTime - ho.EndTime <= halfDuring) return true;
-                else if (ho.StartTime - editorTime >= 0 && ho.StartTime - editorTime <= halfDuring) return true;
-                else return false;
-            }).ToList();
-        }
-        */
-
-
-        private string BuildNewBeatmap(StreamReader file, BeatmapInfoCollection thisReader)
-        {
-            StringBuilder newfile = new StringBuilder();
-            string? line;
-            bool isMultiLine = false;
-            while ((line = file.ReadLine()) != null)
-            {
-                if (!line.StartsWith("Tags") && line.Length > 1000)
-                {
-                    // Known bug: ":0|0" repeat
-                    if (line.Length > 10000 && line.IndexOf(":0|0:0|0:0|0:0|0:0|0:0|0:0|0:0|0") > 0)
-                    {
-                        throw new Exception("Found an incorrect \":0|0 repeat\" line.");
-                    }
-                    Log.ConsoleLog("Maybe an incorrect line: " + line, Log.LogType.BeatmapParser, Log.LogLevel.Debug);
-                }
-
-                if (isMultiLine)
-                {
-                    if (line.StartsWith("["))
-                    {
-                        isMultiLine = false;
-                    }
-                    else continue;
-                }
-
-                // 只替换必要的东西
-                if (Regex.IsMatch(line, "^PreviewTime:")) newfile.AppendLine("PreviewTime: " + thisReader.PreviewTime);
-                else if (Regex.IsMatch(line, "^StackLeniency:")) newfile.AppendLine("StackLeniency: " + thisReader.StackLeniency);
-
-                // 强制CTB模式
-                // if (Regex.IsMatch(line, "^Mode:")) newfile += "Mode: 2" + "\r\n";
-
-                else if (Regex.IsMatch(line, "^HPDrainRate:")) newfile.AppendLine("HPDrainRate: " + thisReader.HPDrainRate);
-                else if (Regex.IsMatch(line, "^CircleSize:")) newfile.AppendLine("CircleSize: " + thisReader.CircleSize);
-                else if (Regex.IsMatch(line, "^OverallDifficulty:")) newfile.AppendLine("OverallDifficulty: " + thisReader.OverallDifficulty);
-                else if (Regex.IsMatch(line, "^ApproachRate:")) newfile.AppendLine("ApproachRate: " + thisReader.ApproachRate);
-
-                else if (Regex.IsMatch(line, "^SliderMultiplier:")) newfile.AppendLine("SliderMultiplier: " + thisReader.SliderMultiplier);
-                else if (Regex.IsMatch(line, "^SliderTickRate:")) newfile.AppendLine("SliderTickRate: " + thisReader.SliderTickRate);
-
-                else if (Regex.IsMatch(line, "^Bookmarks:"))
-                {
-                    newfile.AppendLine("Bookmarks: " + String.Join(",", thisReader.Bookmarks));
-                }
-
-                else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
-                {
-                    newfile.AppendLine("[TimingPoints]");
-                    newfile.AppendLine(String.Join("\r\n", thisReader.ControlPoints));
-                    newfile.AppendLine();
-                    isMultiLine = true;
-                }
-                else if (Regex.IsMatch(line, @"^\[HitObjects\]"))
-                {
-                    newfile.AppendLine("[HitObjects]");
-                    // newfile.AppendLine(String.Join("\r\n", FilterNearbyHitObjects(thisReader.HitObjects, editorTime)));
-                    newfile.AppendLine(String.Join("\r\n", thisReader.HitObjects));
-                    newfile.AppendLine();
-                    isMultiLine = true;
-                }
-                else newfile.AppendLine(line);
-            }
-            return newfile.ToString();
-        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -873,43 +730,6 @@ namespace osucatch_editor_realtimeviewer
         }
     }
 
-    public class BeatmapInfoCollection
-    {
-        public int NumControlPoints;
-        public int NumObjects;
-        public int EditorTime;
-        public string ContainingFolder;
-        public string Filename;
-        public int PreviewTime;
-        public float StackLeniency;
-        public float HPDrainRate;
-        public float CircleSize;
-        public float OverallDifficulty;
-        public float ApproachRate;
-        public double SliderMultiplier;
-        public double SliderTickRate;
-        public int[] Bookmarks;
-        public List<ControlPoint> ControlPoints;
-        public List<Editor_Reader.HitObject> HitObjects;
-        public BeatmapInfoCollection(EditorReader reader)
-        {
-            NumControlPoints = reader.numControlPoints;
-            NumObjects = reader.numObjects;
-            EditorTime = reader.EditorTime();
-            ContainingFolder = reader.ContainingFolder;
-            Filename = reader.Filename;
-            PreviewTime = reader.PreviewTime;
-            StackLeniency = reader.StackLeniency;
-            HPDrainRate = reader.HPDrainRate;
-            CircleSize = reader.CircleSize;
-            OverallDifficulty = reader.OverallDifficulty;
-            ApproachRate = reader.ApproachRate;
-            SliderMultiplier = reader.SliderMultiplier;
-            SliderTickRate = reader.SliderTickRate;
-            Bookmarks = reader.bookmarks;
-            ControlPoints = reader.controlPoints;
-            HitObjects = reader.hitObjects;
-        }
-    }
+
 
 }
