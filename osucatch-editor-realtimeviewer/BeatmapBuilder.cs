@@ -93,6 +93,7 @@ namespace osucatch_editor_realtimeviewer
                         if (i > 0) newfile.Append(',');
                         newfile.Append(thisReader.Bookmarks[i]);
                     }
+                    newfile.Append("\r\n");
                 }
 
                 else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
