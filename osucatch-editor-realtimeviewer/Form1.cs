@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Timers;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -29,6 +30,8 @@ namespace osucatch_editor_realtimeviewer
         public static string Path_Img_Banana = @"img/fruit-bananas.png";
 
         public static bool NeedReapplySettings = false;
+
+        private static System.Timers.Timer? backup_timer;
 
         public Form1()
         {
@@ -137,7 +140,8 @@ namespace osucatch_editor_realtimeviewer
             // backup timer
             if (app.Default.Backup_Enabled == true)
             {
-                backup_timer.Interval = app.Default.Backup_Interval;
+                backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
+                backup_timer.Elapsed += backup_timer_Tick;
                 backup_timer.Start();
             }
 
@@ -175,14 +179,26 @@ namespace osucatch_editor_realtimeviewer
                     this.Height = app.Default.Window_Height;
 
                 }));
-                if (app.Default.Backup_Enabled && !backup_timer.Enabled)
+                if (app.Default.Backup_Enabled)
                 {
-                    backup_timer.Interval = app.Default.Backup_Interval;
-                    backup_timer.Start();
+                    if (backup_timer == null)
+                    {
+                        backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
+                        backup_timer.Elapsed += backup_timer_Tick;
+                        backup_timer.Start();
+                    }
+                    else
+                    {
+                        backup_timer.Interval = app.Default.Backup_Interval;
+                    }
                 }
-                else if (!app.Default.Backup_Enabled && backup_timer.Enabled)
+                else
                 {
-                    backup_timer.Stop();
+                    if (backup_timer != null)
+                    {
+                        backup_timer.Stop();
+                        backup_timer = null;
+                    }
                 }
 
                 NeedReapplySettings = false;
@@ -550,8 +566,9 @@ namespace osucatch_editor_realtimeviewer
             sf.ShowDialog();
         }
 
-        private void backup_timer_Tick(object sender, EventArgs e)
+        private void backup_timer_Tick(object? source, ElapsedEventArgs? e)
         {
+            Console.WriteLine("0");
             Need_Backup = true;
         }
 

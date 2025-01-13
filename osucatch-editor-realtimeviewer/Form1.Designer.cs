@@ -57,7 +57,6 @@
             openSettingsFileToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem1 = new ToolStripMenuItem();
-            backup_timer = new System.Windows.Forms.Timer(components);
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -97,7 +96,7 @@
             // 
             modToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { hRToolStripMenuItem, eZToolStripMenuItem, noneToolStripMenuItem });
             modToolStripMenuItem.Name = "modToolStripMenuItem";
-            modToolStripMenuItem.Size = new Size(180, 22);
+            modToolStripMenuItem.Size = new Size(175, 22);
             modToolStripMenuItem.Text = "&Mod";
             // 
             // hRToolStripMenuItem
@@ -130,7 +129,7 @@
             // 
             distanceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { hideToolStripMenuItem, sameWithEditorToolStripMenuItem, noSliderVelocityMultiplierToolStripMenuItem, compareWithWalkSpeedToolStripMenuItem });
             distanceToolStripMenuItem.Name = "distanceToolStripMenuItem";
-            distanceToolStripMenuItem.Size = new Size(180, 22);
+            distanceToolStripMenuItem.Size = new Size(175, 22);
             distanceToolStripMenuItem.Text = "&Distance To Next";
             // 
             // hideToolStripMenuItem
@@ -171,27 +170,27 @@
             // 
             screenToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { Screens1ToolStripMenuItem, Screens2ToolStripMenuItem, Screens3ToolStripMenuItem, Screens4ToolStripMenuItem, Screens5ToolStripMenuItem, Screens6ToolStripMenuItem, Screens7ToolStripMenuItem, Screens8ToolStripMenuItem });
             screenToolStripMenuItem.Name = "screenToolStripMenuItem";
-            screenToolStripMenuItem.Size = new Size(180, 22);
+            screenToolStripMenuItem.Size = new Size(175, 22);
             screenToolStripMenuItem.Text = "&Accommodate";
             // 
             // Screens1ToolStripMenuItem
             // 
             Screens1ToolStripMenuItem.Name = "Screens1ToolStripMenuItem";
-            Screens1ToolStripMenuItem.Size = new Size(180, 22);
+            Screens1ToolStripMenuItem.Size = new Size(139, 22);
             Screens1ToolStripMenuItem.Text = "1 (Preview)";
             Screens1ToolStripMenuItem.Click += Screens1ToolStripMenuItem_Click;
             // 
             // Screens2ToolStripMenuItem
             // 
             Screens2ToolStripMenuItem.Name = "Screens2ToolStripMenuItem";
-            Screens2ToolStripMenuItem.Size = new Size(180, 22);
+            Screens2ToolStripMenuItem.Size = new Size(139, 22);
             Screens2ToolStripMenuItem.Text = "2";
             Screens2ToolStripMenuItem.Click += Screens2ToolStripMenuItem_Click;
             // 
             // Screens3ToolStripMenuItem
             // 
             Screens3ToolStripMenuItem.Name = "Screens3ToolStripMenuItem";
-            Screens3ToolStripMenuItem.Size = new Size(180, 22);
+            Screens3ToolStripMenuItem.Size = new Size(139, 22);
             Screens3ToolStripMenuItem.Text = "3";
             Screens3ToolStripMenuItem.Click += Screens3ToolStripMenuItem_Click;
             // 
@@ -200,47 +199,47 @@
             Screens4ToolStripMenuItem.Checked = true;
             Screens4ToolStripMenuItem.CheckState = CheckState.Checked;
             Screens4ToolStripMenuItem.Name = "Screens4ToolStripMenuItem";
-            Screens4ToolStripMenuItem.Size = new Size(180, 22);
+            Screens4ToolStripMenuItem.Size = new Size(139, 22);
             Screens4ToolStripMenuItem.Text = "4";
             Screens4ToolStripMenuItem.Click += Screens4ToolStripMenuItem_Click;
             // 
             // Screens5ToolStripMenuItem
             // 
             Screens5ToolStripMenuItem.Name = "Screens5ToolStripMenuItem";
-            Screens5ToolStripMenuItem.Size = new Size(180, 22);
+            Screens5ToolStripMenuItem.Size = new Size(139, 22);
             Screens5ToolStripMenuItem.Text = "5";
             Screens5ToolStripMenuItem.Click += Screens5ToolStripMenuItem_Click;
             // 
             // Screens6ToolStripMenuItem
             // 
             Screens6ToolStripMenuItem.Name = "Screens6ToolStripMenuItem";
-            Screens6ToolStripMenuItem.Size = new Size(180, 22);
+            Screens6ToolStripMenuItem.Size = new Size(139, 22);
             Screens6ToolStripMenuItem.Text = "6";
             Screens6ToolStripMenuItem.Click += Screens6ToolStripMenuItem_Click;
             // 
             // Screens7ToolStripMenuItem
             // 
             Screens7ToolStripMenuItem.Name = "Screens7ToolStripMenuItem";
-            Screens7ToolStripMenuItem.Size = new Size(180, 22);
+            Screens7ToolStripMenuItem.Size = new Size(139, 22);
             Screens7ToolStripMenuItem.Text = "7";
             Screens7ToolStripMenuItem.Click += Screens7ToolStripMenuItem_Click;
             // 
             // Screens8ToolStripMenuItem
             // 
             Screens8ToolStripMenuItem.Name = "Screens8ToolStripMenuItem";
-            Screens8ToolStripMenuItem.Size = new Size(180, 22);
+            Screens8ToolStripMenuItem.Size = new Size(139, 22);
             Screens8ToolStripMenuItem.Text = "8";
             Screens8ToolStripMenuItem.Click += Screens8ToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(177, 6);
+            toolStripSeparator1.Size = new Size(172, 6);
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(180, 22);
+            exitToolStripMenuItem.Size = new Size(175, 22);
             exitToolStripMenuItem.Text = "&Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -271,11 +270,6 @@
             githubToolStripMenuItem1.Size = new Size(114, 22);
             githubToolStripMenuItem1.Text = "&Github";
             githubToolStripMenuItem1.Click += githubToolStripMenuItem1_Click;
-            // 
-            // backup_timer
-            // 
-            backup_timer.Interval = 60000;
-            backup_timer.Tick += backup_timer_Tick;
             // 
             // Form1
             // 
@@ -309,7 +303,6 @@
         private ToolStripMenuItem githubToolStripMenuItem1;
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem openSettingsFileToolStripMenuItem;
-        private System.Windows.Forms.Timer backup_timer;
         private ToolStripMenuItem distanceToolStripMenuItem;
         private ToolStripMenuItem hideToolStripMenuItem;
         private ToolStripMenuItem sameWithEditorToolStripMenuItem;
