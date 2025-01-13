@@ -257,7 +257,7 @@ namespace osucatch_editor_realtimeviewer
             PalpableCatchHitObject hitObject = wdpch.currentObject;
             double baseY = (screensContain <= 1) ? 384 : 240.0 * this.screensContain;
             Vector2 pos = new Vector2(64 + hitObject.EffectiveX, (float)(baseY - deltaTime / this.viewerManager.TimePerPixels));
-            if (Form1.Combo_Colour)
+            if (app.Default.Combo_Colour)
             {
                 int comboColorIndex = (hitObject.ComboIndex) % Combo_Colors.Length;
                 Color color = Combo_Colors[comboColorIndex];

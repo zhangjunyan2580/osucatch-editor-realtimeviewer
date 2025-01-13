@@ -12,16 +12,6 @@ namespace osucatch_editor_realtimeviewer
     {
         public static string Path_Settings = "settings.txt";
 
-        public static int Window_Width = app.Default.Window_Width;
-        public static int Window_Height = app.Default.Window_Height;
-        public static string osu_path = app.Default.osu_path;
-        public static bool Backup_Enabled = app.Default.Backup_Enabled;
-        public static string Backup_Folder = app.Default.Backup_Folder;
-        public static int Backup_Interval = app.Default.Backup_Interval;
-        public static int Idle_Interval = app.Default.Idle_Interval;
-        public static int Drawing_Interval = app.Default.Drawing_Interval;
-        public static bool Combo_Colour = app.Default.Combo_Colour;
-
         EditorReader reader = new EditorReader();
         bool Is_Doing_SetProcess = false;
         bool Is_Doing_FetchEditor = false;
@@ -91,12 +81,13 @@ namespace osucatch_editor_realtimeviewer
         {
             if (app.Default.Show_Console) Program.ShowConsole();
 
-            this.Width = Window_Width;
-            this.Height = Window_Height;
+            this.Width = app.Default.Window_Width;
+            this.Height = app.Default.Window_Height;
             SizeChanged += Form1_SizeChanged;
 
-            if (osu_path == "")
+            if (app.Default.osu_path == "")
             {
+                string osu_path = "";
                 osu_path = GetOsuPath();
                 if (osu_path == "")
                 {
@@ -130,14 +121,14 @@ namespace osucatch_editor_realtimeviewer
                 else screensMenuItems[i].Checked = false;
             }
 
-            reader_timer.Interval = Idle_Interval;
+            reader_timer.Interval = app.Default.Idle_Interval;
             reader_timer.Start();
 
             this.Canvas.Init();
 
-            if (Backup_Enabled == true)
+            if (app.Default.Backup_Enabled == true)
             {
-                backup_timer.Interval = Backup_Interval;
+                backup_timer.Interval = app.Default.Backup_Interval;
                 backup_timer.Start();
             }
 
@@ -170,16 +161,16 @@ namespace osucatch_editor_realtimeviewer
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    this.Width = Window_Width;
-                    this.Height = Window_Height;
+                    this.Width = app.Default.Window_Width;
+                    this.Height = app.Default.Window_Height;
 
                 }));
-                if (Backup_Enabled && !backup_timer.Enabled)
+                if (app.Default.Backup_Enabled && !backup_timer.Enabled)
                 {
-                    backup_timer.Interval = Backup_Interval;
+                    backup_timer.Interval = app.Default.Backup_Interval;
                     backup_timer.Start();
                 }
-                else if (!Backup_Enabled && backup_timer.Enabled)
+                else if (!app.Default.Backup_Enabled && backup_timer.Enabled)
                 {
                     backup_timer.Stop();
                 }
@@ -197,7 +188,7 @@ namespace osucatch_editor_realtimeviewer
                         if (Is_Doing_SetProcess)
                         {
                             Log.ConsoleLog("Already fetching osu!.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                            reader_timer.Interval = Idle_Interval;
+                            reader_timer.Interval = app.Default.Idle_Interval;
                             return;
                         }
                         Log.ConsoleLog("Try to fetch osu! process.", Log.LogType.EditorReader, Log.LogLevel.Info);
@@ -216,7 +207,7 @@ namespace osucatch_editor_realtimeviewer
                         {
                             this.Text = "Osu!.exe is not running";
                         }));
-                        reader_timer.Interval = Idle_Interval;
+                        reader_timer.Interval = app.Default.Idle_Interval;
                         Is_Osu_Running = false;
                         Is_Editor_Running = false;
                         beatmap_path = "";
@@ -238,7 +229,7 @@ namespace osucatch_editor_realtimeviewer
                     {
                         this.Text = "Osu!.exe is not running";
                     }));
-                    reader_timer.Interval = Idle_Interval;
+                    reader_timer.Interval = app.Default.Idle_Interval;
                     Is_Osu_Running = false;
                     Is_Editor_Running = false;
                     beatmap_path = "";
@@ -251,7 +242,7 @@ namespace osucatch_editor_realtimeviewer
                     {
                         this.Text = "Editor is not running";
                     }));
-                    reader_timer.Interval = Idle_Interval;
+                    reader_timer.Interval = app.Default.Idle_Interval;
                     Is_Editor_Running = false;
                     beatmap_path = "";
                     return;
@@ -264,7 +255,7 @@ namespace osucatch_editor_realtimeviewer
                         if (Is_Doing_SetProcess || Is_Doing_FetchEditor)
                         {
                             Log.ConsoleLog("Already reloading editor.", Log.LogType.EditorReader, Log.LogLevel.Info);
-                            reader_timer.Interval = Idle_Interval;
+                            reader_timer.Interval = app.Default.Idle_Interval;
                             return;
                         }
                         if (reader.ProcessNeedsReload())
@@ -288,7 +279,7 @@ namespace osucatch_editor_realtimeviewer
                         {
                             this.Text = "Editor is not running";
                         }));
-                        reader_timer.Interval = Idle_Interval;
+                        reader_timer.Interval = app.Default.Idle_Interval;
                         Is_Editor_Running = false;
                         beatmap_path = "";
                         return;
@@ -301,9 +292,9 @@ namespace osucatch_editor_realtimeviewer
                         this.Text = title;
                     }));
                     Is_Editor_Running = true;
-                    if (reader_timer.Interval != Drawing_Interval)
+                    if (reader_timer.Interval != app.Default.Drawing_Interval)
                     {
-                        reader_timer.Interval = Drawing_Interval;
+                        reader_timer.Interval = app.Default.Drawing_Interval;
                     }
                 }
 
@@ -322,7 +313,7 @@ namespace osucatch_editor_realtimeviewer
                 catch (Exception ex)
                 {
                     Log.ConsoleLog("FetchAll failed.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
-                    reader_timer.Interval = Idle_Interval;
+                    reader_timer.Interval = app.Default.Idle_Interval;
                     return;
                 }
 
@@ -341,7 +332,7 @@ namespace osucatch_editor_realtimeviewer
                 string newpath = "";
                 try
                 {
-                    newpath = Path.Combine(osu_path, "Songs", thisReader.ContainingFolder, thisReader.Filename);
+                    newpath = Path.Combine(app.Default.osu_path, "Songs", thisReader.ContainingFolder, thisReader.Filename);
                 }
                 catch (Exception ex)
                 {
@@ -469,7 +460,7 @@ namespace osucatch_editor_realtimeviewer
                         try
                         {
                             Log.ConsoleLog("Start backup.", Log.LogType.Backup, Log.LogLevel.Info);
-                            string backupFilePath = Path.Combine(Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
+                            string backupFilePath = Path.Combine(app.Default.Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
                             string? directoryPath = Path.GetDirectoryName(backupFilePath);
                             if (directoryPath == null)
                             {
@@ -692,10 +683,8 @@ namespace osucatch_editor_realtimeviewer
 
         private void Form1_SizeChanged(object? sender, EventArgs e)
         {
-            Window_Width = this.Width;
-            Window_Height = this.Height;
-            app.Default.Window_Width = Window_Width;
-            app.Default.Window_Height = Window_Height;
+            app.Default.Window_Width = this.Width;
+            app.Default.Window_Height = this.Height;
             app.Default.Save();
         }
 
