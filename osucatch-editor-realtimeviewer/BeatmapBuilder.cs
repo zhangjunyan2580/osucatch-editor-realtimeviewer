@@ -49,6 +49,7 @@ namespace osucatch_editor_realtimeviewer
             StringBuilder newfile = new StringBuilder();
             string? line;
             bool isMultiLine = false;
+            bool hasTiming = false;
             while ((line = file.ReadLine()) != null)
             {
                 if (!line.StartsWith("Tags") && line.Length > 1000)
@@ -98,6 +99,7 @@ namespace osucatch_editor_realtimeviewer
 
                 else if (Regex.IsMatch(line, @"^\[TimingPoints\]"))
                 {
+                    hasTiming = true;
                     newfile.AppendLine("[TimingPoints]");
                     for (int i = 0; i < thisReader.ControlPoints.Count; i++)
                     {
@@ -107,6 +109,16 @@ namespace osucatch_editor_realtimeviewer
                 }
                 else if (Regex.IsMatch(line, @"^\[HitObjects\]"))
                 {
+                    // fix when no timing
+                    if (!hasTiming)
+                    {
+                        newfile.AppendLine("[TimingPoints]");
+                        for (int i = 0; i < thisReader.ControlPoints.Count; i++)
+                        {
+                            newfile.AppendLine(thisReader.ControlPoints[i].ToString());
+                        }
+                        newfile.AppendLine("\r\n");
+                    }
                     newfile.AppendLine("[HitObjects]");
                     // newfile.AppendLine(String.Join("\r\n", FilterNearbyHitObjects(thisReader.HitObjects, editorTime)));
                     for (int i = 0; i < thisReader.HitObjects.Count; i++)
