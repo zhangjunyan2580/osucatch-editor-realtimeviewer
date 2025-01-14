@@ -127,7 +127,7 @@ namespace osu.Game.Beatmaps
 
         public virtual IBeatmap GetPlayableBeatmap(Ruleset ruleset, IReadOnlyList<Mod> mods, CancellationToken token)
         {
-            Log.ConsoleLog("Creating converter.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            Log.ConsoleLog("Creating converter.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             IBeatmapConverter converter = CreateBeatmapConverter(Beatmap, ruleset);
 
@@ -135,7 +135,7 @@ namespace osu.Game.Beatmaps
             if (Beatmap.HitObjects.Count > 0 && !converter.CanConvert())
                 throw new Exception($"{nameof(Beatmaps.Beatmap)} can not be converted for the ruleset (ruleset: {ruleset.ShortName}, converter: {converter}).");
 
-            Log.ConsoleLog("Converting.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            Log.ConsoleLog("Converting.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             // Convert
             IBeatmap converted = converter.Convert(token);
@@ -146,12 +146,12 @@ namespace osu.Game.Beatmaps
                 foreach (var mod in mods.OfType<IApplicableToDifficulty>())
                 {
                     token.ThrowIfCancellationRequested();
-                    Log.ConsoleLog("Difficulty apply mod.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+                    Log.ConsoleLog("Difficulty apply mod.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                     mod.ApplyToDifficulty(converted.Difficulty);
                 }
             }
 
-            Log.ConsoleLog("Building processor.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            Log.ConsoleLog("Building processor.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             var processor = ruleset.CreateBeatmapProcessor(converted);
 
@@ -159,14 +159,14 @@ namespace osu.Game.Beatmaps
             {
                 foreach (var mod in mods.OfType<IApplicableToBeatmapProcessor>())
                 {
-                    Log.ConsoleLog("Processor apply difficulty mod.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+                    Log.ConsoleLog("Processor apply difficulty mod.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                     mod.ApplyToBeatmapProcessor(processor);
                 }
 
                 processor.PreProcess();
             }
 
-            Log.ConsoleLog("Creating nested hitobjects.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            Log.ConsoleLog("Creating nested hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             // Compute default values for hitobjects, including creating nested hitobjects in-case they're needed
             foreach (var obj in converted.HitObjects)
@@ -175,7 +175,7 @@ namespace osu.Game.Beatmaps
                 obj.ApplyDefaults(converted.ControlPointInfo, converted.Difficulty, token);
             }
 
-            Log.ConsoleLog("Nested hitobjects' indexing & offsets.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            Log.ConsoleLog("Nested hitobjects' indexing & offsets.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             processor?.PostProcess();
 

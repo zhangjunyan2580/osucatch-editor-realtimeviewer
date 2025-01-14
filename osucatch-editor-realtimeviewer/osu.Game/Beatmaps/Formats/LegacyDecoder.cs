@@ -25,56 +25,8 @@ namespace osu.Game.Beatmaps.Formats
             FormatVersion = version;
         }
 
-        protected override void ParseStreamInto(LineBufferedReader stream, T output)
+        protected override void ParseStreamInto(BeatmapInfoCollection thisReaderData, T output, List<string>? colourLines)
         {
-            Section section = Section.General;
-
-            string? line;
-
-            while ((line = stream.ReadLine()) != null)
-            {
-                if (ShouldSkipLine(line))
-                    continue;
-
-                if (section != Section.Metadata)
-                {
-                    // comments should not be stripped from metadata lines, as the song metadata may contain "//" as valid data.
-                    line = StripComments(line);
-                }
-
-                line = line.TrimEnd();
-
-                if (line.StartsWith('[') && line.EndsWith(']'))
-                {
-                    if (!Enum.TryParse(line[1..^1], out section))
-                        Log.ConsoleLog($"Unknown section \"{line}\" in \"{output}\"", Log.LogType.BeatmapParser, Log.LogLevel.Warning);
-                    continue;
-                }
-
-                try
-                {
-                    ParseLine(output, section, line);
-                }
-                catch (Exception e)
-                {
-                    Log.ConsoleLog($"Failed to process line \"{line}\" into \"{output}\": {e.Message}", Log.LogType.BeatmapParser, Log.LogLevel.Warning);
-                }
-            }
-        }
-
-        protected virtual bool ShouldSkipLine(string line) => string.IsNullOrWhiteSpace(line) || line.AsSpan().TrimStart().StartsWith("//".AsSpan(), StringComparison.Ordinal);
-
-        protected virtual void ParseLine(T output, Section section, string line)
-        {
-        }
-
-        protected string StripComments(string line)
-        {
-            int index = line.AsSpan().IndexOf("//".AsSpan());
-            if (index > 0)
-                return line.Substring(0, index);
-
-            return line;
         }
 
         protected KeyValuePair<string, string> SplitKeyVal(string line, char separator = ':', bool shouldTrim = true)
@@ -86,22 +38,6 @@ namespace osu.Game.Beatmaps.Formats
                 split[0],
                 split.Length > 1 ? split[1] : string.Empty
             );
-        }
-
-        public enum Section
-        {
-            General,
-            Editor,
-            Metadata,
-            Difficulty,
-            Events,
-            TimingPoints,
-            Colours,
-            HitObjects,
-            Variables,
-            Fonts,
-            CatchTheBeat,
-            Mania,
         }
     }
 }

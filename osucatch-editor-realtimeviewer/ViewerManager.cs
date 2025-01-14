@@ -18,7 +18,7 @@ namespace osucatch_editor_realtimeviewer
 
 
 
-        public ViewerManager(string beatmap, int mods = 0)
+        public ViewerManager(Beatmap beatmap, int mods = 0)
         {
             currentTime = 0;
             NearbyHitObjects = new List<WithDistancePalpableCatchHitObject>();
@@ -26,10 +26,10 @@ namespace osucatch_editor_realtimeviewer
             LoadBeatmap(beatmap, mods);
         }
 
-        public void LoadBeatmap(string beatmap, int mods = 0)
+        public void LoadBeatmap(Beatmap beatmap, int mods = 0)
         {
-            Beatmap = CatchBeatmapAPI.GetBeatmap(beatmap, mods);
-            CatchHitObjects = CatchBeatmapAPI.GetPalpableObjects(Beatmap, (DistanceType != DistanceType.None));
+            Beatmap = BeatmapConverter.GetConvertedBeatmap(beatmap, mods);
+            CatchHitObjects = BeatmapConverter.GetPalpableObjects(Beatmap, (DistanceType != DistanceType.None));
 
             float moddedAR = Beatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);

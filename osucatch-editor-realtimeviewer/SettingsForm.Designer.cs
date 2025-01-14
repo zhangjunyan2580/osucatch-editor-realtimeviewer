@@ -67,7 +67,7 @@
             checkBox_Log_Timer = new CheckBox();
             checkBox_Log_Backup = new CheckBox();
             checkBox_Log_Drawing = new CheckBox();
-            checkBox_Log_BeatmapParser = new CheckBox();
+            checkBox_Log_BeatmapConverter = new CheckBox();
             checkBox_Log_EditorReader = new CheckBox();
             checkBox_Log_Program = new CheckBox();
             checkBox_showConsole = new CheckBox();
@@ -424,7 +424,7 @@
             groupBox6.Controls.Add(checkBox_Log_Timer);
             groupBox6.Controls.Add(checkBox_Log_Backup);
             groupBox6.Controls.Add(checkBox_Log_Drawing);
-            groupBox6.Controls.Add(checkBox_Log_BeatmapParser);
+            groupBox6.Controls.Add(checkBox_Log_BeatmapConverter);
             groupBox6.Controls.Add(checkBox_Log_EditorReader);
             groupBox6.Controls.Add(checkBox_Log_Program);
             groupBox6.Controls.Add(checkBox_showConsole);
@@ -493,15 +493,15 @@
             checkBox_Log_Drawing.Text = "Drawing log";
             checkBox_Log_Drawing.UseVisualStyleBackColor = true;
             // 
-            // checkBox_Log_BeatmapParser
+            // checkBox_Log_BeatmapConverter
             // 
-            checkBox_Log_BeatmapParser.AutoSize = true;
-            checkBox_Log_BeatmapParser.Location = new Point(6, 155);
-            checkBox_Log_BeatmapParser.Name = "checkBox_Log_BeatmapParser";
-            checkBox_Log_BeatmapParser.Size = new Size(139, 21);
-            checkBox_Log_BeatmapParser.TabIndex = 10;
-            checkBox_Log_BeatmapParser.Text = "BeatmapParser log";
-            checkBox_Log_BeatmapParser.UseVisualStyleBackColor = true;
+            checkBox_Log_BeatmapConverter.AutoSize = true;
+            checkBox_Log_BeatmapConverter.Location = new Point(6, 155);
+            checkBox_Log_BeatmapConverter.Name = "checkBox_Log_BeatmapConverter";
+            checkBox_Log_BeatmapConverter.Size = new Size(159, 21);
+            checkBox_Log_BeatmapConverter.TabIndex = 10;
+            checkBox_Log_BeatmapConverter.Text = "BeatmapConverter log";
+            checkBox_Log_BeatmapConverter.UseVisualStyleBackColor = true;
             // 
             // checkBox_Log_EditorReader
             // 
@@ -654,7 +654,7 @@
         private CheckBox checkBox_Log_Program;
         private CheckBox checkBox_Log_Backup;
         private CheckBox checkBox_Log_Drawing;
-        private CheckBox checkBox_Log_BeatmapParser;
+        private CheckBox checkBox_Log_BeatmapConverter;
         private CheckBox checkBox_Log_EditorReader;
         private CheckBox checkBox_Log_Timer;
         private ComboBox comboBox_Log_Level;

@@ -38,7 +38,7 @@
     <Setting Name="Log_EditorReader" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Log_BeatmapParser" Type="System.Boolean" Scope="User">
+    <Setting Name="Log_BeatmapConverter" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Log_Drawing" Type="System.Boolean" Scope="User">
@@ -67,6 +67,9 @@
     </Setting>
     <Setting Name="ScreensContain" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="Selected_Show" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

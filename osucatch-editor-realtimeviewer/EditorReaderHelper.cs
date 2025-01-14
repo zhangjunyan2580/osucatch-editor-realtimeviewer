@@ -1,9 +1,11 @@
 ﻿using Editor_Reader;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -140,8 +142,8 @@ namespace osucatch_editor_realtimeviewer
             try
             {
                 reader.FetchAll();
-                var thisReader = new BeatmapInfoCollection(reader);
-                return thisReader;
+                var thisReaderData = new BeatmapInfoCollection(reader);
+                return thisReaderData;
             }
             catch (Exception ex)
             {
@@ -167,10 +169,31 @@ namespace osucatch_editor_realtimeviewer
         public double SliderMultiplier;
         public double SliderTickRate;
         public int[] Bookmarks;
-        public List<ControlPoint> ControlPoints;
-        public List<Editor_Reader.HitObject> HitObjects;
+        public List<string> ControlPointLines;
+        public List<ReaderHitObjectWithSelect> HitObjectLines;
         public BeatmapInfoCollection(EditorReader reader)
         {
+            // Check editor reader's data
+            if (reader.hitObjects == null || reader.hitObjects.Count <= 0)
+            {
+                throw new Exception("HitObjects is empty.");
+            }
+            // Fix Editor Reader
+            // Modified from Mapping_Tools
+            // https://github.com/OliBomby/Mapping_Tools/tree/master/Mapping_Tools/Classes/ToolHelpers/EditorReaderStuff.cs
+            // Under MIT Licnece https://github.com/OliBomby/Mapping_Tools/blob/master/LICENCE
+            if (!(reader.numControlPoints > 0 &&
+                reader.controlPoints != null && reader.hitObjects != null &&
+                reader.numControlPoints == reader.controlPoints.Count && reader.numObjects == reader.hitObjects.Count))
+            {
+                throw new Exception("Fetched data is invalid.");
+            }
+            bool FindInvalid = reader.hitObjects.Any(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
+            readerHitObject.SegmentCount > 9000 || readerHitObject.Type == 0 || readerHitObject.SampleSet > 1000 ||
+            readerHitObject.SampleSetAdditions > 1000 || readerHitObject.SampleVolume > 1000);
+            if (FindInvalid) throw new Exception("Find invalid hitObject.");
+            // -----------------------
+
             NumControlPoints = reader.numControlPoints;
             NumObjects = reader.numObjects;
             EditorTime = reader.EditorTime();
@@ -185,10 +208,76 @@ namespace osucatch_editor_realtimeviewer
             SliderMultiplier = reader.SliderMultiplier;
             SliderTickRate = reader.SliderTickRate;
             Bookmarks = reader.bookmarks;
-            // TODO: Deep Copy
-            ControlPoints = reader.controlPoints;
-            // TODO: Deep Copy
-            HitObjects = reader.hitObjects;
+            ControlPointLines = reader.controlPoints.Select((cp) => cp.ToString()).ToList();
+            HitObjectLines = reader.hitObjects.Select((ho) => new ReaderHitObjectWithSelect(ho.ToString(), ho.IsSelected)).ToList();
         }
+
+        public DifferenceType CheckDifference(BeatmapInfoCollection? other, bool isCheckSelected = false)
+        {
+            if (other is null) return DifferenceType.DifferentFile;
+            if (ReferenceEquals(other, this)) return DifferenceType.None;
+
+            if (ContainingFolder != other.ContainingFolder) return DifferenceType.DifferentFile;
+            if (Filename != other.Filename) return DifferenceType.DifferentFile;
+
+            if (NumControlPoints != other.NumControlPoints) return DifferenceType.DifferentObjects;
+            if (NumObjects != other.NumObjects) return DifferenceType.DifferentObjects;
+
+            if (HPDrainRate != other.HPDrainRate) return DifferenceType.DifferentObjects;
+            if (CircleSize != other.CircleSize) return DifferenceType.DifferentObjects;
+            if (OverallDifficulty != other.OverallDifficulty) return DifferenceType.DifferentObjects;
+            if (ApproachRate != other.ApproachRate) return DifferenceType.DifferentObjects;
+            if (SliderMultiplier != other.SliderMultiplier) return DifferenceType.DifferentObjects;
+            if (SliderTickRate != other.SliderTickRate) return DifferenceType.DifferentObjects;
+
+            if (ControlPointLines.Count != other.ControlPointLines.Count) return DifferenceType.DifferentObjects;
+            for (int i = 0; i < ControlPointLines.Count; i++)
+            {
+                if (ControlPointLines[i] != other.ControlPointLines[i]) return DifferenceType.DifferentObjects;
+            }
+
+            if (HitObjectLines.Count != other.HitObjectLines.Count) return DifferenceType.DifferentObjects;
+            for (int i = 0; i < HitObjectLines.Count; i++)
+            {
+                if (!HitObjectLines[i].EqualTo(other.HitObjectLines[i], isCheckSelected)) return DifferenceType.DifferentObjects;
+            }
+
+            return DifferenceType.None;
+        }
+    }
+
+    public class ReaderHitObjectWithSelect
+    {
+        public string HitObjectLine;
+        public bool IsSelect;
+
+        public ReaderHitObjectWithSelect(string hitObjectLine, bool IsSelect)
+        {
+            HitObjectLine = hitObjectLine;
+            this.IsSelect = IsSelect;
+        }
+
+        public bool EqualTo(ReaderHitObjectWithSelect? other, bool isCheckSelected = false)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(other, this)) return true;
+
+            if (isCheckSelected)
+            {
+                if (HitObjectLine == other.HitObjectLine && IsSelect == other.IsSelect) return true;
+            }
+            else
+            {
+                if (HitObjectLine == other.HitObjectLine) return true;
+            }
+            return false;
+        }
+    }
+
+    public enum DifferenceType
+    {
+        None,
+        DifferentObjects,
+        DifferentFile
     }
 }

@@ -14,7 +14,7 @@ namespace osucatch_editor_realtimeviewer
             Program,
             EditorReader,
             BeatmapBuilder,
-            BeatmapParser,
+            BeatmapConverter,
             Drawing,
             Backup,
             Timer,
@@ -29,7 +29,7 @@ namespace osucatch_editor_realtimeviewer
             if (logType == LogType.Program && !app.Default.Log_Program) return;
             if (logType == LogType.EditorReader && !app.Default.Log_EditorReader) return;
             if (logType == LogType.BeatmapBuilder && !app.Default.Log_BeatmapBuilder) return;
-            if (logType == LogType.BeatmapParser && !app.Default.Log_BeatmapParser) return;
+            if (logType == LogType.BeatmapConverter && !app.Default.Log_BeatmapConverter) return;
             if (logType == LogType.Drawing && !app.Default.Log_Drawing) return;
             if (logType == LogType.Backup && !app.Default.Log_Backup) return;
             if (logType == LogType.Timer && !app.Default.Log_Timer) return;

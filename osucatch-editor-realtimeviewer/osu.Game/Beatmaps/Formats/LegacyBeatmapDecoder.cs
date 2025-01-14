@@ -11,6 +11,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Legacy;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Utils;
+using osucatch_editor_realtimeviewer;
 
 namespace osu.Game.Beatmaps.Formats
 {
@@ -53,13 +54,32 @@ namespace osu.Game.Beatmaps.Formats
             return templateBeatmap;
         }
 
-        protected override void ParseStreamInto(LineBufferedReader stream, Beatmap beatmap)
+        protected override void ParseStreamInto(BeatmapInfoCollection thisReaderData, Beatmap beatmap, List<string>? colourLines)
         {
             this.beatmap = beatmap;
             this.beatmap.BeatmapInfo.BeatmapVersion = FormatVersion;
             parser = new ConvertHitObjectParser(getOffsetTime(), FormatVersion);
 
-            base.ParseStreamInto(stream, beatmap);
+            // handle Difficulty
+            var difficulty = beatmap.Difficulty;
+            difficulty.ApproachRate = thisReaderData.ApproachRate;
+            difficulty.DrainRate = thisReaderData.HPDrainRate;
+            difficulty.CircleSize = thisReaderData.CircleSize;
+            difficulty.OverallDifficulty = thisReaderData.OverallDifficulty;
+            difficulty.SliderMultiplier = thisReaderData.SliderMultiplier;
+            difficulty.SliderTickRate = thisReaderData.SliderTickRate;
+
+            // handle TimingPoint
+            thisReaderData.ControlPointLines.ForEach(line => handleTimingPoint(line));
+
+            // handle HitObject
+            thisReaderData.HitObjectLines.ForEach(lineWithSelect => handleHitObject(lineWithSelect.HitObjectLine, lineWithSelect.IsSelect));
+
+            // handle Colours
+            if (colourLines != null)
+            {
+                colourLines.ForEach(line => handleColours(line));
+            }
 
             applyDifficultyRestrictions(beatmap.Difficulty, beatmap);
 
@@ -131,168 +151,6 @@ namespace osu.Game.Beatmaps.Formats
                 hasSliderVelocity.SliderVelocityMultiplier = difficultyControlPoint.SliderVelocity;
 
             hitObject.ApplyDefaults(beatmap.ControlPointInfo, beatmap.Difficulty);
-        }
-
-        protected override void ParseLine(Beatmap beatmap, Section section, string line)
-        {
-            switch (section)
-            {
-                case Section.Editor:
-                    handleEditor(line);
-                    return;
-
-                case Section.Metadata:
-                    handleMetadata(line);
-                    return;
-
-                case Section.Difficulty:
-                    handleDifficulty(line);
-                    return;
-
-                case Section.Events:
-                    handleEvent(line);
-                    return;
-
-                case Section.TimingPoints:
-                    handleTimingPoint(line);
-                    return;
-
-                case Section.HitObjects:
-                    handleHitObject(line);
-                    return;
-
-                    // Add
-                case Section.Colours:
-                    handleColours(line);
-                    return;
-            }
-
-            base.ParseLine(beatmap, section, line);
-        }
-
-        private void handleEditor(string line)
-        {
-            var pair = SplitKeyVal(line);
-
-            switch (pair.Key)
-            {
-                case @"Bookmarks":
-                    beatmap.Bookmarks = pair.Value.Split(',').Select(v =>
-                    {
-                        bool result = int.TryParse(v, out int val);
-                        return new { result, val };
-                    }).Where(p => p.result).Select(p => p.val).ToArray();
-                    break;
-
-                case @"BeatDivisor":
-                    beatmap.BeatmapInfo.BeatDivisor = Math.Clamp(Parsing.ParseInt(pair.Value), 1, 64);
-                    break;
-            }
-        }
-
-        private void handleMetadata(string line)
-        {
-            var pair = SplitKeyVal(line);
-
-            var metadata = beatmap.BeatmapInfo.Metadata;
-
-            switch (pair.Key)
-            {
-                case @"Title":
-                    metadata.Title = pair.Value;
-                    break;
-
-                case @"TitleUnicode":
-                    metadata.TitleUnicode = pair.Value;
-                    break;
-
-                case @"Artist":
-                    metadata.Artist = pair.Value;
-                    break;
-
-                case @"ArtistUnicode":
-                    metadata.ArtistUnicode = pair.Value;
-                    break;
-
-                case @"Creator":
-                    metadata.Author = pair.Value;
-                    break;
-
-                case @"Version":
-                    beatmap.BeatmapInfo.DifficultyName = pair.Value;
-                    break;
-
-                case @"Source":
-                    metadata.Source = pair.Value;
-                    break;
-
-                case @"Tags":
-                    metadata.Tags = pair.Value;
-                    break;
-
-                case @"BeatmapID":
-                    beatmap.BeatmapInfo.OnlineID = Parsing.ParseInt(pair.Value);
-                    break;
-
-                case @"BeatmapSetID":
-                    // beatmap.BeatmapInfo.BeatmapSet = new BeatmapSetInfo { OnlineID = Parsing.ParseInt(pair.Value) };
-                    break;
-            }
-        }
-
-        private void handleDifficulty(string line)
-        {
-            var pair = SplitKeyVal(line);
-
-            var difficulty = beatmap.Difficulty;
-
-            switch (pair.Key)
-            {
-                case @"HPDrainRate":
-                    difficulty.DrainRate = Parsing.ParseFloat(pair.Value);
-                    break;
-
-                case @"CircleSize":
-                    difficulty.CircleSize = Parsing.ParseFloat(pair.Value);
-                    break;
-
-                case @"OverallDifficulty":
-                    difficulty.OverallDifficulty = Parsing.ParseFloat(pair.Value);
-                    if (!hasApproachRate)
-                        difficulty.ApproachRate = difficulty.OverallDifficulty;
-                    break;
-
-                case @"ApproachRate":
-                    difficulty.ApproachRate = Parsing.ParseFloat(pair.Value);
-                    hasApproachRate = true;
-                    break;
-
-                case @"SliderMultiplier":
-                    difficulty.SliderMultiplier = Parsing.ParseDouble(pair.Value);
-                    break;
-
-                case @"SliderTickRate":
-                    difficulty.SliderTickRate = Parsing.ParseDouble(pair.Value);
-                    break;
-            }
-        }
-
-        private void handleEvent(string line)
-        {
-            string[] split = line.Split(',');
-
-            if (Enum.TryParse(split[0], out LegacyEventType type))
-            {
-                switch (type)
-                {
-                    case LegacyEventType.Break:
-                        double start = getOffsetTime(Parsing.ParseDouble(split[1]));
-                        double end = Math.Max(start, getOffsetTime(Parsing.ParseDouble(split[2])));
-
-                        beatmap.Breaks.Add(new BreakPeriod(start, end));
-                        break;
-                }
-            }
         }
 
         private void handleTimingPoint(string line)
@@ -394,10 +252,11 @@ namespace osu.Game.Beatmaps.Formats
             pendingControlPointTypes.Clear();
         }
 
-        private void handleHitObject(string line)
+        private void handleHitObject(string line, bool isSelect = false)
         {
             var obj = parser.Parse(line);
             obj.ApplyDefaults(beatmap.ControlPointInfo, beatmap.Difficulty);
+            obj.IsSelected = isSelect;
 
             beatmap.HitObjects.Add(obj);
         }

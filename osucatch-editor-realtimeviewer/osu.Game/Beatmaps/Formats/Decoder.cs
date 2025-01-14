@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Game.IO;
+using osucatch_editor_realtimeviewer;
 
 namespace osu.Game.Beatmaps.Formats
 {
@@ -10,13 +11,13 @@ namespace osu.Game.Beatmaps.Formats
     {
         protected virtual TOutput CreateTemplateObject() => new TOutput();
 
-        public TOutput Decode(LineBufferedReader stream)
+        public TOutput Decode(BeatmapInfoCollection thisReaderData, List<string>? colourLines)
         {
             var output = CreateTemplateObject();
-            ParseStreamInto(stream, output);
+            ParseStreamInto(thisReaderData, output, colourLines);
             return output;
         }
 
-        protected abstract void ParseStreamInto(LineBufferedReader stream, TOutput output);
+        protected abstract void ParseStreamInto(BeatmapInfoCollection thisReaderData, TOutput output, List<string>? colourLines);
     }
 }
