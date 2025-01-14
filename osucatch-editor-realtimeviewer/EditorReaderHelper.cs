@@ -210,6 +210,8 @@ namespace osucatch_editor_realtimeviewer
             Bookmarks = reader.bookmarks;
             ControlPointLines = reader.controlPoints.Select((cp) => cp.ToString()).ToList();
             HitObjectLines = reader.hitObjects.Select((ho) => new ReaderHitObjectWithSelect(ho.ToString(), ho.IsSelected)).ToList();
+
+            // We don't need breaks because editor force a new combo after every break.
         }
 
         public DifferenceType CheckDifference(BeatmapInfoCollection? other, bool isCheckSelected = false)
