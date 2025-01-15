@@ -151,14 +151,14 @@ namespace osucatch_editor_realtimeviewer
             this.currentObject = currentObject;
         }
 
-        public TimingControlPoint GetTimingPoint(IBeatmap beatmap)
+        public TimingControlPoint GetTimingPoint(ControlPointInfo controlPointInfo)
         {
-            return beatmap.ControlPointInfo.TimingPointAt(currentObject.StartTime);
+            return controlPointInfo.TimingPointAt(currentObject.StartTime);
         }
 
-        public DifficultyControlPoint GetDifficultyControlPoint(IBeatmap beatmap)
+        public DifficultyControlPoint GetDifficultyControlPoint(ControlPointInfo controlPointInfo)
         {
-            return (beatmap.ControlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(currentObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
+            return (controlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(currentObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
         }
 
         public void CalDistance(IBeatmap beatmap, PalpableCatchHitObject nextObject)

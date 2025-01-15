@@ -1,6 +1,7 @@
 using Editor_Reader;
 using Microsoft.Win32;
 using osu.Game.Beatmaps;
+using osu.Game.Rulesets.Catch.Objects;
 using System.Diagnostics;
 using System.Drawing;
 using System.Text;
@@ -14,10 +15,13 @@ namespace osucatch_editor_realtimeviewer
         public static string Path_Settings = "settings.txt";
 
         public EditorReaderHelper editorReaderHelper = new();
-        
+
+        public static DrawingHelper drawingHelper = new();
+
         BeatmapInfoCollection? lastReader = null;
         List<string>? lastColourLines = null;
         Beatmap? lastBeatmap = null;
+        IBeatmap? lastConvertedBeatmap = null;
         int lastMods = -1;
         DistanceType lastDistanceType = DistanceType.None;
 
@@ -103,7 +107,8 @@ namespace osucatch_editor_realtimeviewer
             }
 
             // contain screens count
-            this.Canvas.screensContain = app.Default.ScreensContain;
+            drawingHelper.ScreensContain = app.Default.ScreensContain;
+            Canvas.screensContain = app.Default.ScreensContain;
             ToolStripMenuItem[] screensMenuItems = {
                 Screens1ToolStripMenuItem,
                 Screens2ToolStripMenuItem,
@@ -127,7 +132,7 @@ namespace osucatch_editor_realtimeviewer
             Log.ConsoleLog("DPI: " + dpi, Log.LogType.Program, Log.LogLevel.Info);
             fontscale = 96f / dpi;
             Log.ConsoleLog("Text Scale x" + fontscale.ToString("F2"), Log.LogType.Program, Log.LogLevel.Info);
-            this.Canvas.fontScale = fontscale;
+            Canvas.fontScale = fontscale;
             graphics.Dispose();
             // --------------------------------------------------------------
 
@@ -340,11 +345,13 @@ namespace osucatch_editor_realtimeviewer
                 {
                     beatmap = lastBeatmap;
                 }
+
                 if (beatmap == null)
                 {
                     reader_timer.Interval = app.Default.Idle_Interval;
                     return;
                 }
+
                 Log.ConsoleLog("Build new beatmap successfully.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
 
 
@@ -372,17 +379,18 @@ namespace osucatch_editor_realtimeviewer
                     lastMods = mods;
                 }
                 // isSameDistanceType
-                if (this.Canvas.viewerManager != null)
+                if (hideToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.None;
+                else if (sameWithEditorToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.SameWithEditor;
+                else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.NoSliderVelocityMultiplier;
+                else if (compareWithWalkSpeedToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.CompareWithWalkSpeed;
+                else drawingHelper.DistanceType = DistanceType.None;
+                if (drawingHelper.DistanceType == lastDistanceType)
                 {
-                    if (hideToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.None;
-                    else if (sameWithEditorToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.SameWithEditor;
-                    else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.NoSliderVelocityMultiplier;
-                    else if (compareWithWalkSpeedToolStripMenuItem.Checked) this.Canvas.viewerManager.DistanceType = DistanceType.CompareWithWalkSpeed;
-                    else this.Canvas.viewerManager.DistanceType = DistanceType.None;
-                    if (this.Canvas.viewerManager.DistanceType == lastDistanceType)
-                    {
-                        isSameDistanceType = true;
-                    }
+                    isSameDistanceType = true;
+                }
+                else
+                {
+                    lastDistanceType = drawingHelper.DistanceType;
                 }
 
 
@@ -434,38 +442,49 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                if (this.Canvas.viewerManager != null && differenceType == DifferenceType.None && isSameMods && isSameDistanceType)
+                // convert beatmap to catch
+                IBeatmap? convertedBeatmap = null;
+                if (differenceType != DifferenceType.None || lastConvertedBeatmap == null || !isSameMods)
+                {
+                    convertedBeatmap = BeatmapConverter.GetConvertedBeatmap(beatmap, mods);
+                    lastConvertedBeatmap = convertedBeatmap;
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        Log.ConsoleLog("Task Timeout, cancelled after converting beatmap.", Log.LogType.Program, Log.LogLevel.Warning);
+                        return;
+                    }
+                }
+                else
+                {
+                    convertedBeatmap = lastConvertedBeatmap;
+                }
+
+
+                // prepare drawing objects
+                if (drawingHelper.CatchHitObjects != null && differenceType == DifferenceType.None && isSameMods && isSameDistanceType)
                 {
                     Log.ConsoleLog("Beatmap no changes. Using last data.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
                 else
                 {
-                    Log.ConsoleLog("Try convert beatmap.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
-                    if (this.Canvas.viewerManager == null) this.Canvas.viewerManager = new ViewerManager(beatmap, mods);
-                    else this.Canvas.viewerManager.LoadBeatmap(beatmap, mods);
-                    lastDistanceType = this.Canvas.viewerManager.DistanceType;
+                    Log.ConsoleLog("Try building drawing objects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
+                    drawingHelper.LoadBeatmap(convertedBeatmap);
 
                     if (cancellationToken.IsCancellationRequested)
                     {
-                        Log.ConsoleLog("Task Timeout, cancelled before drawing.", Log.LogType.Program, Log.LogLevel.Warning);
+                        Log.ConsoleLog("Task Timeout, cancelled after preparing drawing.", Log.LogType.Program, Log.LogLevel.Warning);
                         return;
                     }
 
-                    Log.ConsoleLog("Parse beatmap successfully.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
+                    Log.ConsoleLog("Build drawing objects successfully.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
 
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled before beatmap prasing.", Log.LogType.Program, Log.LogLevel.Warning);
-                    return;
-                }
-
-
-                // draw
+                // drawing
                 try
                 {
-                    this.Canvas.viewerManager.currentTime = thisReader.EditorTime;
+                    drawingHelper.CurrentTime = thisReader.EditorTime;
                     Log.ConsoleLog("Start drawing.", Log.LogType.Drawing, Log.LogLevel.Debug);
                     Invoke(new MethodInvoker(delegate ()
                     {
@@ -605,7 +624,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 1;
             app.Default.Save();
-            this.Canvas.screensContain = 1;
+            Canvas.screensContain = 1;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -622,7 +641,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 2;
             app.Default.Save();
-            this.Canvas.screensContain = 2;
+            Canvas.screensContain = 2;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -639,7 +658,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 3;
             app.Default.Save();
-            this.Canvas.screensContain = 3;
+            Canvas.screensContain = 3;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -656,7 +675,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 4;
             app.Default.Save();
-            this.Canvas.screensContain = 4;
+            Canvas.screensContain = 4;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -673,7 +692,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 5;
             app.Default.Save();
-            this.Canvas.screensContain = 5;
+            Canvas.screensContain = 5;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -690,7 +709,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 6;
             app.Default.Save();
-            this.Canvas.screensContain = 6;
+            Canvas.screensContain = 6;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -707,7 +726,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 7;
             app.Default.Save();
-            this.Canvas.screensContain = 7;
+            Canvas.screensContain = 7;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -724,7 +743,7 @@ namespace osucatch_editor_realtimeviewer
 
             app.Default.ScreensContain = 8;
             app.Default.Save();
-            this.Canvas.screensContain = 8;
+            Canvas.screensContain = 8;
             this.Canvas.ScreensContainChanged();
         }
     }
