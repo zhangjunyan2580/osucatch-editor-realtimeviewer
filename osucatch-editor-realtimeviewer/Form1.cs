@@ -622,6 +622,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 1;
             app.Default.Save();
             Canvas.screensContain = 1;
+            drawingHelper.ScreensContain = 1;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -639,6 +640,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 2;
             app.Default.Save();
             Canvas.screensContain = 2;
+            drawingHelper.ScreensContain = 2;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -656,6 +658,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 3;
             app.Default.Save();
             Canvas.screensContain = 3;
+            drawingHelper.ScreensContain = 3;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -673,6 +676,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 4;
             app.Default.Save();
             Canvas.screensContain = 4;
+            drawingHelper.ScreensContain = 4;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -690,6 +694,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 5;
             app.Default.Save();
             Canvas.screensContain = 5;
+            drawingHelper.ScreensContain = 5;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -707,6 +712,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 6;
             app.Default.Save();
             Canvas.screensContain = 6;
+            drawingHelper.ScreensContain = 6;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -724,6 +730,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 7;
             app.Default.Save();
             Canvas.screensContain = 7;
+            drawingHelper.ScreensContain = 7;
             this.Canvas.ScreensContainChanged();
         }
 
@@ -741,6 +748,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.ScreensContain = 8;
             app.Default.Save();
             Canvas.screensContain = 8;
+            drawingHelper.ScreensContain = 8;
             this.Canvas.ScreensContainChanged();
         }
     }
