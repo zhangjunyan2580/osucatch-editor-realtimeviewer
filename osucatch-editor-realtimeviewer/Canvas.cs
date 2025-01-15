@@ -183,42 +183,51 @@ namespace osucatch_editor_realtimeviewer
             texture.Draw(pos, diameter * 1.4f, diameter * 1.4f, new Vector2(diameter * 1.4f * 0.5f), Color.Red);
         }
 
-        private static void DrawCircleWithCircleColor(Texture2D? texture, Vector2 pos, float diameter, Color color, bool isHyperDash)
+        public static void DrawSelectedCircle(Texture2D? texture, Vector2 pos, float diameter)
+        {
+            if (texture == null) return;
+            texture.Draw(pos, diameter * 0.8f, diameter * 0.8f, new Vector2(diameter * 0.8f * 0.5f), Color.Orange);
+        }
+
+        private static void DrawCircleWithCircleColor(Texture2D? texture, Vector2 pos, float diameter, Color color, bool isHyperDash, bool isSelected)
         {
             if (texture == null) return;
             if (isHyperDash) DrawHyperDashCircle(texture, pos, diameter);
             texture.Draw(pos, diameter, diameter, new Vector2(diameter * 0.5f), color);
+            if (isSelected) DrawSelectedCircle(texture, pos, diameter);
         }
 
-        private static void DrawCircle(Texture2D? texture, Vector2 pos, float diameter, bool isHyperDash)
+        private static void DrawCircle(Texture2D? texture, Vector2 pos, float diameter, bool isHyperDash, bool isSelected)
         {
             if (texture == null) return;
             Color color = (isHyperDash) ? Color.Red : Color.White;
             texture.Draw(pos, diameter, diameter, new Vector2(diameter * 0.5f), color);
+            if (isSelected) DrawSelectedCircle(texture, pos, diameter);
         }
 
-        public static void DrawFruit(Vector2 pos, float circleDiameter, Color color, bool withCircleColor, bool isHyperDash = false)
+        public static void DrawFruit(Vector2 pos, float circleDiameter, Color color, bool withCircleColor, bool isHyperDash, bool isSelected)
         {
-            if (withCircleColor) DrawCircleWithCircleColor(hitCircleTexture, pos, circleDiameter, color, isHyperDash);
-            else DrawCircle(hitCircleTexture, pos, circleDiameter, isHyperDash);
+            if (withCircleColor) DrawCircleWithCircleColor(hitCircleTexture, pos, circleDiameter, color, isHyperDash, isSelected);
+            else DrawCircle(hitCircleTexture, pos, circleDiameter, isHyperDash, isSelected);
         }
 
-        public static void DrawDroplet(Vector2 pos, float circleDiameter, float hitObjectScale, Color color, bool withCircleColor, bool isHyperDash = false)
+        public static void DrawDroplet(Vector2 pos, float circleDiameter, float hitObjectScale, Color color, bool withCircleColor, bool isHyperDash, bool isSelected)
         {
-            if (withCircleColor) DrawCircleWithCircleColor(DropTexture, pos, circleDiameter * hitObjectScale, color, isHyperDash);
-            else DrawCircle(DropTexture, pos, circleDiameter * hitObjectScale, isHyperDash);
+            if (withCircleColor) DrawCircleWithCircleColor(DropTexture, pos, circleDiameter * hitObjectScale, color, isHyperDash, isSelected);
+            else DrawCircle(DropTexture, pos, circleDiameter * hitObjectScale, isHyperDash, isSelected);
         }
 
-        public static void DrawTinyDroplet(Vector2 pos, float circleDiameter, float hitObjectScale, Color color, bool withCircleColor, bool isHyperDash = false)
+        public static void DrawTinyDroplet(Vector2 pos, float circleDiameter, float hitObjectScale, Color color, bool withCircleColor, bool isHyperDash, bool isSelected)
         {
-            if (withCircleColor) DrawCircleWithCircleColor(DropTexture, pos, circleDiameter * hitObjectScale / 2, color, isHyperDash);
-            else DrawCircle(DropTexture, pos, circleDiameter * hitObjectScale / 2, isHyperDash);
+            if (withCircleColor) DrawCircleWithCircleColor(DropTexture, pos, circleDiameter * hitObjectScale / 2, color, isHyperDash, isSelected);
+            else DrawCircle(DropTexture, pos, circleDiameter * hitObjectScale / 2, isHyperDash, isSelected);
         }
 
-        public static void DrawBanana(Vector2 pos, float circleDiameter)
+        public static void DrawBanana(Vector2 pos, float circleDiameter, bool isSelected)
         {
             if (BananaTexture == null) return;
             BananaTexture.Draw(pos, circleDiameter, circleDiameter, new Vector2(circleDiameter * 0.5f), Color.Yellow);
+            if (isSelected) DrawSelectedCircle(BananaTexture, pos, circleDiameter);
         }
 
         private static void DrawJudgementLine()

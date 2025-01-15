@@ -198,8 +198,6 @@ namespace osu.Game.Beatmaps.Formats
         private readonly List<ControlPoint> pendingControlPoints = new List<ControlPoint>();
         private readonly HashSet<Type> pendingControlPointTypes = new HashSet<Type>();
         private double pendingControlPointsTime;
-        private bool hasApproachRate;
-
         private void addControlPoint(double time, ControlPoint point, bool timingChange)
         {
             if (time != pendingControlPointsTime)

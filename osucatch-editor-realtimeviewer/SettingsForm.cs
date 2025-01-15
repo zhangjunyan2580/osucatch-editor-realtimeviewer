@@ -22,6 +22,7 @@
             }
             checkBox_enableBackup.Checked = app.Default.Backup_Enabled;
             checkBox_withColor.Checked = app.Default.Combo_Colour;
+            checkBox_ShowSelected.Checked = app.Default.Selected_Show;
 
             checkBox_showConsole.Checked = app.Default.Show_Console;
             checkBox_Log_Program.Checked = app.Default.Log_Program;
@@ -96,6 +97,7 @@
             app.Default.Backup_Folder = textBox_backupFolder.Text;
             app.Default.Backup_Enabled = checkBox_enableBackup.Checked;
             app.Default.Combo_Colour = checkBox_withColor.Checked;
+            app.Default.Selected_Show = checkBox_ShowSelected.Checked;
 
             app.Default.Show_Console = checkBox_showConsole.Checked;
             app.Default.Log_Program = checkBox_Log_Program.Checked;

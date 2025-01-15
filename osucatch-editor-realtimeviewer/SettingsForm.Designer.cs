@@ -75,6 +75,7 @@
             checkBox_BarLine_Show = new CheckBox();
             checkBox_TimingLine_ShowGreen = new CheckBox();
             checkBox_TimingLine_ShowRed = new CheckBox();
+            checkBox_ShowSelected = new CheckBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_height).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_width).BeginInit();
@@ -398,6 +399,7 @@
             // 
             // groupBox5
             // 
+            groupBox5.Controls.Add(checkBox_ShowSelected);
             groupBox5.Controls.Add(checkBox_withColor);
             groupBox5.Location = new Point(260, 233);
             groupBox5.Name = "groupBox5";
@@ -575,6 +577,16 @@
             checkBox_TimingLine_ShowRed.Text = "Show Timing Points (Red Lines)";
             checkBox_TimingLine_ShowRed.UseVisualStyleBackColor = true;
             // 
+            // checkBox_ShowSelected
+            // 
+            checkBox_ShowSelected.AutoSize = true;
+            checkBox_ShowSelected.Location = new Point(109, 22);
+            checkBox_ShowSelected.Name = "checkBox_ShowSelected";
+            checkBox_ShowSelected.Size = new Size(111, 21);
+            checkBox_ShowSelected.TabIndex = 1;
+            checkBox_ShowSelected.Text = "Selected Mark";
+            checkBox_ShowSelected.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -664,5 +676,6 @@
         private CheckBox checkBox_TimingLine_ShowGreen;
         private CheckBox checkBox_TimingLine_ShowRed;
         private CheckBox checkBox_BarLine_Show;
+        private CheckBox checkBox_ShowSelected;
     }
 }

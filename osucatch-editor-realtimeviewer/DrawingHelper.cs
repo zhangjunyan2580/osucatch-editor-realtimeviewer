@@ -260,10 +260,12 @@ namespace osucatch_editor_realtimeviewer
             int comboColorIndex = (hitObject.ComboIndex) % CustomComboColours.Count;
             Color4 color = CustomComboColours[comboColorIndex];
 
-            if (hitObject is TinyDroplet) Canvas.DrawTinyDroplet(pos, CircleDiameter, hitObject.Scale, color, withColor, hitObject.HyperDash);
-            else if (hitObject is Droplet) Canvas.DrawDroplet(pos, CircleDiameter, hitObject.Scale, color, withColor, hitObject.HyperDash);
-            else if (hitObject is Fruit) Canvas.DrawFruit(pos, CircleDiameter, color, withColor, hitObject.HyperDash);
-            else if (hitObject is Banana) Canvas.DrawBanana(pos, CircleDiameter);
+            bool isSelected = (app.Default.Selected_Show) ? hitObject.IsSelected : false;
+
+            if (hitObject is TinyDroplet) Canvas.DrawTinyDroplet(pos, CircleDiameter, hitObject.Scale, color, withColor, hitObject.HyperDash, isSelected);
+            else if (hitObject is Droplet) Canvas.DrawDroplet(pos, CircleDiameter, hitObject.Scale, color, withColor, hitObject.HyperDash, isSelected);
+            else if (hitObject is Fruit) Canvas.DrawFruit(pos, CircleDiameter, color, withColor, hitObject.HyperDash, isSelected);
+            else if (hitObject is Banana) Canvas.DrawBanana(pos, CircleDiameter, isSelected);
 
             if (DistanceType != DistanceType.None && (hitObject is Fruit || (hitObject is Droplet && hitObject is not TinyDroplet)))
             {
