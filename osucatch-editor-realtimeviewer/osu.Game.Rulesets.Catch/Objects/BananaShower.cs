@@ -37,6 +37,7 @@ namespace osu.Game.Rulesets.Catch.Objects
                 {
                     StartTime = time,
                     BananaIndex = count,
+                    IsSelected = IsSelected,
                 });
 
                 count++;

@@ -170,12 +170,12 @@ namespace osucatch_editor_realtimeviewer {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool Log_BeatmapParser {
+        public bool Log_BeatmapConverter {
             get {
-                return ((bool)(this["Log_BeatmapParser"]));
+                return ((bool)(this["Log_BeatmapConverter"]));
             }
             set {
-                this["Log_BeatmapParser"] = value;
+                this["Log_BeatmapConverter"] = value;
             }
         }
         
@@ -284,6 +284,18 @@ namespace osucatch_editor_realtimeviewer {
             }
             set {
                 this["ScreensContain"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Selected_Show {
+            get {
+                return ((bool)(this["Selected_Show"]));
+            }
+            set {
+                this["Selected_Show"] = value;
             }
         }
     }

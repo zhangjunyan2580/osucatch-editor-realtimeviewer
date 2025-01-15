@@ -39,8 +39,9 @@ namespace osu.Game.Rulesets.Objects
         public double StartTime = 0;
 
         /// <summary>
-        /// The hit windows for this <see cref="HitObject"/>.
+        /// Is selected by editor.
         /// </summary>
+        public bool IsSelected = false;
 
 
         private readonly List<HitObject> nestedHitObjects = new List<HitObject>();

@@ -84,6 +84,7 @@ namespace osu.Game.Rulesets.Catch.Objects
                             {
                                 StartTime = t + lastEvent.Value.Time,
                                 X = EffectiveX + Path.PositionAt(lastEvent.Value.PathProgress + (t / sinceLastTick) * (e.PathProgress - lastEvent.Value.PathProgress)).X,
+                                IsSelected = IsSelected,
                             });
                         }
                     }
@@ -100,6 +101,7 @@ namespace osu.Game.Rulesets.Catch.Objects
                         {
                             StartTime = e.Time,
                             X = EffectiveX + Path.PositionAt(e.PathProgress).X,
+                            IsSelected = IsSelected,
                         });
                         break;
 
@@ -110,6 +112,7 @@ namespace osu.Game.Rulesets.Catch.Objects
                         {
                             StartTime = e.Time,
                             X = EffectiveX + Path.PositionAt(e.PathProgress).X,
+                            IsSelected = IsSelected,
                         });
                         break;
                 }

@@ -58,14 +58,10 @@ namespace osu.Game.Beatmaps
 
         public ControlPointInfo ControlPointInfo { get; set; } = new ControlPointInfo();
 
-        public SortedList<BreakPeriod> Breaks { get; set; } = new SortedList<BreakPeriod>(Comparer<BreakPeriod>.Default);
-
         public List<Color4> CustomComboColours { get; set; } = new List<Color4>();
 
         public List<BarLine> BarLines { get; set; } = new List<BarLine>();
 
-
-        public double TotalBreakTime => Breaks.Sum(b => b.Duration);
         public List<T> HitObjects { get; set; } = new List<T>();
 
         IReadOnlyList<T> IBeatmap<T>.HitObjects => HitObjects;

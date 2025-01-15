@@ -14,20 +14,9 @@ using System.Text;
 namespace osucatch_editor_realtimeviewer
 {
 
-    public class CatchBeatmapAPI
+    public class BeatmapConverter
     {
         public static Ruleset catchRulest => new CatchRuleset();
-
-        public static Decoder<Beatmap> beatmapDecoder => new LegacyBeatmapDecoder();
-        private static Beatmap readFromFile(string file)
-        {
-            byte[] byteArray = Encoding.UTF8.GetBytes(file);
-            using (MemoryStream stream = new MemoryStream(byteArray))
-            {
-                using (var reader = new LineBufferedReader(stream))
-                    return beatmapDecoder.Decode(reader);
-            }
-        }
 
         static Mod[] NoMod = Array.Empty<Mod>();
 
@@ -57,33 +46,30 @@ namespace osucatch_editor_realtimeviewer
             return modsArr.ToArray();
         }
 
-        public static IBeatmap Execute(string file, Mod[] mods)
+        public static IBeatmap Execute(Beatmap beatmap, Mod[] mods)
         {
-            Log.ConsoleLog("Reading beatmap.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
-            Ruleset ruleset = catchRulest;
-            Beatmap beatmap = readFromFile(file);
+            Log.ConsoleLog("Converting beatmap.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
             FlatWorkingBeatmap workingBeatmap = new FlatWorkingBeatmap(beatmap);
-            Log.ConsoleLog("Converting beatmap.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
-            IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(ruleset, mods);
+            IBeatmap playableBeatmap = workingBeatmap.GetPlayableBeatmap(catchRulest, mods);
             if (playableBeatmap == null) throw new Exception("This beatmap is invalid or is not a ctb beatmap.");
             return playableBeatmap;
         }
 
-        public static IBeatmap GetBeatmap(string file, string[] mods)
+        public static IBeatmap GetConvertedBeatmap(Beatmap beatmap, string[] mods)
         {
             Ruleset ruleset = catchRulest;
-            return Execute(file, GetMods(mods, ruleset));
+            return Execute(beatmap, GetMods(mods, ruleset));
         }
 
-        public static IBeatmap GetBeatmap(string file, int mods)
+        public static IBeatmap GetConvertedBeatmap(Beatmap beatmap, int mods)
         {
             Ruleset ruleset = catchRulest;
-            return Execute(file, GetMods(GetModsString(mods), ruleset));
+            return Execute(beatmap, GetMods(GetModsString(mods), ruleset));
         }
 
         public static List<WithDistancePalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap, bool isCalDistance)
         {
-            Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapParser, Log.LogLevel.Debug);
+            Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             List<PalpableCatchHitObject> palpableObjects = new List<PalpableCatchHitObject>();
 
@@ -165,14 +151,14 @@ namespace osucatch_editor_realtimeviewer
             this.currentObject = currentObject;
         }
 
-        public TimingControlPoint GetTimingPoint(IBeatmap beatmap)
+        public TimingControlPoint GetTimingPoint(ControlPointInfo controlPointInfo)
         {
-            return beatmap.ControlPointInfo.TimingPointAt(currentObject.StartTime);
+            return controlPointInfo.TimingPointAt(currentObject.StartTime);
         }
 
-        public DifficultyControlPoint GetDifficultyControlPoint(IBeatmap beatmap)
+        public DifficultyControlPoint GetDifficultyControlPoint(ControlPointInfo controlPointInfo)
         {
-            return (beatmap.ControlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(currentObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
+            return (controlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(currentObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
         }
 
         public void CalDistance(IBeatmap beatmap, PalpableCatchHitObject nextObject)

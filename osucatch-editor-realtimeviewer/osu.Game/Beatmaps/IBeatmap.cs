@@ -35,19 +35,9 @@ namespace osu.Game.Beatmaps
         /// </summary>
         ControlPointInfo ControlPointInfo { get; set; }
 
-        /// <summary>
-        /// The breaks in this beatmap.
-        /// </summary>
-        SortedList<BreakPeriod> Breaks { get; set; }
-
         List<Color4> CustomComboColours { get; set; }
 
         List<BarLine> BarLines { get; set; }
-
-        /// <summary>
-        /// Total amount of break time in the beatmap.
-        /// </summary>
-        double TotalBreakTime { get; }
 
         /// <summary>
         /// The hitobjects contained by this beatmap.

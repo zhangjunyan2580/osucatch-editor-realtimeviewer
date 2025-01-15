@@ -22,12 +22,13 @@
             }
             checkBox_enableBackup.Checked = app.Default.Backup_Enabled;
             checkBox_withColor.Checked = app.Default.Combo_Colour;
+            checkBox_ShowSelected.Checked = app.Default.Selected_Show;
 
             checkBox_showConsole.Checked = app.Default.Show_Console;
             checkBox_Log_Program.Checked = app.Default.Log_Program;
             checkBox_Log_EditorReader.Checked = app.Default.Log_EditorReader;
             checkBox_Log_BeatmapBuilder.Checked = app.Default.Log_BeatmapBuilder;
-            checkBox_Log_BeatmapParser.Checked = app.Default.Log_BeatmapParser;
+            checkBox_Log_BeatmapConverter.Checked = app.Default.Log_BeatmapConverter;
             checkBox_Log_Drawing.Checked = app.Default.Log_Drawing;
             checkBox_Log_Backup.Checked = app.Default.Log_Backup;
             checkBox_Log_Timer.Checked = app.Default.Log_Timer;
@@ -96,12 +97,13 @@
             app.Default.Backup_Folder = textBox_backupFolder.Text;
             app.Default.Backup_Enabled = checkBox_enableBackup.Checked;
             app.Default.Combo_Colour = checkBox_withColor.Checked;
+            app.Default.Selected_Show = checkBox_ShowSelected.Checked;
 
             app.Default.Show_Console = checkBox_showConsole.Checked;
             app.Default.Log_Program = checkBox_Log_Program.Checked;
             app.Default.Log_EditorReader = checkBox_Log_EditorReader.Checked;
             app.Default.Log_BeatmapBuilder = checkBox_Log_BeatmapBuilder.Checked;
-            app.Default.Log_BeatmapParser = checkBox_Log_BeatmapParser.Checked;
+            app.Default.Log_BeatmapConverter = checkBox_Log_BeatmapConverter.Checked;
             app.Default.Log_Drawing = checkBox_Log_Drawing.Checked;
             app.Default.Log_Backup = checkBox_Log_Backup.Checked;
             app.Default.Log_Timer = checkBox_Log_Timer.Checked;
