@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            reader_timer = new System.Windows.Forms.Timer(components);
             Canvas = new Canvas();
             menuStrip1 = new MenuStrip();
             viewerToolStripMenuItem = new ToolStripMenuItem();
@@ -59,11 +57,6 @@
             githubToolStripMenuItem1 = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
-            // 
-            // reader_timer
-            // 
-            reader_timer.Interval = 1000;
-            reader_timer.Tick += reader_timer_Tick;
             // 
             // Canvas
             // 
@@ -290,8 +283,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Timer reader_timer;
         private Canvas Canvas;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem viewerToolStripMenuItem;

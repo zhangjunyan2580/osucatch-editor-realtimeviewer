@@ -36,7 +36,8 @@ namespace osucatch_editor_realtimeviewer
 
         public static bool NeedReapplySettings = false;
 
-        private static System.Timers.Timer? backup_timer;
+        private static System.Timers.Timer backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
+        private static System.Timers.Timer reader_timer = new System.Timers.Timer(app.Default.Idle_Interval);
 
         public Form1()
         {
@@ -140,7 +141,9 @@ namespace osucatch_editor_realtimeviewer
             this.Canvas.Init();
 
             // reader timer
-            reader_timer.Interval = app.Default.Idle_Interval;
+            reader_timer = new System.Timers.Timer(app.Default.Idle_Interval);
+            reader_timer.AutoReset = false;
+            reader_timer.Elapsed += reader_timer_Tick;
             reader_timer.Start();
 
             // backup timer
@@ -508,7 +511,7 @@ namespace osucatch_editor_realtimeviewer
 
         }
 
-        private async void reader_timer_Tick(object sender, EventArgs e)
+        private async void reader_timer_Tick(object? sender, EventArgs? e)
         {
             reader_timer.Stop();
             var cancellationTokenSource = new CancellationTokenSource();
