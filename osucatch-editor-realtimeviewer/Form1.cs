@@ -2,11 +2,15 @@ using Editor_Reader;
 using Microsoft.Win32;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Catch.Objects;
+using osucatch_editor_realtimeviewer.Properties;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Timers;
+using System.Windows.Forms;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -43,6 +47,23 @@ namespace osucatch_editor_realtimeviewer
         public Form1()
         {
             InitializeComponent();
+
+            if (app.Default.Language_String != "")
+            {
+                defaultLanguageToolStripMenuItem.Checked = false;
+
+                englishLanguageToolStripMenuItem.Checked = (app.Default.Language_String == "en-US");
+                zhHansLanguageToolStripMenuItem.Checked = (app.Default.Language_String == "zh-Hans");
+                Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(app.Default.Language_String);
+                Form1.ApplyResources(this);
+            }
+            else
+            {
+                defaultLanguageToolStripMenuItem.Checked = true;
+                englishLanguageToolStripMenuItem.Checked = false;
+                zhHansLanguageToolStripMenuItem.Checked = false;
+            }
+
         }
 
         private string Select_Osu_Path()
@@ -790,6 +811,92 @@ namespace osucatch_editor_realtimeviewer
             Canvas.screensContain = 8;
             drawingHelper.ScreensContain = 8;
             this.Canvas.ScreensContainChanged();
+        }
+
+        private void backupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Need_Backup = true;
+        }
+
+        public static void ApplyResources(Form form)
+        {
+            ComponentResourceManager rm = new System.ComponentModel.ComponentResourceManager(form.GetType());
+            rm.ApplyResources(form, "$this");
+            AppLang(form, rm);
+        }
+
+        private static void AppLang(ToolStripMenuItem item, System.ComponentModel.ComponentResourceManager resources)
+        {
+            if (item is ToolStripMenuItem)
+            {
+                resources.ApplyResources(item, item.Name);
+                ToolStripMenuItem tsmi = (ToolStripMenuItem)item;
+                if (tsmi.DropDownItems.Count > 0)
+                {
+                    foreach (var c in tsmi.DropDownItems)
+                    {
+                        if (c is ToolStripMenuItem) AppLang((ToolStripMenuItem)c, resources);
+                    }
+                }
+            }
+        }
+
+        private static void AppLang(Control control, System.ComponentModel.ComponentResourceManager resources)
+        {
+            if (control is MenuStrip)
+            {
+                resources.ApplyResources(control, control.Name);
+                MenuStrip ms = (MenuStrip)control;
+                if (ms.Items.Count > 0)
+                {
+                    foreach (ToolStripMenuItem c in ms.Items)
+                    {
+                        AppLang(c, resources);
+                    }
+                }
+            }
+
+            foreach (Control c in control.Controls)
+            {
+                resources.ApplyResources(c, c.Name);
+                AppLang(c, resources);
+            }
+        }
+
+        private void englishLanguageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            defaultLanguageToolStripMenuItem.Checked = false;
+            englishLanguageToolStripMenuItem.Checked = true;
+            zhHansLanguageToolStripMenuItem.Checked = false;
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+            Form1.ApplyResources(this);
+
+            app.Default.Language_String = "en-US";
+            app.Default.Save();
+        }
+
+        private void zhHansLanguageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            defaultLanguageToolStripMenuItem.Checked = false;
+            englishLanguageToolStripMenuItem.Checked = false;
+            zhHansLanguageToolStripMenuItem.Checked = true;
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("zh-Hans");
+            Form1.ApplyResources(this);
+
+            app.Default.Language_String = "zh-Hans";
+            app.Default.Save();
+        }
+
+        private void defaultLanguageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            defaultLanguageToolStripMenuItem.Checked = true;
+            englishLanguageToolStripMenuItem.Checked = false;
+            zhHansLanguageToolStripMenuItem.Checked = false;
+            Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CurrentCulture;
+            Form1.ApplyResources(this);
+
+            app.Default.Language_String = "";
+            app.Default.Save();
         }
     }
 

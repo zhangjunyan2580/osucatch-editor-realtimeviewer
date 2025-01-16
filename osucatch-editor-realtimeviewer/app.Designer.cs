@@ -298,5 +298,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Selected_Show"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Language_String {
+            get {
+                return ((string)(this["Language_String"]));
+            }
+            set {
+                this["Language_String"] = value;
+            }
+        }
     }
 }
