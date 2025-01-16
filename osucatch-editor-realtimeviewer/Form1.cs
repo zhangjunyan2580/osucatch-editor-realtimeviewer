@@ -2,11 +2,15 @@ using Editor_Reader;
 using Microsoft.Win32;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Catch.Objects;
+using osucatch_editor_realtimeviewer.Properties;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Timers;
+using System.Windows.Forms;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -36,11 +40,30 @@ namespace osucatch_editor_realtimeviewer
 
         public static bool NeedReapplySettings = false;
 
-        private static System.Timers.Timer? backup_timer;
+        private static System.Timers.Timer backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
+        private static System.Timers.Timer reader_timer = new System.Timers.Timer(app.Default.Idle_Interval);
+        private static System.Timers.Timer Memory_Monitor_Timer = new System.Timers.Timer(200);
 
         public Form1()
         {
             InitializeComponent();
+
+            if (app.Default.Language_String != "")
+            {
+                defaultLanguageToolStripMenuItem.Checked = false;
+
+                englishLanguageToolStripMenuItem.Checked = (app.Default.Language_String == "en-US");
+                zhHansLanguageToolStripMenuItem.Checked = (app.Default.Language_String == "zh-Hans");
+                Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(app.Default.Language_String);
+                Form1.ApplyResources(this);
+            }
+            else
+            {
+                defaultLanguageToolStripMenuItem.Checked = true;
+                englishLanguageToolStripMenuItem.Checked = false;
+                zhHansLanguageToolStripMenuItem.Checked = false;
+            }
+
         }
 
         private string Select_Osu_Path()
@@ -140,7 +163,9 @@ namespace osucatch_editor_realtimeviewer
             this.Canvas.Init();
 
             // reader timer
-            reader_timer.Interval = app.Default.Idle_Interval;
+            reader_timer = new System.Timers.Timer(app.Default.Idle_Interval);
+            reader_timer.AutoReset = false;
+            reader_timer.Elapsed += reader_timer_Tick;
             reader_timer.Start();
 
             // backup timer
@@ -152,9 +177,7 @@ namespace osucatch_editor_realtimeviewer
             }
 
             // memory monitor timer
-            System.Windows.Forms.Timer Memory_Monitor_Timer = new System.Windows.Forms.Timer();
-            Memory_Monitor_Timer.Interval = 200;
-            Memory_Monitor_Timer.Tick += Memory_Monitor;
+            Memory_Monitor_Timer.Elapsed += Memory_Monitor;
             Memory_Monitor_Timer.Start();
 
         }
@@ -175,56 +198,191 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private void reader_timer_Work(CancellationToken cancellationToken)
+        private void ReapplySettings()
         {
-            if (NeedReapplySettings)
+            Invoke(new MethodInvoker(delegate ()
             {
-                Invoke(new MethodInvoker(delegate ()
-                {
-                    this.Width = app.Default.Window_Width;
-                    this.Height = app.Default.Window_Height;
+                this.Width = app.Default.Window_Width;
+                this.Height = app.Default.Window_Height;
 
-                }));
-                if (app.Default.Backup_Enabled)
+            }));
+            if (app.Default.Backup_Enabled)
+            {
+                if (backup_timer == null)
                 {
-                    if (backup_timer == null)
-                    {
-                        backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
-                        backup_timer.Elapsed += backup_timer_Tick;
-                        backup_timer.Start();
-                    }
-                    else
-                    {
-                        backup_timer.Interval = app.Default.Backup_Interval;
-                    }
+                    backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
+                    backup_timer.Elapsed += backup_timer_Tick;
+                    backup_timer.Start();
                 }
                 else
                 {
-                    if (backup_timer != null)
-                    {
-                        backup_timer.Stop();
-                        backup_timer = null;
-                    }
+                    backup_timer.Interval = app.Default.Backup_Interval;
                 }
+            }
+            else
+            {
+                if (backup_timer != null)
+                {
+                    backup_timer.Stop();
+                }
+            }
+        }
 
+        private bool FetchOsuProcess()
+        {
+
+            if (!editorReaderHelper.FetchProcess())
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Text = "Osu!.exe is not running";
+                }));
+                reader_timer.Interval = app.Default.Idle_Interval;
+                lastReader = null;
+                return false;
+            }
+            return true;
+        }
+
+        private bool FetchEditor()
+        {
+            if (!editorReaderHelper.FetchEditor())
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Text = "Editor is not running";
+                }));
+                reader_timer.Interval = app.Default.Idle_Interval;
+                lastReader = null;
+                return false;
+            }
+            else
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.Text = editorReaderHelper.beatmap_title;
+                }));
+                return true;
+            }
+        }
+
+        private Beatmap? BuildNewBeatmap(BeatmapInfoCollection thisReader, DifferenceType differenceType, string filepath)
+        {
+            Beatmap? beatmap = null;
+            if (differenceType == DifferenceType.DifferentFile)
+            {
+                // fetch colors because editor reader doesn't fetch it.
+                try
+                {
+                    beatmap = BeatmapBuilder.BuildNewBeatmapWithFilePath(thisReader, filepath, out lastColourLines);
+                }
+                catch (Exception ex)
+                {
+                    Log.ConsoleLog("Build new beatmap from beatmap file failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
+                    reader_timer.Interval = app.Default.Idle_Interval;
+                    return null;
+                }
+                lastBeatmap = beatmap;
+            }
+            else if (differenceType == DifferenceType.DifferentObjects)
+            {
+                try
+                {
+                    beatmap = BeatmapBuilder.BuildNewBeatmapWithColorString(thisReader, lastColourLines);
+                }
+                catch (Exception ex)
+                {
+                    Log.ConsoleLog("Build new beatmap from reader failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
+                    reader_timer.Interval = app.Default.Idle_Interval;
+                    return null;
+                }
+                lastBeatmap = beatmap;
+            }
+            else if (differenceType == DifferenceType.None)
+            {
+                beatmap = lastBeatmap;
+            }
+            return beatmap;
+        }
+
+        private int GetMods(out bool isSameMods)
+        {
+            int mods = 0;
+            if (hRToolStripMenuItem.Checked) mods = (1 << 4);
+            else if (eZToolStripMenuItem.Checked) mods = (1 << 1);
+            if (mods == lastMods)
+            {
+                isSameMods = true;
+            }
+            else
+            {
+                isSameMods = false;
+                lastMods = mods;
+            }
+            return mods;
+        }
+
+        private DistanceType GetDistanceType(out bool isSameDistanceType)
+        {
+            DistanceType distanceType = DistanceType.None;
+            if (hideToolStripMenuItem.Checked) distanceType = DistanceType.None;
+            else if (sameWithEditorToolStripMenuItem.Checked) distanceType = DistanceType.SameWithEditor;
+            else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) distanceType = DistanceType.NoSliderVelocityMultiplier;
+            else if (compareWithWalkSpeedToolStripMenuItem.Checked) distanceType = DistanceType.CompareWithWalkSpeed;
+            else distanceType = DistanceType.None;
+            if (distanceType == lastDistanceType)
+            {
+                isSameDistanceType = true;
+            }
+            else
+            {
+                isSameDistanceType = false;
+                lastDistanceType = distanceType;
+            }
+            return distanceType;
+        }
+
+        private void BackupBeatmap(BeatmapInfoCollection thisReader, string filepath)
+        {
+            try
+            {
+                Log.ConsoleLog("Start backup.", Log.LogType.Backup, Log.LogLevel.Info);
+                string backupFilePath = Path.Combine(app.Default.Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
+                string? directoryPath = Path.GetDirectoryName(backupFilePath);
+                if (directoryPath == null)
+                {
+                    Log.ConsoleLog("Backup failed. Path is invalid: " + backupFilePath, Log.LogType.Backup, Log.LogLevel.Error);
+                }
+                else
+                {
+                    Directory.CreateDirectory(directoryPath);
+                    Log.ConsoleLog("Create new beatmap.", Log.LogType.Backup, Log.LogLevel.Info);
+                    string newBeatmap = BeatmapBuilder.BuildNewBeatmapFileFromFilepath(filepath, thisReader);
+                    File.WriteAllText(backupFilePath, newBeatmap);
+                    Need_Backup = false;
+                    Log.ConsoleLog("Backup successfully.", Log.LogType.Backup, Log.LogLevel.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.ConsoleLog("Backup failed.\r\n" + ex.ToString(), Log.LogType.Backup, Log.LogLevel.Error);
+                Need_Backup = false;
+            }
+        }
+
+        private void reader_timer_Work(CancellationToken cancellationToken)
+        {
+            // Step0. check settings change
+            if (NeedReapplySettings)
+            {
+                ReapplySettings();
                 NeedReapplySettings = false;
             }
 
-
-
             try
             {
-                // fetch osu! process
-                if (!editorReaderHelper.FetchProcess())
-                {
-                    Invoke(new MethodInvoker(delegate ()
-                    {
-                        this.Text = "Osu!.exe is not running";
-                    }));
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    lastReader = null;
-                    return;
-                }
+                // Step1. fetch osu! process
+                if (!FetchOsuProcess()) return;
 
 
                 if (cancellationToken.IsCancellationRequested)
@@ -235,24 +393,8 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // fetch editor
-                if (!editorReaderHelper.FetchEditor())
-                {
-                    Invoke(new MethodInvoker(delegate ()
-                    {
-                        this.Text = "Editor is not running";
-                    }));
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    lastReader = null;
-                    return;
-                }
-                else
-                {
-                    Invoke(new MethodInvoker(delegate ()
-                    {
-                        this.Text = editorReaderHelper.beatmap_title;
-                    }));
-                }
+                // Step2. fetch editor
+                if (!FetchEditor()) return;
 
 
                 if (cancellationToken.IsCancellationRequested)
@@ -263,15 +405,13 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // fetch all
-                Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
+                // Step3. fetch all
                 var thisReader = editorReaderHelper.FetchAll();
                 if (thisReader == null)
                 {
                     reader_timer.Interval = app.Default.Idle_Interval;
                     return;
                 }
-                Log.ConsoleLog("FetchAll complete.", Log.LogType.EditorReader, Log.LogLevel.Debug);
                 // save last reader
                 DifferenceType differenceType = thisReader.CheckDifference(lastReader, app.Default.Selected_Show);
                 lastReader = thisReader;
@@ -285,7 +425,7 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // Build osu file Path
+                // Step4. Build osu file Path
                 string filepath = "";
                 try
                 {
@@ -309,49 +449,14 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // build new beatmap
+                // Step5. build new beatmap
                 Log.ConsoleLog("Start build new beatmap.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
-                Beatmap? beatmap = null;
-                if (differenceType == DifferenceType.DifferentFile)
-                {
-                    // fetch colors because editor reader doesn't fetch it.
-                    try
-                    {
-                        beatmap = BeatmapBuilder.BuildNewBeatmapWithFilePath(thisReader, filepath, out lastColourLines);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ConsoleLog("Build new beatmap from beatmap file failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
-                        reader_timer.Interval = app.Default.Idle_Interval;
-                        return;
-                    }
-                    lastBeatmap = beatmap;
-                }
-                else if (differenceType == DifferenceType.DifferentObjects)
-                {
-                    try
-                    {
-                        beatmap = BeatmapBuilder.BuildNewBeatmapWithColorString(thisReader, lastColourLines);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ConsoleLog("Build new beatmap from reader failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
-                        reader_timer.Interval = app.Default.Idle_Interval;
-                        return;
-                    }
-                    lastBeatmap = beatmap;
-                }
-                else if (differenceType == DifferenceType.None)
-                {
-                    beatmap = lastBeatmap;
-                }
-
+                Beatmap? beatmap = BuildNewBeatmap(thisReader, differenceType, filepath);
                 if (beatmap == null)
                 {
                     reader_timer.Interval = app.Default.Idle_Interval;
                     return;
                 }
-
                 Log.ConsoleLog("Build new beatmap successfully.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
 
 
@@ -363,66 +468,21 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // cache mods & distanceType
+                // Step6. cache mods & distanceType
                 bool isSameMods = false;
                 bool isSameDistanceType = false;
                 // isSameMods
-                int mods = 0;
-                if (hRToolStripMenuItem.Checked) mods = (1 << 4);
-                else if (eZToolStripMenuItem.Checked) mods = (1 << 1);
-                if (mods == lastMods)
-                {
-                    isSameMods = true;
-                }
-                else
-                {
-                    lastMods = mods;
-                }
+                int mods = GetMods(out isSameMods);
                 // isSameDistanceType
-                if (hideToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.None;
-                else if (sameWithEditorToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.SameWithEditor;
-                else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.NoSliderVelocityMultiplier;
-                else if (compareWithWalkSpeedToolStripMenuItem.Checked) drawingHelper.DistanceType = DistanceType.CompareWithWalkSpeed;
-                else drawingHelper.DistanceType = DistanceType.None;
-                if (drawingHelper.DistanceType == lastDistanceType)
-                {
-                    isSameDistanceType = true;
-                }
-                else
-                {
-                    lastDistanceType = drawingHelper.DistanceType;
-                }
+                drawingHelper.DistanceType = GetDistanceType(out isSameDistanceType);
 
 
-                // Backup
+                // Step7. Backup
                 if (Need_Backup)
                 {
                     if (editorReaderHelper.Is_Editor_Running && beatmap != null)
                     {
-                        try
-                        {
-                            Log.ConsoleLog("Start backup.", Log.LogType.Backup, Log.LogLevel.Info);
-                            string backupFilePath = Path.Combine(app.Default.Backup_Folder, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss ") + thisReader.Filename);
-                            string? directoryPath = Path.GetDirectoryName(backupFilePath);
-                            if (directoryPath == null)
-                            {
-                                Log.ConsoleLog("Backup failed. Path is invalid: " + backupFilePath, Log.LogType.Backup, Log.LogLevel.Error);
-                            }
-                            else
-                            {
-                                Directory.CreateDirectory(directoryPath);
-                                Log.ConsoleLog("Create new beatmap.", Log.LogType.Backup, Log.LogLevel.Info);
-                                string newBeatmap = BeatmapBuilder.BuildNewBeatmapFileFromFilepath(filepath, thisReader);
-                                File.WriteAllText(backupFilePath, newBeatmap);
-                                Need_Backup = false;
-                                Log.ConsoleLog("Backup successfully.", Log.LogType.Backup, Log.LogLevel.Info);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.ConsoleLog("Backup failed.\r\n" + ex.ToString(), Log.LogType.Backup, Log.LogLevel.Error);
-                            Need_Backup = false;
-                        }
+                        BackupBeatmap(thisReader, filepath);
                     }
                 }
 
@@ -434,7 +494,7 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // drop outdated data
+                // Step8. drop outdated data (really need it?)
                 if (DateTime.Now.Ticks <= LastDrawingTimeStamp)
                 {
                     Log.ConsoleLog("Drop an outdated data.", Log.LogType.Program, Log.LogLevel.Warning);
@@ -442,7 +502,7 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // convert beatmap to catch
+                // Step9. convert beatmap to catch
                 IBeatmap? convertedBeatmap = null;
                 if (differenceType != DifferenceType.None || lastConvertedBeatmap == null || !isSameMods)
                 {
@@ -461,7 +521,7 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // prepare drawing objects
+                // Step10. prepare drawing objects
                 if (drawingHelper.CatchHitObjects != null && differenceType == DifferenceType.None && isSameMods && isSameDistanceType)
                 {
                     Log.ConsoleLog("Beatmap no changes. Using last data.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
@@ -481,7 +541,7 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                // drawing
+                // Step11. drawing
                 try
                 {
                     drawingHelper.CurrentTime = thisReader.EditorTime;
@@ -508,7 +568,7 @@ namespace osucatch_editor_realtimeviewer
 
         }
 
-        private async void reader_timer_Tick(object sender, EventArgs e)
+        private async void reader_timer_Tick(object? sender, EventArgs? e)
         {
             reader_timer.Stop();
             var cancellationTokenSource = new CancellationTokenSource();
@@ -524,7 +584,8 @@ namespace osucatch_editor_realtimeviewer
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             reader_timer.Stop();
-            backup_timer?.Stop();
+            backup_timer.Stop();
+            Memory_Monitor_Timer.Stop();
         }
 
         private void noneToolStripMenuItem_Click(object sender, EventArgs e)
@@ -750,6 +811,92 @@ namespace osucatch_editor_realtimeviewer
             Canvas.screensContain = 8;
             drawingHelper.ScreensContain = 8;
             this.Canvas.ScreensContainChanged();
+        }
+
+        private void backupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Need_Backup = true;
+        }
+
+        public static void ApplyResources(Form form)
+        {
+            ComponentResourceManager rm = new System.ComponentModel.ComponentResourceManager(form.GetType());
+            rm.ApplyResources(form, "$this");
+            AppLang(form, rm);
+        }
+
+        private static void AppLang(ToolStripMenuItem item, System.ComponentModel.ComponentResourceManager resources)
+        {
+            if (item is ToolStripMenuItem)
+            {
+                resources.ApplyResources(item, item.Name);
+                ToolStripMenuItem tsmi = (ToolStripMenuItem)item;
+                if (tsmi.DropDownItems.Count > 0)
+                {
+                    foreach (var c in tsmi.DropDownItems)
+                    {
+                        if (c is ToolStripMenuItem) AppLang((ToolStripMenuItem)c, resources);
+                    }
+                }
+            }
+        }
+
+        private static void AppLang(Control control, System.ComponentModel.ComponentResourceManager resources)
+        {
+            if (control is MenuStrip)
+            {
+                resources.ApplyResources(control, control.Name);
+                MenuStrip ms = (MenuStrip)control;
+                if (ms.Items.Count > 0)
+                {
+                    foreach (ToolStripMenuItem c in ms.Items)
+                    {
+                        AppLang(c, resources);
+                    }
+                }
+            }
+
+            foreach (Control c in control.Controls)
+            {
+                resources.ApplyResources(c, c.Name);
+                AppLang(c, resources);
+            }
+        }
+
+        private void englishLanguageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            defaultLanguageToolStripMenuItem.Checked = false;
+            englishLanguageToolStripMenuItem.Checked = true;
+            zhHansLanguageToolStripMenuItem.Checked = false;
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+            Form1.ApplyResources(this);
+
+            app.Default.Language_String = "en-US";
+            app.Default.Save();
+        }
+
+        private void zhHansLanguageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            defaultLanguageToolStripMenuItem.Checked = false;
+            englishLanguageToolStripMenuItem.Checked = false;
+            zhHansLanguageToolStripMenuItem.Checked = true;
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("zh-Hans");
+            Form1.ApplyResources(this);
+
+            app.Default.Language_String = "zh-Hans";
+            app.Default.Save();
+        }
+
+        private void defaultLanguageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            defaultLanguageToolStripMenuItem.Checked = true;
+            englishLanguageToolStripMenuItem.Checked = false;
+            zhHansLanguageToolStripMenuItem.Checked = false;
+            Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CurrentCulture;
+            Form1.ApplyResources(this);
+
+            app.Default.Language_String = "";
+            app.Default.Save();
         }
     }
 

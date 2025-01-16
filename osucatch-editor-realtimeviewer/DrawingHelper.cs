@@ -44,13 +44,23 @@ namespace osucatch_editor_realtimeviewer
 
     public class DrawingHelper
     {
+        /// <summary>
+        /// Editor's current time of beatmap (ms).
+        /// </summary>
         public float CurrentTime { get; set; }
         public ControlPointInfo? ControlPointInfo { get; set; }
         List<BarLine> BarLines { get; set; }
         public List<WithDistancePalpableCatchHitObject> CatchHitObjects { get; set; }
+
+        /// <summary>
+        /// CatchHitObjects which near the editor's current time.
+        /// </summary>
         public List<WithDistancePalpableCatchHitObject> NearbyHitObjects { get; set; }
         public int ApproachTime { get; set; }
-        public float FruitSpeed { get; set; }
+
+        /// <summary>
+        /// The time spent for fruit to move one pixel. ( = ApproachTime / 384 )
+        /// </summary>
         public float TimePerPixels { get; set; }
         private int CircleDiameter { get; set; }
         public DistanceType DistanceType { get; set; }
@@ -65,6 +75,9 @@ namespace osucatch_editor_realtimeviewer
             new (255, 128, 255, 255),
         };
 
+        /// <summary>
+        /// How many screens add up to the height of canvas.
+        /// </summary>
         public int ScreensContain { get; set; }
 
         public DrawingHelper()
@@ -86,7 +99,6 @@ namespace osucatch_editor_realtimeviewer
 
             float moddedAR = convertedBeatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);
-            FruitSpeed = 384 / ApproachTime;
             TimePerPixels = ApproachTime / 384.0f;
             float moddedCS = convertedBeatmap.Difficulty.CircleSize;
             CircleDiameter = (int)(108.848 - moddedCS * 8.9646);
