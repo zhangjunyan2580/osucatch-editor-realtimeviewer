@@ -38,6 +38,7 @@ namespace osucatch_editor_realtimeviewer
 
         private static System.Timers.Timer backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
         private static System.Timers.Timer reader_timer = new System.Timers.Timer(app.Default.Idle_Interval);
+        private static System.Timers.Timer Memory_Monitor_Timer = new System.Timers.Timer(200);
 
         public Form1()
         {
@@ -155,9 +156,7 @@ namespace osucatch_editor_realtimeviewer
             }
 
             // memory monitor timer
-            System.Windows.Forms.Timer Memory_Monitor_Timer = new System.Windows.Forms.Timer();
-            Memory_Monitor_Timer.Interval = 200;
-            Memory_Monitor_Timer.Tick += Memory_Monitor;
+            Memory_Monitor_Timer.Elapsed += Memory_Monitor;
             Memory_Monitor_Timer.Start();
 
         }
