@@ -12,8 +12,15 @@ namespace osucatch_editor_realtimeviewer
 
     public class Canvas : OpenTK.GLControl
     {
+        /// <summary>
+        /// How many screens add up to the height of canvas.
+        /// </summary>
         public static int screensContain = 4;
 
+        /// <summary>
+        /// Scale font size to keep the ratio between the size of hitobject and label.
+        /// <para />= 1 when window zoom ratio is 100%.
+        /// </summary>
         public static float fontScale = 1;
 
         private static Texture2D? hitCircleTexture;
@@ -183,7 +190,7 @@ namespace osucatch_editor_realtimeviewer
             texture.Draw(pos, diameter * 1.4f, diameter * 1.4f, new Vector2(diameter * 1.4f * 0.5f), Color.Red);
         }
 
-        public static void DrawSelectedCircle(Texture2D? texture, Vector2 pos, float diameter)
+        private static void DrawSelectedCircle(Texture2D? texture, Vector2 pos, float diameter)
         {
             if (texture == null) return;
             texture.Draw(pos, diameter * 0.8f, diameter * 0.8f, new Vector2(diameter * 0.8f * 0.5f), Color.Orange);
@@ -245,10 +252,6 @@ namespace osucatch_editor_realtimeviewer
                 DrawLine(rp0, rp1, Color.White);
             }
         }
-
-
-
-
 
     }
 }

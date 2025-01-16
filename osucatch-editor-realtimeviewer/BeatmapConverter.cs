@@ -131,6 +131,9 @@ namespace osucatch_editor_realtimeviewer
 
     }
 
+    /// <summary>
+    /// The type of shown distance between hitobjects.
+    /// </summary>
     public enum DistanceType
     {
         None,

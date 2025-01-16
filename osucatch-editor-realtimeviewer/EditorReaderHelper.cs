@@ -25,6 +25,10 @@ namespace osucatch_editor_realtimeviewer
             reader.autoDeStack = true;
         }
 
+        /// <summary>
+        /// Fetch osu! process if needed for Editor Reader.
+        /// </summary>
+        /// <returns>Is success or not.</returns>
         public bool FetchProcess()
         {
             bool isNeedReload = true;
@@ -67,6 +71,11 @@ namespace osucatch_editor_realtimeviewer
             return true;
         }
 
+        /// <summary>
+        /// Fetch osu! window's title from Editor Reader.
+        /// </summary>
+        /// <returns>osu! window's title.
+        /// <para />"" if failed.</returns>
         public string FetchTitle()
         {
             try
@@ -82,6 +91,10 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
+        /// <summary>
+        /// Fetch editor if needed for Editor Reader.
+        /// </summary>
+        /// <returns>Is success or not.</returns>
         public bool FetchEditor()
         {
             beatmap_title = "";
@@ -137,12 +150,21 @@ namespace osucatch_editor_realtimeviewer
             return true;
         }
 
+        /// <summary>
+        /// Call Editor Reader's FetchAll().
+        /// </summary>
+        /// <returns>An object with editor reader's primary data.
+        /// <para />null if failed.</returns>
         public BeatmapInfoCollection? FetchAll()
         {
             try
             {
+                Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
+
                 reader.FetchAll();
                 var thisReaderData = new BeatmapInfoCollection(reader);
+
+                Log.ConsoleLog("FetchAll complete.", Log.LogType.EditorReader, Log.LogLevel.Debug);
                 return thisReaderData;
             }
             catch (Exception ex)
@@ -171,6 +193,12 @@ namespace osucatch_editor_realtimeviewer
         public int[] Bookmarks;
         public List<string> ControlPointLines;
         public List<ReaderHitObjectWithSelect> HitObjectLines;
+
+        /// <summary>
+        /// Check Editor Reader's data and make a copy of its current data.
+        /// </summary>
+        /// <param name="reader">EditorReader</param>
+        /// <exception cref="Exception">Throw when Editor Reader's data is invalid.</exception>
         public BeatmapInfoCollection(EditorReader reader)
         {
             // Check editor reader's data
@@ -214,6 +242,14 @@ namespace osucatch_editor_realtimeviewer
             // We don't need breaks because editor force a new combo after every break.
         }
 
+        /// <summary>
+        /// Check difference between two copy of Editor Reader's data.
+        /// <para />To determine whether the previous beatmap built can be used directly without the need to rebuild.
+        /// </summary>
+        /// <param name="other">another BeatmapInfoCollection</param>
+        /// <param name="isCheckSelected">Changes in object selection in editor will be considered different if it is true.
+        /// <para />Set it to true for reanalyzing when showing selected hitobjects.</param>
+        /// <returns>the level of different.</returns>
         public DifferenceType CheckDifference(BeatmapInfoCollection? other, bool isCheckSelected = false)
         {
             if (other is null) return DifferenceType.DifferentFile;
@@ -276,10 +312,24 @@ namespace osucatch_editor_realtimeviewer
         }
     }
 
+    /// <summary>
+    /// The level of difference between two BeatmapInfoCollection.
+    /// </summary>
     public enum DifferenceType
     {
+        /// <summary>
+        /// No difference.
+        /// </summary>
         None,
+
+        /// <summary>
+        /// Same .osu file in disk but changes in hitobjects or beatmap settings etc.
+        /// </summary>
         DifferentObjects,
+
+        /// <summary>
+        /// Different .osu file in disk.
+        /// </summary>
         DifferentFile
     }
 }
