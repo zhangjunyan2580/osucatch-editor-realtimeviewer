@@ -205,7 +205,6 @@ namespace osucatch_editor_realtimeviewer
                     if (backup_timer != null)
                     {
                         backup_timer.Stop();
-                        backup_timer = null;
                     }
                 }
 
@@ -526,7 +525,8 @@ namespace osucatch_editor_realtimeviewer
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             reader_timer.Stop();
-            backup_timer?.Stop();
+            backup_timer.Stop();
+            Memory_Monitor_Timer.Stop();
         }
 
         private void noneToolStripMenuItem_Click(object sender, EventArgs e)

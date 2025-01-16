@@ -174,9 +174,9 @@ namespace osucatch_editor_realtimeviewer
         public BeatmapInfoCollection(EditorReader reader)
         {
             // Check editor reader's data
-            if (reader.hitObjects == null || reader.hitObjects.Count <= 0)
+            if (reader.hitObjects == null)
             {
-                throw new Exception("HitObjects is empty.");
+                throw new Exception("HitObjects is null.");
             }
             // Fix Editor Reader
             // Modified from Mapping_Tools
