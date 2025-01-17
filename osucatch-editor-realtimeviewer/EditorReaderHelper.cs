@@ -174,10 +174,38 @@ namespace osucatch_editor_realtimeviewer
                 return null;
             }
         }
+
+        /// <summary>
+        /// Call Editor Reader's FetchAll() and filter nearby hitobjects. Should disable backup.
+        /// </summary>
+        /// <param name="partialLoadingHalfTimeSpan">The half time span at reader time for filter hitobjects.
+        /// <para />Warning: Cause RANDOM ERROR when using it. Should disable backup.</param>
+        /// <returns>An object with editor reader's primary data.
+        /// <para />null if failed.</returns>
+        public BeatmapInfoCollection? FetchAll(double partialLoadingHalfTimeSpan)
+        {
+            try
+            {
+                Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
+
+                reader.FetchAll();
+                var thisReaderData = new BeatmapInfoCollection(reader, partialLoadingHalfTimeSpan);
+
+                Log.ConsoleLog("FetchAll complete.", Log.LogType.EditorReader, Log.LogLevel.Debug);
+                return thisReaderData;
+            }
+            catch (Exception ex)
+            {
+                Log.ConsoleLog("FetchAll failed.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
+                return null;
+            }
+        }
     }
 
     public class BeatmapInfoCollection
     {
+        public bool IsFull;
+
         public int NumControlPoints;
         public int NumObjects;
         public int EditorTime;
@@ -202,6 +230,8 @@ namespace osucatch_editor_realtimeviewer
         /// <exception cref="Exception">Throw when Editor Reader's data is invalid.</exception>
         public BeatmapInfoCollection(EditorReader reader)
         {
+            IsFull = true;
+
             // Check editor reader's data
             if (reader.hitObjects == null)
             {
@@ -245,13 +275,16 @@ namespace osucatch_editor_realtimeviewer
 
         /// <summary>
         /// Check Editor Reader's data, filter the objects near the editor time and make a copy of its current data.
-        /// <para /> Cause random error. Should disable backup.
+        /// <para /> Warning: Cause RANDOM ERROR. Should disable backup.
         /// </summary>
         /// <param name="reader">EditorReader</param>
-        /// <param name="partialLoadingHalfDuring">The time near reader time for filter hitobjects.</param>
+        /// <param name="partialLoadingHalfTimeSpan">The half time span at reader time for filter hitobjects.
+        /// <para />Warning: Cause RANDOM ERROR when using it.</param>
         /// <exception cref="Exception">Throw when Editor Reader's data is invalid.</exception>
-        public BeatmapInfoCollection(EditorReader reader, double partialLoadingHalfDuring = 10 * 1000)
+        public BeatmapInfoCollection(EditorReader reader, double partialLoadingHalfTimeSpan)
         {
+            IsFull = false;
+
             // Check editor reader's data
             if (reader.hitObjects == null)
             {
@@ -268,7 +301,9 @@ namespace osucatch_editor_realtimeviewer
                 throw new Exception("Fetched data is invalid.");
             }
 
-            var NearbyHitObjects = FilterNearbyHitObjects(reader.hitObjects, partialLoadingHalfDuring);
+            EditorTime = reader.EditorTime();
+
+            var NearbyHitObjects = FilterNearbyHitObjects(reader.hitObjects, partialLoadingHalfTimeSpan);
 
             bool FindInvalid = NearbyHitObjects.Any(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
             readerHitObject.SegmentCount > 9000 || readerHitObject.Type == 0 || readerHitObject.SampleSet > 1000 ||
@@ -278,7 +313,6 @@ namespace osucatch_editor_realtimeviewer
 
             NumControlPoints = reader.numControlPoints;
             NumObjects = reader.numObjects;
-            EditorTime = reader.EditorTime();
             ContainingFolder = reader.ContainingFolder;
             Filename = reader.Filename;
             PreviewTime = reader.PreviewTime;
@@ -299,7 +333,7 @@ namespace osucatch_editor_realtimeviewer
         /// <summary>
         /// MUCH BOOST BUT IT CAUSE RANDOM ERROR.
         /// </summary>
-        private List<Editor_Reader.HitObject> FilterNearbyHitObjects(List<Editor_Reader.HitObject> hitObject, double halfDuring = 10 * 1000)
+        private List<Editor_Reader.HitObject> FilterNearbyHitObjects(List<Editor_Reader.HitObject> hitObject, double halfTimeSpan)
         {
             if (EditorTime < 0) return hitObject;
             return hitObject.Where(ho =>
@@ -307,8 +341,8 @@ namespace osucatch_editor_realtimeviewer
                 // keep sliders & spins
                 if (EditorTime - ho.StartTime >= 0 && ho.EndTime - EditorTime >= 0) return true;
                 // keep the objects which |endtime - nowtime| < 10s, or which starttime - nowtime < 10s
-                if (EditorTime - ho.EndTime >= 0 && EditorTime - ho.EndTime <= halfDuring) return true;
-                else if (ho.StartTime - EditorTime >= 0 && ho.StartTime - EditorTime <= halfDuring) return true;
+                if (EditorTime - ho.EndTime >= 0 && EditorTime - ho.EndTime <= halfTimeSpan) return true;
+                else if (ho.StartTime - EditorTime >= 0 && ho.StartTime - EditorTime <= halfTimeSpan) return true;
                 else return false;
             }).ToList();
         }
@@ -329,6 +363,8 @@ namespace osucatch_editor_realtimeviewer
 
             if (ContainingFolder != other.ContainingFolder) return DifferenceType.DifferentFile;
             if (Filename != other.Filename) return DifferenceType.DifferentFile;
+
+            if (IsFull != other.IsFull) return DifferenceType.DifferentObjects;
 
             if (NumControlPoints != other.NumControlPoints) return DifferenceType.DifferentObjects;
             if (NumObjects != other.NumObjects) return DifferenceType.DifferentObjects;
