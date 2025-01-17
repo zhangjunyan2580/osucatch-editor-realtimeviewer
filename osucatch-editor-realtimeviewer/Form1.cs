@@ -522,7 +522,7 @@ namespace osucatch_editor_realtimeviewer
 
 
                 // Step10. prepare drawing objects
-                if (drawingHelper.CatchHitObjects != null && differenceType == DifferenceType.None && isSameMods && isSameDistanceType)
+                if (drawingHelper.CatchHitObjects != null && drawingHelper.CatchHitObjects.Count > 0 && differenceType == DifferenceType.None && isSameMods && isSameDistanceType)
                 {
                     Log.ConsoleLog("Beatmap no changes. Using last data.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
@@ -575,7 +575,12 @@ namespace osucatch_editor_realtimeviewer
             var task = Task.Run(() => reader_timer_Work(cancellationTokenSource.Token), cancellationTokenSource.Token);
 
             var isCompleted = await Task.WhenAny(task, Task.Delay(1000)) == task;
-            if (!isCompleted) cancellationTokenSource.Cancel();
+            if (!isCompleted)
+            {
+                cancellationTokenSource.Cancel();
+                await Task.WhenAll(task);
+            }
+
             Log.ConsoleLog("Start Timer", Log.LogType.Timer, Log.LogLevel.Debug);
             Log.ConsoleLog("Timer Interval = " + reader_timer.Interval, Log.LogType.Timer, Log.LogLevel.Debug);
             reader_timer.Start();
