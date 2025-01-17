@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
@@ -241,6 +242,77 @@ namespace osucatch_editor_realtimeviewer
 
             // We don't need breaks because editor force a new combo after every break.
         }
+
+        /// <summary>
+        /// Check Editor Reader's data, filter the objects near the editor time and make a copy of its current data.
+        /// <para /> Cause random error. Should disable backup.
+        /// </summary>
+        /// <param name="reader">EditorReader</param>
+        /// <param name="partialLoadingHalfDuring">The time near reader time for filter hitobjects.</param>
+        /// <exception cref="Exception">Throw when Editor Reader's data is invalid.</exception>
+        public BeatmapInfoCollection(EditorReader reader, double partialLoadingHalfDuring = 10 * 1000)
+        {
+            // Check editor reader's data
+            if (reader.hitObjects == null)
+            {
+                throw new Exception("HitObjects is null.");
+            }
+            // Fix Editor Reader
+            // Modified from Mapping_Tools
+            // https://github.com/OliBomby/Mapping_Tools/tree/master/Mapping_Tools/Classes/ToolHelpers/EditorReaderStuff.cs
+            // Under MIT Licnece https://github.com/OliBomby/Mapping_Tools/blob/master/LICENCE
+            if (!(reader.numControlPoints > 0 &&
+                reader.controlPoints != null && reader.hitObjects != null &&
+                reader.numControlPoints == reader.controlPoints.Count && reader.numObjects == reader.hitObjects.Count))
+            {
+                throw new Exception("Fetched data is invalid.");
+            }
+
+            var NearbyHitObjects = FilterNearbyHitObjects(reader.hitObjects, partialLoadingHalfDuring);
+
+            bool FindInvalid = NearbyHitObjects.Any(readerHitObject => readerHitObject.X > 1000 || readerHitObject.X < -1000 || readerHitObject.Y > 1000 || readerHitObject.Y < -1000 ||
+            readerHitObject.SegmentCount > 9000 || readerHitObject.Type == 0 || readerHitObject.SampleSet > 1000 ||
+            readerHitObject.SampleSetAdditions > 1000 || readerHitObject.SampleVolume > 1000);
+            if (FindInvalid) throw new Exception("Find invalid hitObject.");
+            // -----------------------
+
+            NumControlPoints = reader.numControlPoints;
+            NumObjects = reader.numObjects;
+            EditorTime = reader.EditorTime();
+            ContainingFolder = reader.ContainingFolder;
+            Filename = reader.Filename;
+            PreviewTime = reader.PreviewTime;
+            StackLeniency = reader.StackLeniency;
+            HPDrainRate = reader.HPDrainRate;
+            CircleSize = reader.CircleSize;
+            OverallDifficulty = reader.OverallDifficulty;
+            ApproachRate = reader.ApproachRate;
+            SliderMultiplier = reader.SliderMultiplier;
+            SliderTickRate = reader.SliderTickRate;
+            Bookmarks = reader.bookmarks;
+            ControlPointLines = reader.controlPoints.Select((cp) => cp.ToString()).ToList();
+            HitObjectLines = NearbyHitObjects.Select((ho) => new ReaderHitObjectWithSelect(ho.ToString(), ho.IsSelected)).ToList();
+
+            // We don't need breaks because editor force a new combo after every break.
+        }
+
+        /// <summary>
+        /// MUCH BOOST BUT IT CAUSE RANDOM ERROR.
+        /// </summary>
+        private List<Editor_Reader.HitObject> FilterNearbyHitObjects(List<Editor_Reader.HitObject> hitObject, double halfDuring = 10 * 1000)
+        {
+            if (EditorTime < 0) return hitObject;
+            return hitObject.Where(ho =>
+            {
+                // keep sliders & spins
+                if (EditorTime - ho.StartTime >= 0 && ho.EndTime - EditorTime >= 0) return true;
+                // keep the objects which |endtime - nowtime| < 10s, or which starttime - nowtime < 10s
+                if (EditorTime - ho.EndTime >= 0 && EditorTime - ho.EndTime <= halfDuring) return true;
+                else if (ho.StartTime - EditorTime >= 0 && ho.StartTime - EditorTime <= halfDuring) return true;
+                else return false;
+            }).ToList();
+        }
+
 
         /// <summary>
         /// Check difference between two copy of Editor Reader's data.
