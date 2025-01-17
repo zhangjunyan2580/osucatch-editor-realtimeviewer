@@ -226,6 +226,14 @@ namespace osucatch_editor_realtimeviewer
                     backup_timer.Stop();
                 }
             }
+            if (app.Default.FilterNearbyHitObjects)
+            {
+                backupToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                backupToolStripMenuItem.Enabled = true;
+            }
         }
 
         private bool FetchOsuProcess()
@@ -406,7 +414,18 @@ namespace osucatch_editor_realtimeviewer
 
 
                 // Step3. fetch all
-                var thisReader = editorReaderHelper.FetchAll();
+                BeatmapInfoCollection? thisReader;
+                bool blockBackup = false;
+                if (app.Default.FilterNearbyHitObjects)
+                {
+                    blockBackup = true;
+
+                    double partialLoadingHalfTimeSpan = 10 * 1000;
+                    if (eZToolStripMenuItem.Checked) partialLoadingHalfTimeSpan *= 1.5;
+                    if (hRToolStripMenuItem.Checked) partialLoadingHalfTimeSpan /= 1.5;
+                    thisReader = editorReaderHelper.FetchAll(partialLoadingHalfTimeSpan);
+                }
+                else thisReader = editorReaderHelper.FetchAll();
                 if (thisReader == null)
                 {
                     reader_timer.Interval = app.Default.Idle_Interval;
@@ -478,7 +497,7 @@ namespace osucatch_editor_realtimeviewer
 
 
                 // Step7. Backup
-                if (Need_Backup)
+                if (!blockBackup & Need_Backup)
                 {
                     if (editorReaderHelper.Is_Editor_Running && beatmap != null)
                     {
@@ -572,14 +591,10 @@ namespace osucatch_editor_realtimeviewer
         {
             reader_timer.Stop();
             var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(app.Default.WorkCancelAfter);
             var task = Task.Run(() => reader_timer_Work(cancellationTokenSource.Token), cancellationTokenSource.Token);
 
-            var isCompleted = await Task.WhenAny(task, Task.Delay(1000)) == task;
-            if (!isCompleted)
-            {
-                cancellationTokenSource.Cancel();
-                await Task.WhenAll(task);
-            }
+            await Task.WhenAll(task);
 
             Log.ConsoleLog("Start Timer", Log.LogType.Timer, Log.LogLevel.Debug);
             Log.ConsoleLog("Timer Interval = " + reader_timer.Interval, Log.LogType.Timer, Log.LogLevel.Debug);

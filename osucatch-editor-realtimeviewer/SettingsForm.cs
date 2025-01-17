@@ -38,6 +38,9 @@
             checkBox_TimingLine_ShowRed.Checked = app.Default.TimingLine_ShowRed;
             checkBox_TimingLine_ShowGreen.Checked = app.Default.TimingLine_ShowGreen;
             checkBox_BarLine_Show.Checked = app.Default.BarLine_Show;
+
+            checkBox_FilterNearbyHitObjects.Checked = app.Default.FilterNearbyHitObjects;
+            numericUpDown_timeOut.Value = app.Default.WorkCancelAfter;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
@@ -113,6 +116,9 @@
             app.Default.TimingLine_ShowGreen = checkBox_TimingLine_ShowGreen.Checked;
             app.Default.BarLine_Show = checkBox_BarLine_Show.Checked;
 
+            app.Default.FilterNearbyHitObjects = checkBox_FilterNearbyHitObjects.Checked;
+            app.Default.WorkCancelAfter = (int)numericUpDown_timeOut.Value;
+
             app.Default.Save();
 
             Form1.NeedReapplySettings = true;
@@ -148,6 +154,33 @@
             {
                 textBox_backupFolder.Text = folder.SelectedPath;
             }
+        }
+
+        private void checkBox_FilterNearbyHitObjects_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_FilterNearbyHitObjects.Checked)
+            {
+                checkBox_enableBackup.Enabled = false;
+                textBox_backupFolder.Enabled = false;
+                button_backupFolder_select.Enabled = false;
+                numericUpDown_backupInterval.Enabled = false;
+                label6.Enabled = false;
+                label7.Enabled = false;
+            }
+            else
+            {
+                checkBox_enableBackup.Enabled = true;
+                textBox_backupFolder.Enabled = true;
+                button_backupFolder_select.Enabled = true;
+                numericUpDown_backupInterval.Enabled = true;
+                label6.Enabled = true;
+                label7.Enabled = true;
+            }
+        }
+
+        private void button_timeOut_reset_Click(object sender, EventArgs e)
+        {
+            numericUpDown_timeOut.Value = 3000;
         }
     }
 }

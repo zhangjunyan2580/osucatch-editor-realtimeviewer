@@ -310,5 +310,29 @@ namespace osucatch_editor_realtimeviewer {
                 this["Language_String"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FilterNearbyHitObjects {
+            get {
+                return ((bool)(this["FilterNearbyHitObjects"]));
+            }
+            set {
+                this["FilterNearbyHitObjects"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        public int WorkCancelAfter {
+            get {
+                return ((int)(this["WorkCancelAfter"]));
+            }
+            set {
+                this["WorkCancelAfter"] = value;
+            }
+        }
     }
 }
