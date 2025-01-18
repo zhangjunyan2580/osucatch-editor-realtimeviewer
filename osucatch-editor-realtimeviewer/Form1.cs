@@ -1,16 +1,8 @@
-using Editor_Reader;
 using Microsoft.Win32;
 using osu.Game.Beatmaps;
-using osu.Game.Rulesets.Catch.Objects;
-using osucatch_editor_realtimeviewer.Properties;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Timers;
-using System.Windows.Forms;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -64,6 +56,11 @@ namespace osucatch_editor_realtimeviewer
                 zhHansLanguageToolStripMenuItem.Checked = false;
             }
 
+            if (app.Default.Window_X >= 0 && app.Default.Window_Y >= 0)
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = new System.Drawing.Point(app.Default.Window_X, app.Default.Window_Y);
+            }
         }
 
         private string Select_Osu_Path()
@@ -115,6 +112,8 @@ namespace osucatch_editor_realtimeviewer
             this.Width = app.Default.Window_Width;
             this.Height = app.Default.Window_Height;
             SizeChanged += Form1_SizeChanged;
+
+            if (app.Default.Window_Maximized) this.WindowState = FormWindowState.Maximized;
 
             // osu path
             if (app.Default.osu_path == "")
@@ -606,6 +605,11 @@ namespace osucatch_editor_realtimeviewer
             reader_timer.Stop();
             backup_timer.Stop();
             Memory_Monitor_Timer.Stop();
+
+            app.Default.Window_X = this.Location.X;
+            app.Default.Window_Y = this.Location.Y;
+            app.Default.Window_Maximized = (this.WindowState == FormWindowState.Maximized);
+            app.Default.Save();
         }
 
         private void noneToolStripMenuItem_Click(object sender, EventArgs e)

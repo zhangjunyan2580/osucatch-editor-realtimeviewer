@@ -2,9 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using osu.Game.Beatmaps;
-using osu.Game.Beatmaps.Legacy;
-using osu.Game.Rulesets.Mods;
-using System.Collections.Concurrent;
 
 namespace osu.Game.Rulesets
 {

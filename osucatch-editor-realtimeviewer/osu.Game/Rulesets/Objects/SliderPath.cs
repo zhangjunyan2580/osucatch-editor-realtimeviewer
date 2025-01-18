@@ -5,7 +5,6 @@
 using osu.Framework.Utils;
 using osu.Game.Rulesets.Objects.Types;
 using osuTK;
-using System.Collections.Specialized;
 using System.Diagnostics;
 
 namespace osu.Game.Rulesets.Objects

@@ -2,9 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using OpenTK.Graphics;
-using osu.Framework.Lists;
 using osu.Game.Beatmaps.ControlPoints;
-using osu.Game.Beatmaps.Timing;
 using osu.Game.Rulesets.Objects;
 
 namespace osu.Game.Beatmaps
