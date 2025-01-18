@@ -73,7 +73,7 @@
             textBox_backupFolder.Text = (textBox_osuFolder.Text == "") ? "" : Path.Combine(textBox_osuFolder.Text, "EditorBackups");
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button_backupInterval_reset_Click(object sender, EventArgs e)
         {
             numericUpDown_backupInterval.Value = 60;
         }

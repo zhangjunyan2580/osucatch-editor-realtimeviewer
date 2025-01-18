@@ -52,7 +52,7 @@
             checkBox_enableBackup = new CheckBox();
             numericUpDown_backupInterval = new NumericUpDown();
             button_backupFolder_reset = new Button();
-            button1 = new Button();
+            button_backupInterval_reset = new Button();
             textBox_backupFolder = new TextBox();
             label7 = new Label();
             label6 = new Label();
@@ -102,13 +102,13 @@
             // 
             // groupBox1
             // 
-            resources.ApplyResources(groupBox1, "groupBox1");
             groupBox1.Controls.Add(button_height_reset);
             groupBox1.Controls.Add(button_width_reset);
             groupBox1.Controls.Add(numericUpDown_height);
             groupBox1.Controls.Add(numericUpDown_width);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(label1);
+            resources.ApplyResources(groupBox1, "groupBox1");
             groupBox1.Name = "groupBox1";
             groupBox1.TabStop = false;
             // 
@@ -154,11 +154,11 @@
             // 
             // groupBox2
             // 
-            resources.ApplyResources(groupBox2, "groupBox2");
             groupBox2.Controls.Add(button_osuFolder_reset);
             groupBox2.Controls.Add(button_osuFolder_select);
             groupBox2.Controls.Add(textBox_osuFolder);
             groupBox2.Controls.Add(label3);
+            resources.ApplyResources(groupBox2, "groupBox2");
             groupBox2.Name = "groupBox2";
             groupBox2.TabStop = false;
             // 
@@ -188,13 +188,13 @@
             // 
             // groupBox3
             // 
-            resources.ApplyResources(groupBox3, "groupBox3");
             groupBox3.Controls.Add(button_drawingInterval_reset);
             groupBox3.Controls.Add(numericUpDown_idleInterval);
             groupBox3.Controls.Add(button_idleInterval_reset);
             groupBox3.Controls.Add(label5);
             groupBox3.Controls.Add(numericUpDown_drawingInterval);
             groupBox3.Controls.Add(label4);
+            resources.ApplyResources(groupBox3, "groupBox3");
             groupBox3.Name = "groupBox3";
             groupBox3.TabStop = false;
             // 
@@ -240,15 +240,15 @@
             // 
             // groupBox4
             // 
-            resources.ApplyResources(groupBox4, "groupBox4");
             groupBox4.Controls.Add(checkBox_enableBackup);
             groupBox4.Controls.Add(numericUpDown_backupInterval);
             groupBox4.Controls.Add(button_backupFolder_reset);
-            groupBox4.Controls.Add(button1);
+            groupBox4.Controls.Add(button_backupInterval_reset);
             groupBox4.Controls.Add(textBox_backupFolder);
             groupBox4.Controls.Add(label7);
             groupBox4.Controls.Add(label6);
             groupBox4.Controls.Add(button_backupFolder_select);
+            resources.ApplyResources(groupBox4, "groupBox4");
             groupBox4.Name = "groupBox4";
             groupBox4.TabStop = false;
             // 
@@ -273,12 +273,12 @@
             button_backupFolder_reset.UseVisualStyleBackColor = true;
             button_backupFolder_reset.Click += button_backupFolder_reset_Click;
             // 
-            // button1
+            // button_backupInterval_reset
             // 
-            resources.ApplyResources(button1, "button1");
-            button1.Name = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            resources.ApplyResources(button_backupInterval_reset, "button_backupInterval_reset");
+            button_backupInterval_reset.Name = "button_backupInterval_reset";
+            button_backupInterval_reset.UseVisualStyleBackColor = true;
+            button_backupInterval_reset.Click += button_backupInterval_reset_Click;
             // 
             // textBox_backupFolder
             // 
@@ -318,9 +318,9 @@
             // 
             // groupBox5
             // 
-            resources.ApplyResources(groupBox5, "groupBox5");
             groupBox5.Controls.Add(checkBox_ShowSelected);
             groupBox5.Controls.Add(checkBox_withColor);
+            resources.ApplyResources(groupBox5, "groupBox5");
             groupBox5.Name = "groupBox5";
             groupBox5.TabStop = false;
             // 
@@ -338,7 +338,6 @@
             // 
             // groupBox6
             // 
-            resources.ApplyResources(groupBox6, "groupBox6");
             groupBox6.Controls.Add(checkBox_Log_BeatmapBuilder);
             groupBox6.Controls.Add(comboBox_Log_Level);
             groupBox6.Controls.Add(label8);
@@ -349,6 +348,7 @@
             groupBox6.Controls.Add(checkBox_Log_EditorReader);
             groupBox6.Controls.Add(checkBox_Log_Program);
             groupBox6.Controls.Add(checkBox_showConsole);
+            resources.ApplyResources(groupBox6, "groupBox6");
             groupBox6.Name = "groupBox6";
             groupBox6.TabStop = false;
             // 
@@ -360,9 +360,9 @@
             // 
             // comboBox_Log_Level
             // 
-            resources.ApplyResources(comboBox_Log_Level, "comboBox_Log_Level");
             comboBox_Log_Level.FormattingEnabled = true;
             comboBox_Log_Level.Items.AddRange(new object[] { resources.GetString("comboBox_Log_Level.Items"), resources.GetString("comboBox_Log_Level.Items1"), resources.GetString("comboBox_Log_Level.Items2"), resources.GetString("comboBox_Log_Level.Items3") });
+            resources.ApplyResources(comboBox_Log_Level, "comboBox_Log_Level");
             comboBox_Log_Level.Name = "comboBox_Log_Level";
             // 
             // label8
@@ -414,10 +414,10 @@
             // 
             // groupBox7
             // 
-            resources.ApplyResources(groupBox7, "groupBox7");
             groupBox7.Controls.Add(checkBox_BarLine_Show);
             groupBox7.Controls.Add(checkBox_TimingLine_ShowGreen);
             groupBox7.Controls.Add(checkBox_TimingLine_ShowRed);
+            resources.ApplyResources(groupBox7, "groupBox7");
             groupBox7.Name = "groupBox7";
             groupBox7.TabStop = false;
             // 
@@ -441,13 +441,13 @@
             // 
             // groupBox8
             // 
-            resources.ApplyResources(groupBox8, "groupBox8");
             groupBox8.Controls.Add(button_timeOut_reset);
             groupBox8.Controls.Add(label11);
             groupBox8.Controls.Add(label10);
             groupBox8.Controls.Add(numericUpDown_timeOut);
             groupBox8.Controls.Add(label9);
             groupBox8.Controls.Add(checkBox_FilterNearbyHitObjects);
+            resources.ApplyResources(groupBox8, "groupBox8");
             groupBox8.Name = "groupBox8";
             groupBox8.TabStop = false;
             // 
@@ -503,6 +503,7 @@
             Controls.Add(groupBox2);
             Controls.Add(groupBox1);
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
             Name = "SettingsForm";
             Load += SettingsForm_Load;
             groupBox1.ResumeLayout(false);
@@ -558,7 +559,7 @@
         private Button button_backupFolder_select;
         private CheckBox checkBox_enableBackup;
         private NumericUpDown numericUpDown_backupInterval;
-        private Button button1;
+        private Button button_backupInterval_reset;
         private Label label7;
         private Button button_apply;
         private Button button_cancel;
