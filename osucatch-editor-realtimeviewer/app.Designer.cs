@@ -334,5 +334,41 @@ namespace osucatch_editor_realtimeviewer {
                 this["WorkCancelAfter"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int Window_X {
+            get {
+                return ((int)(this["Window_X"]));
+            }
+            set {
+                this["Window_X"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int Window_Y {
+            get {
+                return ((int)(this["Window_Y"]));
+            }
+            set {
+                this["Window_Y"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Window_Maximized {
+            get {
+                return ((bool)(this["Window_Maximized"]));
+            }
+            set {
+                this["Window_Maximized"] = value;
+            }
+        }
     }
 }
