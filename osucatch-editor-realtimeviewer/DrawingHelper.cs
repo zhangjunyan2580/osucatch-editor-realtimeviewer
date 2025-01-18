@@ -66,7 +66,6 @@ namespace osucatch_editor_realtimeviewer
             new (128, 255, 128, 255),
             new (191, 128, 255, 255),
             new (128, 255, 255, 255),
-            new (255, 128, 255, 255),
         };
 
         /// <summary>
