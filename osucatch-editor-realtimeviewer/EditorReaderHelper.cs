@@ -1,12 +1,4 @@
 ﻿using Editor_Reader;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -22,7 +14,8 @@ namespace osucatch_editor_realtimeviewer
         public string beatmap_path = "";
         public string beatmap_title = "";
 
-        public EditorReaderHelper() {
+        public EditorReaderHelper()
+        {
             reader.autoDeStack = true;
         }
 
@@ -37,7 +30,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 isNeedReload = reader.ProcessNeedsReload();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.ConsoleLog("Get osu! process failed.\r\n" + ex, Log.LogType.EditorReader, Log.LogLevel.Error);
             }

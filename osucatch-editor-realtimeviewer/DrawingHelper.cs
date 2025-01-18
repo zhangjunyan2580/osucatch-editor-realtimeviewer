@@ -1,46 +1,40 @@
-﻿using OpenTK.Graphics;
-using OpenTK;
+﻿using OpenTK;
+using OpenTK.Graphics;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Rulesets.Catch.Objects;
 using osu.Game.Rulesets.Objects;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace osucatch_editor_realtimeviewer
 {
-     /*
-     * screen size: 640x480
-     * playfield size: 512x384
-     * 
-     * TimePerPixels = ApproachTime / 384
-     * 
-     * |                  |
-     * |==================|
-     * |<---width: 640--->|
-     * |                  |
-     * |                  |
-     * |------------------| N screen catcher | ΔTime = N * ApproachTime * 1.25
-     * |                  |
-     * |==================| (screen top) | ΔTime = ApproachTime
-     * |                  |
-     * |                  |
-     * |                  |
-     * |------------------| catcher height: 384 (current time) | ΔTime = 0
-     * |                  | 
-     * |==================| screen height: 480 (screen bottom) | ΔTime = -TimePerPixels * (480 - 384) = -ApproachTime / 4
-     * |                  |
-     * |                  |
-     * |                  |
-     * |------------------| -N screen catcher | ΔTime = -N * ApproachTime * 1.25
-     * |                  |
-     * |==================|
-     * |                  |
-     */
+    /*
+    * screen size: 640x480
+    * playfield size: 512x384
+    * 
+    * TimePerPixels = ApproachTime / 384
+    * 
+    * |                  |
+    * |==================|
+    * |<---width: 640--->|
+    * |                  |
+    * |                  |
+    * |------------------| N screen catcher | ΔTime = N * ApproachTime * 1.25
+    * |                  |
+    * |==================| (screen top) | ΔTime = ApproachTime
+    * |                  |
+    * |                  |
+    * |                  |
+    * |------------------| catcher height: 384 (current time) | ΔTime = 0
+    * |                  | 
+    * |==================| screen height: 480 (screen bottom) | ΔTime = -TimePerPixels * (480 - 384) = -ApproachTime / 4
+    * |                  |
+    * |                  |
+    * |                  |
+    * |------------------| -N screen catcher | ΔTime = -N * ApproachTime * 1.25
+    * |                  |
+    * |==================|
+    * |                  |
+    */
 
     public class DrawingHelper
     {

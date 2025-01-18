@@ -1,10 +1,5 @@
-﻿using Editor_Reader;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using osu.Game.Beatmaps.ControlPoints;
-using osu.Game.Rulesets.Catch.Objects;
-using osu.Game.Rulesets.Objects;
-using System.Drawing;
 using Color = OpenTK.Graphics.Color4;
 
 namespace osucatch_editor_realtimeviewer

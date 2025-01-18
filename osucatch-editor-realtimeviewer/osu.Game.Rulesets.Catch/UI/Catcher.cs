@@ -2,7 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 
-using osu.Framework.Utils;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Objects.Legacy;
 using osuTK;

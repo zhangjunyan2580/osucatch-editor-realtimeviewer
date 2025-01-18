@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.Formats;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using osu.Game.Beatmaps;
-using osu.Game.Beatmaps.Formats;
-using osu.Game.Rulesets;
-using osu.Game.Rulesets.Catch.Beatmaps;
-using osu.Game.Rulesets.Mods;
 
 namespace osucatch_editor_realtimeviewer
 {

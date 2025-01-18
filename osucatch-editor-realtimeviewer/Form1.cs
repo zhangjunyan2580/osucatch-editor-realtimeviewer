@@ -1,16 +1,8 @@
-using Editor_Reader;
 using Microsoft.Win32;
 using osu.Game.Beatmaps;
-using osu.Game.Rulesets.Catch.Objects;
-using osucatch_editor_realtimeviewer.Properties;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Timers;
-using System.Windows.Forms;
 
 namespace osucatch_editor_realtimeviewer
 {

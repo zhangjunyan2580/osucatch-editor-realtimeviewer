@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace osucatch_editor_realtimeviewer
+﻿namespace osucatch_editor_realtimeviewer
 {
     public static class Log
     {
