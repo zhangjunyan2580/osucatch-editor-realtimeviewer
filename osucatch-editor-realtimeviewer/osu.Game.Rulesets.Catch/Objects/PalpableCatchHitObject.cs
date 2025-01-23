@@ -46,6 +46,8 @@ namespace osu.Game.Rulesets.Catch.Objects
         }
 
         public int CurrentCombo = 0;
+        public int FruitCountInCombo = 0;
+        public bool IsComboEnd = false;
 
         public TimingControlPoint GetTimingPoint(ControlPointInfo controlPointInfo)
         {
@@ -81,6 +83,11 @@ namespace osu.Game.Rulesets.Catch.Objects
             switch (lt)
             {
                 case HitObjectLabelType.None: return "";
+                case HitObjectLabelType.FruitCountInCombo:
+                    {
+                        if (!IsComboEnd) return "";
+                        return "x" + FruitCountInCombo.ToString();
+                    }
                 case HitObjectLabelType.Difficulty_Stars:
                     {
                         if (DifficultyToLast < 0.01) return "";

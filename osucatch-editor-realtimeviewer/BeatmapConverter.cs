@@ -136,6 +136,11 @@ namespace osucatch_editor_realtimeviewer
                         beatmap.BeatmapInfo.StarRating = CalDifficulty(beatmap, comboHitObjects);
                         break;
                     }
+                case HitObjectLabelType.FruitCountInCombo:
+                    {
+                        CalFruitCountInCombo(comboHitObjects);
+                        break;
+                    }
             }
 
             return palpableObjects;
@@ -210,7 +215,37 @@ namespace osucatch_editor_realtimeviewer
             hitObject.StrainTime = Math.Max(40, hitObject.DeltaTime);
         }
 
+        private static void CalFruitCountInCombo(List<PalpableCatchHitObject> comboHitObjects)
+        {
+            int fruitCount = 0;
+            int lastHitObjectComboIndex = -1;
+            foreach (var currentObject in comboHitObjects)
+            {
+                if (currentObject is Fruit)
+                {
+                    if (currentObject.lastObject == null)
+                    {
+                        fruitCount++;
+                        currentObject.FruitCountInCombo = fruitCount;
+                        lastHitObjectComboIndex = currentObject.ComboIndex;
+                        continue;
+                    }
 
+                    if (currentObject.ComboIndex == lastHitObjectComboIndex)
+                    {
+                        fruitCount++;
+                        currentObject.FruitCountInCombo = fruitCount;
+                    }
+                    else
+                    {
+                        fruitCount = 1;
+                        currentObject.FruitCountInCombo = fruitCount;
+                        currentObject.lastObject.IsComboEnd = true;
+                        lastHitObjectComboIndex = currentObject.ComboIndex;
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -222,7 +257,8 @@ namespace osucatch_editor_realtimeviewer
         Distance_SameWithEditor,
         Distance_NoSliderVelocityMultiplier,
         Distance_CompareWithWalkSpeed,
-        Difficulty_Stars
+        Difficulty_Stars,
+        FruitCountInCombo,
     }
 
 }

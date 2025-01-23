@@ -333,6 +333,7 @@ namespace osucatch_editor_realtimeviewer
             else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) labelType = HitObjectLabelType.Distance_NoSliderVelocityMultiplier;
             else if (compareWithWalkSpeedToolStripMenuItem.Checked) labelType = HitObjectLabelType.Distance_CompareWithWalkSpeed;
             else if (difficultyStarsToolStripMenuItem.Checked) labelType = HitObjectLabelType.Difficulty_Stars;
+            else if (fruitCountInComboToolStripMenuItem.Checked) labelType = HitObjectLabelType.FruitCountInCombo;
             else labelType = HitObjectLabelType.None;
             if (labelType == lastLabelType)
             {
@@ -668,6 +669,7 @@ namespace osucatch_editor_realtimeviewer
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = false;
             difficultyStarsToolStripMenuItem.Checked = false;
+            fruitCountInComboToolStripMenuItem.Checked = false;
         }
 
         private void sameWithEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -677,6 +679,7 @@ namespace osucatch_editor_realtimeviewer
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = false;
             difficultyStarsToolStripMenuItem.Checked = false;
+            fruitCountInComboToolStripMenuItem.Checked = false;
         }
 
         private void noSliderVelocityMultiplierToolStripMenuItem_Click(object sender, EventArgs e)
@@ -686,6 +689,7 @@ namespace osucatch_editor_realtimeviewer
             noSliderVelocityMultiplierToolStripMenuItem.Checked = true;
             compareWithWalkSpeedToolStripMenuItem.Checked = false;
             difficultyStarsToolStripMenuItem.Checked = false;
+            fruitCountInComboToolStripMenuItem.Checked = false;
         }
 
         private void compareWithWalkSpeedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -695,6 +699,7 @@ namespace osucatch_editor_realtimeviewer
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = true;
             difficultyStarsToolStripMenuItem.Checked = false;
+            fruitCountInComboToolStripMenuItem.Checked = false;
         }
 
         private void difficultyStarsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -704,6 +709,17 @@ namespace osucatch_editor_realtimeviewer
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = false;
             difficultyStarsToolStripMenuItem.Checked = true;
+            fruitCountInComboToolStripMenuItem.Checked = false;
+        }
+
+        private void fruitCountInComboToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideToolStripMenuItem.Checked = false;
+            sameWithEditorToolStripMenuItem.Checked = false;
+            noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
+            compareWithWalkSpeedToolStripMenuItem.Checked = false;
+            difficultyStarsToolStripMenuItem.Checked = false;
+            fruitCountInComboToolStripMenuItem.Checked = true;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
