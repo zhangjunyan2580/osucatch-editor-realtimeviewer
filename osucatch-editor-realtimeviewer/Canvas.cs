@@ -170,13 +170,13 @@ namespace osucatch_editor_realtimeviewer
             BPMTexture.Dispose();
         }
 
-        public static void DrawDistanceLabel(string distanceString, Vector2 pos, float circleDiameter)
+        public static void DrawHitObjectLabel(string hitObjectString, Vector2 pos, float circleDiameter)
         {
-            if (distanceString == "") return;
-            Texture2D? distanceTexture = TextureFromString(distanceString, fontScale);
-            if (distanceTexture == null) return;
-            if (distanceString.Length > 0) DrawDistance(distanceTexture, pos, circleDiameter, Color.LightBlue);
-            distanceTexture.Dispose();
+            if (hitObjectString == "") return;
+            Texture2D? labelTexture = TextureFromString(hitObjectString, fontScale);
+            if (labelTexture == null) return;
+            if (hitObjectString.Length > 0) DrawDistance(labelTexture, pos, circleDiameter, Color.LightBlue);
+            labelTexture.Dispose();
         }
 
         private static void DrawHyperDashCircle(Texture2D? texture, Vector2 pos, float diameter)

@@ -3,9 +3,12 @@ using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Legacy;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Catch;
+using osu.Game.Rulesets.Catch.Beatmaps;
+using osu.Game.Rulesets.Catch.Difficulty.Skills;
 using osu.Game.Rulesets.Catch.Mods;
 using osu.Game.Rulesets.Catch.Objects;
 using osu.Game.Rulesets.Catch.UI;
+using osu.Game.Rulesets.Difficulty.Skills;
 using osu.Game.Rulesets.Mods;
 
 namespace osucatch_editor_realtimeviewer
@@ -64,7 +67,7 @@ namespace osucatch_editor_realtimeviewer
             return Execute(beatmap, GetMods(GetModsString(mods), ruleset));
         }
 
-        public static List<WithDistancePalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap, bool isCalDistance)
+        public static List<PalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap, HitObjectLabelType labelType)
         {
             Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
@@ -95,121 +98,131 @@ namespace osucatch_editor_realtimeviewer
 
             palpableObjects.Sort((h1, h2) => h1.StartTime.CompareTo(h2.StartTime));
 
-            List<WithDistancePalpableCatchHitObject> wdpcos = new List<WithDistancePalpableCatchHitObject>();
-
-            for (int i = 0; i < palpableObjects.Count; i++)
+            List<PalpableCatchHitObject> comboHitObjects = new();
+            // Build lastObject
+            PalpableCatchHitObject? lastObject = null;
+            int CurrentCombo = -1;
+            // In 2B beatmaps, it is possible that a normal Fruit is placed in the middle of a JuiceStream.
+            foreach (var hitObject in palpableObjects)
             {
-                WithDistancePalpableCatchHitObject wdpco = new WithDistancePalpableCatchHitObject(palpableObjects[i]);
-                if (isCalDistance)
-                {
-                    var nextObj = GetNextComboObject(palpableObjects, i + 1);
-                    if (nextObj != null)
+                // We want to only consider fruits that contribute to the combo.
+                if (hitObject is Banana || hitObject is TinyDroplet)
+                    continue;
+
+                if (lastObject != null)
+                    hitObject.lastObject = lastObject;
+
+                CurrentCombo++;
+                hitObject.CurrentCombo = CurrentCombo;
+                comboHitObjects.Add(hitObject);
+
+                lastObject = hitObject;
+            }
+
+            // HitObject label
+            switch (labelType)
+            {
+                // Calculate Distance
+                case HitObjectLabelType.Distance_SameWithEditor:
+                case HitObjectLabelType.Distance_NoSliderVelocityMultiplier:
+                case HitObjectLabelType.Distance_CompareWithWalkSpeed:
                     {
-                        wdpco.CalDistance(beatmap, nextObj);
+                        CalDistance(beatmap, comboHitObjects);
+                        break;
                     }
-                }
-                wdpcos.Add(wdpco);
+
+                case HitObjectLabelType.Difficulty_Stars:
+                    {
+                        beatmap.BeatmapInfo.StarRating = CalDifficulty(beatmap, comboHitObjects);
+                        break;
+                    }
             }
 
-            return wdpcos;
+            return palpableObjects;
         }
 
-        private static PalpableCatchHitObject? GetNextComboObject(List<PalpableCatchHitObject> palpableObjects, int startIndex)
+        private static void CalDistance(IBeatmap beatmap, List<PalpableCatchHitObject> comboHitObjects)
         {
-            for (int i = startIndex; i < palpableObjects.Count; i++)
+            foreach (var currentObject in comboHitObjects)
             {
-                if (palpableObjects[i] is Fruit || (palpableObjects[i] is Droplet && palpableObjects[i] is not TinyDroplet))
-                {
-                    return palpableObjects[i];
-                }
+                CalDistanceToNext(beatmap, currentObject);
             }
-            return null;
         }
+
+        public static void CalDistanceToNext(IBeatmap beatmap, PalpableCatchHitObject hitObject)
+        {
+            if (hitObject.lastObject == null) return;
+            double timeToNext = (int)hitObject.StartTime - (int)hitObject.lastObject.StartTime; // - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
+            double distanceToNext = Math.Abs(hitObject.OriginalX - hitObject.lastObject.OriginalX);
+            DifficultyControlPoint nextDifficultyControlPoint = (beatmap.ControlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(hitObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
+            var nextTimingPoint = beatmap.ControlPointInfo.TimingPointAt(hitObject.StartTime);
+            if (timeToNext <= 0) return;
+            hitObject.lastObject.XDistToNext_CompareWithWalkSpeed = distanceToNext / timeToNext / Catcher.BASE_WALK_SPEED;
+            if (hitObject.lastObject.XDistToNext_CompareWithWalkSpeed <= 0 || hitObject.lastObject.XDistToNext_CompareWithWalkSpeed > 100)
+            {
+                hitObject.lastObject.XDistToNext_CompareWithWalkSpeed = 0;
+                return;
+            }
+            if (beatmap.Difficulty.SliderMultiplier <= 0 || nextTimingPoint.BeatLength <= 0) return;
+            hitObject.lastObject.XDistToNext_NoSliderVelocityMultiplier = distanceToNext / (beatmap.Difficulty.SliderMultiplier * 100) / (timeToNext / nextTimingPoint.BeatLength);
+            if (hitObject.lastObject.XDistToNext_NoSliderVelocityMultiplier <= 0 || hitObject.lastObject.XDistToNext_NoSliderVelocityMultiplier > 100)
+            {
+                hitObject.lastObject.XDistToNext_NoSliderVelocityMultiplier = 0;
+                return;
+            }
+            if (nextDifficultyControlPoint.SliderVelocity <= 0) return;
+            hitObject.lastObject.XDistToNext_SameWithEditor = hitObject.lastObject.XDistToNext_NoSliderVelocityMultiplier / nextDifficultyControlPoint.SliderVelocity;
+            if (hitObject.lastObject.XDistToNext_SameWithEditor <= 0 || hitObject.lastObject.XDistToNext_SameWithEditor > 100)
+            {
+                hitObject.lastObject.XDistToNext_SameWithEditor = 0;
+                return;
+            }
+
+        }
+
+        public static double CalDifficulty(IBeatmap beatmap, List<PalpableCatchHitObject> comboHitObjects)
+        {
+            const double difficulty_multiplier = 4.59;
+            const float normalized_hitobject_radius = 41.0f;
+            float halfCatcherWidth = Catcher.CalculateCatchWidth(beatmap.Difficulty) * 0.5f;
+            // For circle sizes above 5.5, reduce the catcher width further to simulate imperfect gameplay.
+            halfCatcherWidth *= 1 - (Math.Max(0, beatmap.Difficulty.CircleSize - 5.5f) * 0.0625f);
+            // We will scale everything by this factor, so we can assume a uniform CircleSize among beatmaps.
+            float scalingFactor = normalized_hitobject_radius / halfCatcherWidth;
+
+            StrainSkill skill = new Movement(halfCatcherWidth, 1);
+
+            for (int i = 0; i < comboHitObjects.Count; i++)
+            {
+                CalDifficultyToLast(beatmap, comboHitObjects[i], scalingFactor);
+                skill.Process(comboHitObjects[i]);
+            }
+
+            return Math.Sqrt(skill.DifficultyValue()) * difficulty_multiplier;
+        }
+
+        public static void CalDifficultyToLast(IBeatmap beatmap, PalpableCatchHitObject hitObject, float scalingFactor)
+        {
+            hitObject.NormalizedPosition = hitObject.EffectiveX * scalingFactor;
+            hitObject.LastNormalizedPosition = (hitObject.lastObject == null) ? 0 : hitObject.lastObject.EffectiveX * scalingFactor;
+            // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
+            hitObject.DeltaTime = (hitObject.StartTime - ((hitObject.lastObject == null) ? 0 : hitObject.lastObject.StartTime));
+            hitObject.StrainTime = Math.Max(40, hitObject.DeltaTime);
+        }
+
 
     }
 
     /// <summary>
-    /// The type of shown distance between hitobjects.
+    /// The type of shown label beside hitobject.
     /// </summary>
-    public enum DistanceType
+    public enum HitObjectLabelType
     {
         None,
-        SameWithEditor,
-        NoSliderVelocityMultiplier,
-        CompareWithWalkSpeed,
+        Distance_SameWithEditor,
+        Distance_NoSliderVelocityMultiplier,
+        Distance_CompareWithWalkSpeed,
+        Difficulty_Stars
     }
 
-    public class WithDistancePalpableCatchHitObject
-    {
-        public PalpableCatchHitObject currentObject;
-        public double XDistToNext_SameWithEditor = 0;
-        public double XDistToNext_NoSliderVelocityMultiplier = 0;
-        public double XDistToNext_CompareWithWalkSpeed = 0;
-
-        public WithDistancePalpableCatchHitObject(PalpableCatchHitObject currentObject)
-        {
-            this.currentObject = currentObject;
-        }
-
-        public TimingControlPoint GetTimingPoint(ControlPointInfo controlPointInfo)
-        {
-            return controlPointInfo.TimingPointAt(currentObject.StartTime);
-        }
-
-        public DifficultyControlPoint GetDifficultyControlPoint(ControlPointInfo controlPointInfo)
-        {
-            return (controlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(currentObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
-        }
-
-        public void CalDistance(IBeatmap beatmap, PalpableCatchHitObject nextObject)
-        {
-            double timeToNext = (int)nextObject.StartTime - (int)currentObject.StartTime; // - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
-            double distanceToNext = Math.Abs(nextObject.OriginalX - currentObject.OriginalX);
-            DifficultyControlPoint nextDifficultyControlPoint = (beatmap.ControlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(nextObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
-            var nextTimingPoint = beatmap.ControlPointInfo.TimingPointAt(nextObject.StartTime);
-            if (timeToNext <= 0) return;
-            XDistToNext_CompareWithWalkSpeed = distanceToNext / timeToNext / Catcher.BASE_WALK_SPEED;
-            if (XDistToNext_CompareWithWalkSpeed <= 0 || XDistToNext_CompareWithWalkSpeed > 100)
-            {
-                XDistToNext_CompareWithWalkSpeed = 0;
-                return;
-            }
-            if (beatmap.Difficulty.SliderMultiplier <= 0 || nextTimingPoint.BeatLength <= 0) return;
-            XDistToNext_NoSliderVelocityMultiplier = distanceToNext / (beatmap.Difficulty.SliderMultiplier * 100) / (timeToNext / nextTimingPoint.BeatLength);
-            if (XDistToNext_NoSliderVelocityMultiplier <= 0 || XDistToNext_NoSliderVelocityMultiplier > 100)
-            {
-                XDistToNext_NoSliderVelocityMultiplier = 0;
-                return;
-            }
-            if (nextDifficultyControlPoint.SliderVelocity <= 0) return;
-            XDistToNext_SameWithEditor = XDistToNext_NoSliderVelocityMultiplier / nextDifficultyControlPoint.SliderVelocity;
-            if (XDistToNext_SameWithEditor <= 0 || XDistToNext_SameWithEditor > 100)
-            {
-                XDistToNext_SameWithEditor = 0;
-                return;
-            }
-
-        }
-
-        public string GetDistanceString(DistanceType dt)
-        {
-            if (dt == DistanceType.None) return "";
-            else if (dt == DistanceType.SameWithEditor)
-            {
-                if (XDistToNext_SameWithEditor < 0.01) return "";
-                else return "x" + XDistToNext_SameWithEditor.ToString("F2");
-            }
-            else if (dt == DistanceType.NoSliderVelocityMultiplier)
-            {
-                if (XDistToNext_NoSliderVelocityMultiplier < 0.01) return "";
-                else return "x" + XDistToNext_NoSliderVelocityMultiplier.ToString("F2");
-            }
-            else if (dt == DistanceType.CompareWithWalkSpeed)
-            {
-                if (XDistToNext_CompareWithWalkSpeed < 0.01) return "";
-                else return "x" + XDistToNext_CompareWithWalkSpeed.ToString("F2");
-            }
-            else return "";
-        }
-    }
 }

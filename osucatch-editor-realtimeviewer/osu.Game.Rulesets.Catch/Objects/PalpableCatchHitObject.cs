@@ -2,7 +2,10 @@
 // See the LICENCE file in the repository root for full licence text.
 
 
+using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Beatmaps.Legacy;
 using osu.Game.Rulesets.Objects.Types;
+using osucatch_editor_realtimeviewer;
 
 
 namespace osu.Game.Rulesets.Catch.Objects
@@ -42,5 +45,64 @@ namespace osu.Game.Rulesets.Catch.Objects
             }
         }
 
+        public int CurrentCombo = 0;
+
+        public TimingControlPoint GetTimingPoint(ControlPointInfo controlPointInfo)
+        {
+            return controlPointInfo.TimingPointAt(StartTime);
+        }
+
+        public DifficultyControlPoint GetDifficultyControlPoint(ControlPointInfo controlPointInfo)
+        {
+            return (controlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(StartTime) ?? DifficultyControlPoint.DEFAULT;
+        }
+
+        public float NormalizedPosition;
+        public float LastNormalizedPosition;
+        /// <summary>
+        /// Milliseconds elapsed since the start time of the previous PalpableCatchHitObject, with a minimum of 40ms.
+        /// </summary>
+        public double StrainTime;
+
+        /// <summary>
+        /// The previous fruit/droplet to calculate distance or difficulty
+        /// </summary>
+        public PalpableCatchHitObject? lastObject { get; set; }
+        public double DeltaTime;
+
+        public double XDistToNext_SameWithEditor = 0;
+        public double XDistToNext_NoSliderVelocityMultiplier = 0;
+        public double XDistToNext_CompareWithWalkSpeed = 0;
+
+        public double DifficultyToLast = 0;
+
+        public string GetLabelString(HitObjectLabelType lt)
+        {
+            switch (lt)
+            {
+                case HitObjectLabelType.None: return "";
+                case HitObjectLabelType.Difficulty_Stars:
+                    {
+                        if (DifficultyToLast < 0.01) return "";
+                        else return DifficultyToLast.ToString("F2") + "*";
+                    }
+                case HitObjectLabelType.Distance_SameWithEditor:
+                    {
+                        if (XDistToNext_SameWithEditor < 0.01) return "";
+                        else return "x" + XDistToNext_SameWithEditor.ToString("F2");
+                    }
+                case HitObjectLabelType.Distance_NoSliderVelocityMultiplier:
+                    {
+                        if (XDistToNext_NoSliderVelocityMultiplier < 0.01) return "";
+                        else return "x" + XDistToNext_NoSliderVelocityMultiplier.ToString("F2");
+                    }
+                case HitObjectLabelType.Distance_CompareWithWalkSpeed:
+                    {
+                        if (XDistToNext_CompareWithWalkSpeed < 0.01) return "";
+                        else return "x" + XDistToNext_CompareWithWalkSpeed.ToString("F2");
+                    }
+                default: return "";
+            }
+        }
     }
 }

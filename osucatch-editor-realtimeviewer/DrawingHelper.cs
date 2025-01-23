@@ -44,12 +44,12 @@ namespace osucatch_editor_realtimeviewer
         public float CurrentTime { get; set; }
         public ControlPointInfo? ControlPointInfo { get; set; }
         List<BarLine> BarLines { get; set; }
-        public List<WithDistancePalpableCatchHitObject> CatchHitObjects { get; set; }
+        public List<PalpableCatchHitObject> CatchHitObjects { get; set; }
 
         /// <summary>
         /// CatchHitObjects which near the editor's current time.
         /// </summary>
-        public List<WithDistancePalpableCatchHitObject> NearbyHitObjects { get; set; }
+        public List<PalpableCatchHitObject> NearbyHitObjects { get; set; }
         public int ApproachTime { get; set; }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace osucatch_editor_realtimeviewer
         /// </summary>
         public float TimePerPixels { get; set; }
         private int CircleDiameter { get; set; }
-        public DistanceType DistanceType { get; set; }
+        public HitObjectLabelType LabelType { get; set; }
         public List<Color4> CustomComboColours { get; set; }
 
         public List<Color4> DefaultCustomComboColours = new() {
@@ -77,9 +77,9 @@ namespace osucatch_editor_realtimeviewer
         {
             ScreensContain = 4;
             CurrentTime = 0;
-            DistanceType = DistanceType.None;
-            CatchHitObjects = new List<WithDistancePalpableCatchHitObject> { };
-            NearbyHitObjects = new List<WithDistancePalpableCatchHitObject> { };
+            LabelType = HitObjectLabelType.None;
+            CatchHitObjects = new List<PalpableCatchHitObject> { };
+            NearbyHitObjects = new List<PalpableCatchHitObject> { };
             BarLines = new List<BarLine> { };
             CustomComboColours = DefaultCustomComboColours;
         }
@@ -88,7 +88,7 @@ namespace osucatch_editor_realtimeviewer
         {
             ControlPointInfo = convertedBeatmap.ControlPointInfo;
             BarLines = convertedBeatmap.BarLines;
-            CatchHitObjects = BeatmapConverter.GetPalpableObjects(convertedBeatmap, (DistanceType != DistanceType.None));
+            CatchHitObjects = BeatmapConverter.GetPalpableObjects(convertedBeatmap, LabelType);
 
             float moddedAR = convertedBeatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);
@@ -110,11 +110,11 @@ namespace osucatch_editor_realtimeviewer
 
             for (int b = NearbyHitObjects.Count - 1; b >= 0; b--)
             {
-                WithDistancePalpableCatchHitObject hitObject = NearbyHitObjects[b];
+                PalpableCatchHitObject hitObject = NearbyHitObjects[b];
 
-                if (MaxStartTime < 0 || hitObject.currentObject.StartTime > MaxStartTime) MaxStartTime = hitObject.currentObject.StartTime;
+                if (MaxStartTime < 0 || hitObject.StartTime > MaxStartTime) MaxStartTime = hitObject.StartTime;
 
-                double deltaTime = hitObject.currentObject.StartTime - CurrentTime;
+                double deltaTime = hitObject.StartTime - CurrentTime;
                 if (ScreensContain > 1)
                 {
                     double timeSpan = ScreensContain * ApproachTime * 1.25;
@@ -256,9 +256,8 @@ namespace osucatch_editor_realtimeviewer
             });
         }
 
-        private void DrawHitcircle(WithDistancePalpableCatchHitObject wdpch, double deltaTime)
+        private void DrawHitcircle(PalpableCatchHitObject hitObject, double deltaTime)
         {
-            PalpableCatchHitObject hitObject = wdpch.currentObject;
             double baseY = (ScreensContain <= 1) ? 384 : 240.0 * this.ScreensContain;
             Vector2 pos = new Vector2(64 + hitObject.EffectiveX, (float)(baseY - deltaTime / TimePerPixels));
             bool withColor = app.Default.Combo_Colour;
@@ -272,10 +271,10 @@ namespace osucatch_editor_realtimeviewer
             else if (hitObject is Fruit) Canvas.DrawFruit(pos, CircleDiameter, color, withColor, hitObject.HyperDash, isSelected);
             else if (hitObject is Banana) Canvas.DrawBanana(pos, CircleDiameter, isSelected);
 
-            if (DistanceType != DistanceType.None && (hitObject is Fruit || (hitObject is Droplet && hitObject is not TinyDroplet)))
+            if (LabelType != HitObjectLabelType.None && (hitObject is Fruit || (hitObject is Droplet && hitObject is not TinyDroplet)))
             {
-                string distanceString = wdpch.GetDistanceString(DistanceType);
-                Canvas.DrawDistanceLabel(distanceString, pos, CircleDiameter);
+                string labelString = hitObject.GetLabelString(LabelType);
+                Canvas.DrawHitObjectLabel(labelString, pos, CircleDiameter);
             }
         }
 
@@ -315,7 +314,7 @@ namespace osucatch_editor_realtimeviewer
                 int step = count / 2;
                 int it = first + step;
                 var hitObject = this.CatchHitObjects[it];
-                float endTime = (float)hitObject.currentObject.StartTime;
+                float endTime = (float)hitObject.StartTime;
                 if (endTime < target)
                 {
                     first = ++it;
@@ -339,7 +338,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 int step = count / 2;
                 int it = first + step;
-                float startTime = (float)(this.CatchHitObjects[it].currentObject.StartTime);
+                float startTime = (float)(this.CatchHitObjects[it].StartTime);
                 if (!(target < startTime))
                 {
                     first = ++it;

@@ -118,18 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="viewerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>76, 21</value>
-  </data>
-  <data name="viewerToolStripMenuItem.Text" xml:space="preserve">
-    <value>预览器 (&amp;V)</value>
-  </data>
-  <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>181, 22</value>
-  </data>
-  <data name="modToolStripMenuItem.Text" xml:space="preserve">
-    <value>Mod (&amp;M)</value>
-  </data>
   <data name="hRToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>193, 22</value>
   </data>
@@ -148,41 +136,47 @@
   <data name="noneToolStripMenuItem.Text" xml:space="preserve">
     <value>NoMod (&amp;N)</value>
   </data>
-  <data name="distanceToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>181, 22</value>
+  <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
   </data>
-  <data name="distanceToolStripMenuItem.Text" xml:space="preserve">
-    <value>到下个物件距离 (&amp;D)</value>
+  <data name="modToolStripMenuItem.Text" xml:space="preserve">
+    <value>Mod (&amp;M)</value>
   </data>
   <data name="hideToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>265, 22</value>
+    <value>373, 22</value>
   </data>
   <data name="hideToolStripMenuItem.Text" xml:space="preserve">
     <value>隐藏 (&amp;H)</value>
   </data>
   <data name="sameWithEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>265, 22</value>
+    <value>373, 22</value>
   </data>
   <data name="sameWithEditorToolStripMenuItem.Text" xml:space="preserve">
-    <value>与编辑器相同 (&amp;S)</value>
+    <value>距下一个果子距离：与编辑器相同 (&amp;S)</value>
   </data>
   <data name="noSliderVelocityMultiplierToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>265, 22</value>
+    <value>373, 22</value>
   </data>
   <data name="noSliderVelocityMultiplierToolStripMenuItem.Text" xml:space="preserve">
-    <value>忽略SVM（绿线）变速 (&amp;N)</value>
+    <value>距下一个果子距离：忽略SVM（绿线）变速 (&amp;N)</value>
   </data>
   <data name="compareWithWalkSpeedToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>265, 22</value>
+    <value>373, 22</value>
   </data>
   <data name="compareWithWalkSpeedToolStripMenuItem.Text" xml:space="preserve">
-    <value>与走路速度比较 (&amp;C)</value>
+    <value>距下一个果子距离：与走路速度比较 (&amp;C)</value>
   </data>
-  <data name="screenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>181, 22</value>
+  <data name="difficultyStarsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>373, 22</value>
   </data>
-  <data name="screenToolStripMenuItem.Text" xml:space="preserve">
-    <value>视野范围 (&amp;R)</value>
+  <data name="difficultyStarsToolStripMenuItem.Text" xml:space="preserve">
+    <value>距上一个果子难度：单果星数(&amp;D)</value>
+  </data>
+  <data name="hitobjectLabelToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="hitobjectLabelToolStripMenuItem.Text" xml:space="preserve">
+    <value>果子标注 (&amp;F)</value>
   </data>
   <data name="Screens1ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>159, 22</value>
@@ -232,14 +226,50 @@
   <data name="Screens8ToolStripMenuItem.Text" xml:space="preserve">
     <value>8 个屏幕</value>
   </data>
+  <data name="screenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="screenToolStripMenuItem.Text" xml:space="preserve">
+    <value>视野范围 (&amp;R)</value>
+  </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>178, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>181, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>退出 (&amp;E)</value>
+  </data>
+  <data name="viewerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>76, 21</value>
+  </data>
+  <data name="viewerToolStripMenuItem.Text" xml:space="preserve">
+    <value>预览器 (&amp;V)</value>
+  </data>
+  <data name="openSettingsFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>170, 22</value>
+  </data>
+  <data name="openSettingsFileToolStripMenuItem.Text" xml:space="preserve">
+    <value>打开设置面板 (&amp;O)</value>
+  </data>
+  <data name="defaultLanguageToolStripMenuItem.Text" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="languageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>170, 22</value>
+  </data>
+  <data name="languageToolStripMenuItem.Text" xml:space="preserve">
+    <value>语言 (&amp;L)</value>
+  </data>
+  <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 6</value>
+  </data>
+  <data name="backupToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>170, 22</value>
+  </data>
+  <data name="backupToolStripMenuItem.Text" xml:space="preserve">
+    <value>立即备份 (&amp;B)</value>
   </data>
   <data name="settingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>63, 21</value>
@@ -247,50 +277,17 @@
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
     <value>设置 (&amp;S)</value>
   </data>
-  <data name="openSettingsFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+  <data name="githubToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>159, 22</value>
   </data>
-  <data name="openSettingsFileToolStripMenuItem.Text" xml:space="preserve">
-    <value>打开设置面板 (&amp;O)</value>
-  </data>
-  <data name="languageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
-  <data name="languageToolStripMenuItem.Text" xml:space="preserve">
-    <value>语言 (&amp;L)</value>
-  </data>
-  <data name="defaultLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
-  <data name="defaultLanguageToolStripMenuItem.Text" xml:space="preserve">
-    <value>默认</value>
-  </data>
-  <data name="englishLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
-  <data name="zhHansLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
-  <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>177, 6</value>
-  </data>
-  <data name="backupToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
-  <data name="backupToolStripMenuItem.Text" xml:space="preserve">
-    <value>立即备份 (&amp;B)</value>
+  <data name="githubToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Github项目 (&amp;G)</value>
   </data>
   <data name="githubToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 21</value>
   </data>
   <data name="githubToolStripMenuItem.Text" xml:space="preserve">
     <value>关于 (&amp;A)</value>
-  </data>
-  <data name="githubToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>159, 22</value>
-  </data>
-  <data name="githubToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Github项目 (&amp;G)</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Osu!Catch 编辑器实时预览</value>

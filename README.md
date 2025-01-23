@@ -1,6 +1,6 @@
-# osucatch-editor-realtimeviewer
+# Osucatch Editor Realtime Viewer
 
-UNDER CONSTRUCTION
+A realtime beatmap viewer for beatmap editing (osu!stable editor) in osu!catch.
 
 ## Workflow
 

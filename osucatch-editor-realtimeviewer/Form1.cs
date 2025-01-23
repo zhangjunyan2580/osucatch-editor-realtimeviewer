@@ -19,7 +19,7 @@ namespace osucatch_editor_realtimeviewer
         Beatmap? lastBeatmap = null;
         IBeatmap? lastConvertedBeatmap = null;
         int lastMods = -1;
-        DistanceType lastDistanceType = DistanceType.None;
+        HitObjectLabelType lastLabelType = HitObjectLabelType.None;
 
         bool Need_Backup = false;
         Int64 LastDrawingTimeStamp = DateTime.Now.Ticks;
@@ -265,10 +265,6 @@ namespace osucatch_editor_realtimeviewer
             }
             else
             {
-                Invoke(new MethodInvoker(delegate ()
-                {
-                    this.Text = editorReaderHelper.beatmap_title;
-                }));
                 return true;
             }
         }
@@ -329,24 +325,25 @@ namespace osucatch_editor_realtimeviewer
             return mods;
         }
 
-        private DistanceType GetDistanceType(out bool isSameDistanceType)
+        private HitObjectLabelType GetHitObjectLabelType(out bool isSameLabelType)
         {
-            DistanceType distanceType = DistanceType.None;
-            if (hideToolStripMenuItem.Checked) distanceType = DistanceType.None;
-            else if (sameWithEditorToolStripMenuItem.Checked) distanceType = DistanceType.SameWithEditor;
-            else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) distanceType = DistanceType.NoSliderVelocityMultiplier;
-            else if (compareWithWalkSpeedToolStripMenuItem.Checked) distanceType = DistanceType.CompareWithWalkSpeed;
-            else distanceType = DistanceType.None;
-            if (distanceType == lastDistanceType)
+            HitObjectLabelType labelType = HitObjectLabelType.None;
+            if (hideToolStripMenuItem.Checked) labelType = HitObjectLabelType.None;
+            else if (sameWithEditorToolStripMenuItem.Checked) labelType = HitObjectLabelType.Distance_SameWithEditor;
+            else if (noSliderVelocityMultiplierToolStripMenuItem.Checked) labelType = HitObjectLabelType.Distance_NoSliderVelocityMultiplier;
+            else if (compareWithWalkSpeedToolStripMenuItem.Checked) labelType = HitObjectLabelType.Distance_CompareWithWalkSpeed;
+            else if (difficultyStarsToolStripMenuItem.Checked) labelType = HitObjectLabelType.Difficulty_Stars;
+            else labelType = HitObjectLabelType.None;
+            if (labelType == lastLabelType)
             {
-                isSameDistanceType = true;
+                isSameLabelType = true;
             }
             else
             {
-                isSameDistanceType = false;
-                lastDistanceType = distanceType;
+                isSameLabelType = false;
+                lastLabelType = labelType;
             }
-            return distanceType;
+            return labelType;
         }
 
         private void BackupBeatmap(BeatmapInfoCollection thisReader, string filepath)
@@ -488,11 +485,11 @@ namespace osucatch_editor_realtimeviewer
 
                 // Step6. cache mods & distanceType
                 bool isSameMods = false;
-                bool isSameDistanceType = false;
+                bool isSameLabelType = false;
                 // isSameMods
                 int mods = GetMods(out isSameMods);
                 // isSameDistanceType
-                drawingHelper.DistanceType = GetDistanceType(out isSameDistanceType);
+                drawingHelper.LabelType = GetHitObjectLabelType(out isSameLabelType);
 
 
                 // Step7. Backup
@@ -540,7 +537,7 @@ namespace osucatch_editor_realtimeviewer
 
 
                 // Step10. prepare drawing objects
-                if (drawingHelper.CatchHitObjects != null && drawingHelper.CatchHitObjects.Count > 0 && differenceType == DifferenceType.None && isSameMods && isSameDistanceType)
+                if (drawingHelper.CatchHitObjects != null && drawingHelper.CatchHitObjects.Count > 0 && differenceType == DifferenceType.None && isSameMods && isSameLabelType)
                 {
                     Log.ConsoleLog("Beatmap no changes. Using last data.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
@@ -557,6 +554,14 @@ namespace osucatch_editor_realtimeviewer
 
                     Log.ConsoleLog("Build drawing objects successfully.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
+
+                // change form's title
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    if (drawingHelper.LabelType == HitObjectLabelType.Difficulty_Stars)
+                        this.Text = "Stars: " + convertedBeatmap.BeatmapInfo.StarRating.ToString("0.00") + "*";
+                    else this.Text = editorReaderHelper.beatmap_title;
+                }));
 
 
                 // Step11. drawing
@@ -662,6 +667,7 @@ namespace osucatch_editor_realtimeviewer
             sameWithEditorToolStripMenuItem.Checked = false;
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = false;
+            difficultyStarsToolStripMenuItem.Checked = false;
         }
 
         private void sameWithEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -670,6 +676,7 @@ namespace osucatch_editor_realtimeviewer
             sameWithEditorToolStripMenuItem.Checked = true;
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = false;
+            difficultyStarsToolStripMenuItem.Checked = false;
         }
 
         private void noSliderVelocityMultiplierToolStripMenuItem_Click(object sender, EventArgs e)
@@ -678,6 +685,7 @@ namespace osucatch_editor_realtimeviewer
             sameWithEditorToolStripMenuItem.Checked = false;
             noSliderVelocityMultiplierToolStripMenuItem.Checked = true;
             compareWithWalkSpeedToolStripMenuItem.Checked = false;
+            difficultyStarsToolStripMenuItem.Checked = false;
         }
 
         private void compareWithWalkSpeedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -686,6 +694,16 @@ namespace osucatch_editor_realtimeviewer
             sameWithEditorToolStripMenuItem.Checked = false;
             noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
             compareWithWalkSpeedToolStripMenuItem.Checked = true;
+            difficultyStarsToolStripMenuItem.Checked = false;
+        }
+
+        private void difficultyStarsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hideToolStripMenuItem.Checked = false;
+            sameWithEditorToolStripMenuItem.Checked = false;
+            noSliderVelocityMultiplierToolStripMenuItem.Checked = false;
+            compareWithWalkSpeedToolStripMenuItem.Checked = false;
+            difficultyStarsToolStripMenuItem.Checked = true;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
