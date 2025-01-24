@@ -36,11 +36,13 @@
             hRToolStripMenuItem = new ToolStripMenuItem();
             eZToolStripMenuItem = new ToolStripMenuItem();
             noneToolStripMenuItem = new ToolStripMenuItem();
-            distanceToolStripMenuItem = new ToolStripMenuItem();
+            hitobjectLabelToolStripMenuItem = new ToolStripMenuItem();
             hideToolStripMenuItem = new ToolStripMenuItem();
             sameWithEditorToolStripMenuItem = new ToolStripMenuItem();
             noSliderVelocityMultiplierToolStripMenuItem = new ToolStripMenuItem();
             compareWithWalkSpeedToolStripMenuItem = new ToolStripMenuItem();
+            difficultyStarsToolStripMenuItem = new ToolStripMenuItem();
+            fruitCountInComboToolStripMenuItem = new ToolStripMenuItem();
             screenToolStripMenuItem = new ToolStripMenuItem();
             Screens1ToolStripMenuItem = new ToolStripMenuItem();
             Screens2ToolStripMenuItem = new ToolStripMenuItem();
@@ -56,13 +58,13 @@
             openSettingsFileToolStripMenuItem = new ToolStripMenuItem();
             languageToolStripMenuItem = new ToolStripMenuItem();
             defaultLanguageToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator3 = new ToolStripSeparator();
             englishLanguageToolStripMenuItem = new ToolStripMenuItem();
             zhHansLanguageToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator2 = new ToolStripSeparator();
             backupToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem1 = new ToolStripMenuItem();
-            toolStripSeparator3 = new ToolStripSeparator();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -81,7 +83,7 @@
             // 
             // viewerToolStripMenuItem
             // 
-            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, distanceToolStripMenuItem, screenToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, hitobjectLabelToolStripMenuItem, screenToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             viewerToolStripMenuItem.Name = "viewerToolStripMenuItem";
             resources.ApplyResources(viewerToolStripMenuItem, "viewerToolStripMenuItem");
             // 
@@ -111,11 +113,11 @@
             resources.ApplyResources(noneToolStripMenuItem, "noneToolStripMenuItem");
             noneToolStripMenuItem.Click += noneToolStripMenuItem_Click;
             // 
-            // distanceToolStripMenuItem
+            // hitobjectLabelToolStripMenuItem
             // 
-            distanceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { hideToolStripMenuItem, sameWithEditorToolStripMenuItem, noSliderVelocityMultiplierToolStripMenuItem, compareWithWalkSpeedToolStripMenuItem });
-            distanceToolStripMenuItem.Name = "distanceToolStripMenuItem";
-            resources.ApplyResources(distanceToolStripMenuItem, "distanceToolStripMenuItem");
+            hitobjectLabelToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { hideToolStripMenuItem, sameWithEditorToolStripMenuItem, noSliderVelocityMultiplierToolStripMenuItem, compareWithWalkSpeedToolStripMenuItem, difficultyStarsToolStripMenuItem, fruitCountInComboToolStripMenuItem });
+            hitobjectLabelToolStripMenuItem.Name = "hitobjectLabelToolStripMenuItem";
+            resources.ApplyResources(hitobjectLabelToolStripMenuItem, "hitobjectLabelToolStripMenuItem");
             // 
             // hideToolStripMenuItem
             // 
@@ -142,6 +144,18 @@
             compareWithWalkSpeedToolStripMenuItem.Name = "compareWithWalkSpeedToolStripMenuItem";
             resources.ApplyResources(compareWithWalkSpeedToolStripMenuItem, "compareWithWalkSpeedToolStripMenuItem");
             compareWithWalkSpeedToolStripMenuItem.Click += compareWithWalkSpeedToolStripMenuItem_Click;
+            // 
+            // difficultyStarsToolStripMenuItem
+            // 
+            difficultyStarsToolStripMenuItem.Name = "difficultyStarsToolStripMenuItem";
+            resources.ApplyResources(difficultyStarsToolStripMenuItem, "difficultyStarsToolStripMenuItem");
+            difficultyStarsToolStripMenuItem.Click += difficultyStarsToolStripMenuItem_Click;
+            // 
+            // fruitCountInComboToolStripMenuItem
+            // 
+            fruitCountInComboToolStripMenuItem.Name = "fruitCountInComboToolStripMenuItem";
+            resources.ApplyResources(fruitCountInComboToolStripMenuItem, "fruitCountInComboToolStripMenuItem");
+            fruitCountInComboToolStripMenuItem.Click += fruitCountInComboToolStripMenuItem_Click;
             // 
             // screenToolStripMenuItem
             // 
@@ -234,6 +248,11 @@
             resources.ApplyResources(defaultLanguageToolStripMenuItem, "defaultLanguageToolStripMenuItem");
             defaultLanguageToolStripMenuItem.Click += defaultLanguageToolStripMenuItem_Click;
             // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            resources.ApplyResources(toolStripSeparator3, "toolStripSeparator3");
+            // 
             // englishLanguageToolStripMenuItem
             // 
             englishLanguageToolStripMenuItem.Name = "englishLanguageToolStripMenuItem";
@@ -269,11 +288,6 @@
             resources.ApplyResources(githubToolStripMenuItem1, "githubToolStripMenuItem1");
             githubToolStripMenuItem1.Click += githubToolStripMenuItem1_Click;
             // 
-            // toolStripSeparator3
-            // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            resources.ApplyResources(toolStripSeparator3, "toolStripSeparator3");
-            // 
             // Form1
             // 
             resources.ApplyResources(this, "$this");
@@ -302,7 +316,7 @@
         private ToolStripMenuItem githubToolStripMenuItem1;
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem openSettingsFileToolStripMenuItem;
-        private ToolStripMenuItem distanceToolStripMenuItem;
+        private ToolStripMenuItem hitobjectLabelToolStripMenuItem;
         private ToolStripMenuItem hideToolStripMenuItem;
         private ToolStripMenuItem sameWithEditorToolStripMenuItem;
         private ToolStripMenuItem noSliderVelocityMultiplierToolStripMenuItem;
@@ -325,5 +339,7 @@
         private ToolStripMenuItem zhHansLanguageToolStripMenuItem;
         private ToolStripMenuItem defaultLanguageToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator3;
+        private ToolStripMenuItem difficultyStarsToolStripMenuItem;
+        private ToolStripMenuItem fruitCountInComboToolStripMenuItem;
     }
 }

@@ -187,6 +187,12 @@
   <data name="groupBox5.Text" xml:space="preserve">
     <value>水果</value>
   </data>
+  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
+    <value>80, 17</value>
+  </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>标注文字颜色</value>
+  </data>
   <data name="checkBox_ShowSelected.Size" type="System.Drawing.Size, System.Drawing">
     <value>123, 21</value>
   </data>

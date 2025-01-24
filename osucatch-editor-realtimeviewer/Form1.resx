@@ -179,7 +179,7 @@
     <value>&amp;NoMod</value>
   </data>
   <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="modToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Mod</value>
@@ -188,43 +188,61 @@
     <value>Ctrl+Space</value>
   </data>
   <data name="hideToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>283, 22</value>
+    <value>386, 22</value>
   </data>
   <data name="hideToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Hide Distance</value>
+    <value>&amp;Hide</value>
   </data>
   <data name="sameWithEditorToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+1</value>
   </data>
   <data name="sameWithEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>283, 22</value>
+    <value>386, 22</value>
   </data>
   <data name="sameWithEditorToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Same With Editor</value>
+    <value>Distance to Next: &amp;Same With Editor</value>
   </data>
   <data name="noSliderVelocityMultiplierToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+2</value>
   </data>
   <data name="noSliderVelocityMultiplierToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>283, 22</value>
+    <value>386, 22</value>
   </data>
   <data name="noSliderVelocityMultiplierToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;No Slider Velocity Multiplier</value>
+    <value>Distance to Next: &amp;No Slider Velocity Multiplier</value>
   </data>
   <data name="compareWithWalkSpeedToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+3</value>
   </data>
   <data name="compareWithWalkSpeedToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>283, 22</value>
+    <value>386, 22</value>
   </data>
   <data name="compareWithWalkSpeedToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Compare With Walk Speed</value>
+    <value>Distance to Next: &amp;Compare With Walk Speed</value>
   </data>
-  <data name="distanceToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
+  <data name="difficultyStarsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+4</value>
   </data>
-  <data name="distanceToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Distance to Next</value>
+  <data name="difficultyStarsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>386, 22</value>
+  </data>
+  <data name="difficultyStarsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Difficulty to Last: &amp;Difficulty Stars</value>
+  </data>
+  <data name="fruitCountInComboToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+5</value>
+  </data>
+  <data name="fruitCountInComboToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>386, 22</value>
+  </data>
+  <data name="fruitCountInComboToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Fruit Count in Combo</value>
+  </data>
+  <data name="hitobjectLabelToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="hitobjectLabelToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Fruits Label</value>
   </data>
   <data name="Screens1ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>139, 22</value>
@@ -275,16 +293,16 @@
     <value>8</value>
   </data>
   <data name="screenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="screenToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Range of Vision</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>169, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>172, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Exit</value>
@@ -302,22 +320,22 @@
     <value>&amp;Open Settings</value>
   </data>
   <data name="defaultLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>132, 22</value>
   </data>
   <data name="defaultLanguageToolStripMenuItem.Text" xml:space="preserve">
     <value>Default</value>
   </data>
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>177, 6</value>
+    <value>129, 6</value>
   </data>
   <data name="englishLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>132, 22</value>
   </data>
   <data name="englishLanguageToolStripMenuItem.Text" xml:space="preserve">
     <value>English</value>
   </data>
   <data name="zhHansLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>132, 22</value>
   </data>
   <data name="zhHansLanguageToolStripMenuItem.Text" xml:space="preserve">
     <value>中文(简体)</value>
@@ -421,10 +439,10 @@
   <data name="&gt;&gt;noneToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;distanceToolStripMenuItem.Name" xml:space="preserve">
-    <value>distanceToolStripMenuItem</value>
+  <data name="&gt;&gt;hitobjectLabelToolStripMenuItem.Name" xml:space="preserve">
+    <value>hitobjectLabelToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;distanceToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;hitobjectLabelToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;hideToolStripMenuItem.Name" xml:space="preserve">
@@ -449,6 +467,18 @@
     <value>compareWithWalkSpeedToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;compareWithWalkSpeedToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;difficultyStarsToolStripMenuItem.Name" xml:space="preserve">
+    <value>difficultyStarsToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;difficultyStarsToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;fruitCountInComboToolStripMenuItem.Name" xml:space="preserve">
+    <value>fruitCountInComboToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;fruitCountInComboToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;screenToolStripMenuItem.Name" xml:space="preserve">
@@ -541,6 +571,12 @@
   <data name="&gt;&gt;defaultLanguageToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
+    <value>toolStripSeparator3</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;englishLanguageToolStripMenuItem.Name" xml:space="preserve">
     <value>englishLanguageToolStripMenuItem</value>
   </data>
@@ -576,12 +612,6 @@
   </data>
   <data name="&gt;&gt;githubToolStripMenuItem1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
-    <value>toolStripSeparator3</value>
-  </data>
-  <data name="&gt;&gt;toolStripSeparator3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Form1</value>
