@@ -199,20 +199,20 @@ namespace osucatch_editor_realtimeviewer
 
             for (int i = 0; i < comboHitObjects.Count; i++)
             {
-                CalDifficultyToLast(beatmap, comboHitObjects[i], scalingFactor);
-                skill.Process(comboHitObjects[i]);
+                CalDifficultyToLast(skill, comboHitObjects[i], scalingFactor);
             }
 
             return Math.Sqrt(skill.DifficultyValue()) * difficulty_multiplier;
         }
 
-        public static void CalDifficultyToLast(IBeatmap beatmap, PalpableCatchHitObject hitObject, float scalingFactor)
+        public static void CalDifficultyToLast(StrainSkill skill, PalpableCatchHitObject hitObject, float scalingFactor)
         {
             hitObject.NormalizedPosition = hitObject.EffectiveX * scalingFactor;
             hitObject.LastNormalizedPosition = (hitObject.lastObject == null) ? 0 : hitObject.lastObject.EffectiveX * scalingFactor;
             // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
             hitObject.DeltaTime = (hitObject.StartTime - ((hitObject.lastObject == null) ? 0 : hitObject.lastObject.StartTime));
             hitObject.StrainTime = Math.Max(40, hitObject.DeltaTime);
+            skill.Process(hitObject);
         }
 
         private static void CalFruitCountInCombo(List<PalpableCatchHitObject> comboHitObjects)

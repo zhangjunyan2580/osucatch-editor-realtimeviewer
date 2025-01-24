@@ -59,7 +59,7 @@ namespace osu.Game.Rulesets.Difficulty.Skills
             }
 
             double strain = StrainValueAt(current);
-            current.DifficultyToLast = strain * difficulty_multiplier;
+            current.DifficultyToLast = strain * difficulty_multiplier / (1 - DecayWeight);
             currentSectionPeak = Math.Max(strain, currentSectionPeak);
         }
 
