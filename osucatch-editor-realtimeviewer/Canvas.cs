@@ -128,7 +128,7 @@ namespace osucatch_editor_realtimeviewer
             GL.Enable(EnableCap.Texture2D);
         }
 
-        private static void DrawDistance(Texture2D? texture, Vector2 notePos, float diameter, Color color)
+        private static void DrawHitObjectLabel(Texture2D? texture, Vector2 notePos, float diameter, Color color)
         {
             if (texture == null) return;
             Vector2 labelPosStart = notePos;
@@ -141,7 +141,7 @@ namespace osucatch_editor_realtimeviewer
             texture.Draw(labelPosStart, new Vector2(0, 0), color);
         }
 
-        private static void DrawLabel(Texture2D? texture, Vector2 pos, bool isLeft, Color color)
+        private static void DrawLineLabel(Texture2D? texture, Vector2 pos, bool isLeft, Color color)
         {
             if (texture == null) return;
             if (isLeft) texture.Draw(pos, new Vector2(30, 0), color);
@@ -155,7 +155,7 @@ namespace osucatch_editor_realtimeviewer
             Canvas.DrawLine(rp0, rp1, Color.Red);
             Texture2D? BPMTexture = TextureFromString(bpm.ToString("F0"), fontScale);
             if (BPMTexture == null) return;
-            DrawLabel(BPMTexture, rp0, true, Color.Red);
+            DrawLineLabel(BPMTexture, rp0, true, Color.Red);
             BPMTexture.Dispose();
         }
 
@@ -166,16 +166,16 @@ namespace osucatch_editor_realtimeviewer
             DrawLine(rp0, rp1, Color.LightGreen);
             Texture2D? BPMTexture = TextureFromString(sv.ToString("F2"), fontScale);
             if (BPMTexture == null) return;
-            DrawLabel(BPMTexture, rp1, false, Color.LightGreen);
+            DrawLineLabel(BPMTexture, rp1, false, Color.LightGreen);
             BPMTexture.Dispose();
         }
 
-        public static void DrawHitObjectLabel(string hitObjectString, Vector2 pos, float circleDiameter)
+        public static void DrawHitObjectLabel(string hitObjectString, Vector2 pos, float circleDiameter, Color color)
         {
             if (hitObjectString == "") return;
             Texture2D? labelTexture = TextureFromString(hitObjectString, fontScale);
             if (labelTexture == null) return;
-            if (hitObjectString.Length > 0) DrawDistance(labelTexture, pos, circleDiameter, Color.LightBlue);
+            if (hitObjectString.Length > 0) DrawHitObjectLabel(labelTexture, pos, circleDiameter, color);
             labelTexture.Dispose();
         }
 

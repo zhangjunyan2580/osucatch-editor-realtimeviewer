@@ -370,5 +370,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Window_Maximized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("LightBlue")]
+        public global::System.Drawing.Color Color_HitObject_Label {
+            get {
+                return ((global::System.Drawing.Color)(this["Color_HitObject_Label"]));
+            }
+            set {
+                this["Color_HitObject_Label"] = value;
+            }
+        }
     }
 }

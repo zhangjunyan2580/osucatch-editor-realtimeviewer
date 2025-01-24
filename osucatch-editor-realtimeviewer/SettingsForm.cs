@@ -1,4 +1,6 @@
-﻿namespace osucatch_editor_realtimeviewer
+﻿using System.Windows.Forms;
+
+namespace osucatch_editor_realtimeviewer
 {
     public partial class SettingsForm : Form
     {
@@ -41,6 +43,8 @@
 
             checkBox_FilterNearbyHitObjects.Checked = app.Default.FilterNearbyHitObjects;
             numericUpDown_timeOut.Value = app.Default.WorkCancelAfter;
+
+            button_Label_Color.BackColor = app.Default.Color_HitObject_Label;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
@@ -119,6 +123,8 @@
             app.Default.FilterNearbyHitObjects = checkBox_FilterNearbyHitObjects.Checked;
             app.Default.WorkCancelAfter = (int)numericUpDown_timeOut.Value;
 
+            app.Default.Color_HitObject_Label = button_Label_Color.BackColor;
+
             app.Default.Save();
 
             Form1.NeedReapplySettings = true;
@@ -181,6 +187,15 @@
         private void button_timeOut_reset_Click(object sender, EventArgs e)
         {
             numericUpDown_timeOut.Value = 3000;
+        }
+
+        private void button_Label_Color_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                button_Label_Color.BackColor = colorDialog.Color;
+            }
         }
     }
 }

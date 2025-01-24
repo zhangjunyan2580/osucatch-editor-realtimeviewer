@@ -274,7 +274,7 @@ namespace osucatch_editor_realtimeviewer
             if (LabelType != HitObjectLabelType.None && (hitObject is Fruit || (hitObject is Droplet && hitObject is not TinyDroplet)))
             {
                 string labelString = hitObject.GetLabelString(LabelType);
-                Canvas.DrawHitObjectLabel(labelString, pos, CircleDiameter);
+                Canvas.DrawHitObjectLabel(labelString, pos, CircleDiameter, app.Default.Color_HitObject_Label);
             }
         }
 
