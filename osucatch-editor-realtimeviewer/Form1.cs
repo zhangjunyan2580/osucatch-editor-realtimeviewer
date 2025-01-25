@@ -453,6 +453,7 @@ namespace osucatch_editor_realtimeviewer
                     Log.ConsoleLog("ContainingFolder: " + thisReader.ContainingFolder, Log.LogType.EditorReader, Log.LogLevel.Error);
                     Log.ConsoleLog("Filename: " + thisReader.Filename, Log.LogType.EditorReader, Log.LogLevel.Error);
                     reader_timer.Interval = app.Default.Idle_Interval;
+                    lastReader = null;
                     return;
                 }
 
