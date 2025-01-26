@@ -5,6 +5,8 @@
 
 using System;
 using System.Globalization;
+using osucatch_editor_realtimeviewer;
+
 
 namespace Editor_Reader;
 
@@ -168,6 +170,12 @@ public class HitObject
         }
 
         string[] array = new string[SegmentCount + 1];
+
+        if (SampleSetList.Length <= SegmentCount || SampleSetAdditionsList.Length <= SegmentCount)
+        {
+            Log.ConsoleLog("Building slider error : SampleSetList.Length=" + SampleSetList.Length + ", SampleSetAdditionsList.Length=" + SampleSetAdditionsList.Length + ", SegmentCount=" + SegmentCount, Log.LogType.EditorReader, Log.LogLevel.Error);
+            throw new Exception("ReadProcessMemory Error. Cancelled reading.");
+        }
         for (int i = 0; i < SegmentCount + 1; i++)
         {
             array[i] = string.Format(CultureInfo.InvariantCulture, "{0}:{1}", SampleSetList[i], SampleSetAdditionsList[i]);

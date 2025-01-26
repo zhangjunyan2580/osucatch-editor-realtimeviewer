@@ -3,6 +3,7 @@
 // https://github.com/Karoo13/EditorReader
 // Decompiled with ICSharpCode.Decompiler 8.1.1.7464
 
+using osucatch_editor_realtimeviewer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -137,6 +138,17 @@ public class EditorReader
     [DllImport("kernel32.dll", SetLastError = true)]
     protected static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, ref IntPtr lpNumberOfBytesRead);
 
+    private static bool SafeReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, ref IntPtr lpNumberOfBytesRead)
+    {
+        bool result = ReadProcessMemory(hProcess, lpBaseAddress, lpBuffer, dwSize, ref lpNumberOfBytesRead);
+        if (!result)
+        {
+            Log.ConsoleLog("ReadProcessMemory failed: lpBaseAddress: " + lpBaseAddress + ", lpBuffer's length: " + lpBuffer.Length, Log.LogType.EditorReader, Log.LogLevel.Error);
+            throw new Exception("ReadProcessMemory Error. Cancelled reading.");
+        }
+        return result;
+    }
+
     private string ReadString(IntPtr pString)
     {
         if (pString == IntPtr.Zero)
@@ -144,10 +156,17 @@ public class EditorReader
             return null;
         }
 
-        ReadProcessMemory(process.Handle, pString + 4, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pString + 4, buffer4, 4, ref bytesRead);
         int num = BitConverter.ToInt32(buffer4, 0);
+
+        if (num <0 || num > 1000000)
+        {
+            Log.ConsoleLog("ReadString error : num=" + num, Log.LogType.EditorReader, Log.LogLevel.Error);
+            throw new Exception("ReadProcessMemory Error. Cancelled reading.");
+        }
+
         byte[] array = new byte[2 * num];
-        ReadProcessMemory(process.Handle, pString + 8, array, 2 * num, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pString + 8, array, 2 * num, ref bytesRead);
         char[] array2 = new char[num];
         Buffer.BlockCopy(array, 0, array2, 0, 2 * num);
         return new string(array2);
@@ -289,9 +308,9 @@ public class EditorReader
 
     private bool EditorMissingObjects(IntPtr pE)
     {
-        ReadProcessMemory(process.Handle, pE + 28, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pE + 28, buffer4, 4, ref bytesRead);
         IntPtr intPtr = ToIntPtr(buffer4, 0);
-        ReadProcessMemory(process.Handle, intPtr + 72, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, intPtr + 72, buffer4, 4, ref bytesRead);
         IntPtr intPtr2 = ToIntPtr(buffer4, 0);
         if (!(intPtr == IntPtr.Zero))
         {
@@ -303,85 +322,85 @@ public class EditorReader
 
     public int BeatDivisor()
     {
-        ReadProcessMemory(process.Handle, pEditor + 172, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pEditor + 172, buffer4, 4, ref bytesRead);
         return BitConverter.ToInt32(buffer4, 0);
     }
 
     public int EditorTime()
     {
-        ReadProcessMemory(process.Handle, pEditor + 176, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pEditor + 176, buffer16, 16, ref bytesRead);
         return (BitConverter.ToInt32(buffer16, 8) + BitConverter.ToInt32(buffer16, 12)) / 2;
     }
 
     public void SetHOM()
     {
-        ReadProcessMemory(process.Handle, pEditor + 28, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pEditor + 28, buffer4, 4, ref bytesRead);
         pHOM = ToIntPtr(buffer4, 0);
-        ReadProcessMemory(process.Handle, pEditor + 112, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pEditor + 112, buffer4, 4, ref bytesRead);
         pCompose = ToIntPtr(buffer4, 0);
     }
 
     public void ReadHOM()
     {
         buffer = new byte[80];
-        ReadProcessMemory(process.Handle, pHOM, buffer, 80, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pHOM, buffer, 80, ref bytesRead);
         objectRadius = BitConverter.ToSingle(buffer, 24);
         stackOffset = BitConverter.ToSingle(buffer, 44);
         pBookmarksL = ToIntPtr(buffer, 56);
         pObjectsL = ToIntPtr(buffer, 72);
         buffer = new byte[256];
-        ReadProcessMemory(process.Handle, pCompose, buffer, 256, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pCompose, buffer, 256, ref bytesRead);
         pClipboardL = ToIntPtr(buffer, 48);
         pSelectedL = ToIntPtr(buffer, 72);
     }
 
     public int GridSize()
     {
-        ReadProcessMemory(process.Handle, pCompose + 20, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pCompose + 20, buffer4, 4, ref bytesRead);
         IntPtr intPtr = ToIntPtr(buffer4, 0);
-        ReadProcessMemory(process.Handle, intPtr + 12, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, intPtr + 12, buffer4, 4, ref bytesRead);
         return BitConverter.ToInt32(buffer4, 0);
     }
 
     public double DistanceSpacing()
     {
-        ReadProcessMemory(process.Handle, pCompose + 20, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pCompose + 20, buffer16, 16, ref bytesRead);
         return BitConverter.ToDouble(buffer16, 8);
     }
 
     public int ComposeTool()
     {
-        ReadProcessMemory(process.Handle, pCompose + 156, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pCompose + 156, buffer4, 4, ref bytesRead);
         return BitConverter.ToInt32(buffer4, 0);
     }
 
     public Tuple<float, float> SnapPosition()
     {
-        ReadProcessMemory(process.Handle, pCompose + 228, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pCompose + 228, buffer16, 16, ref bytesRead);
         return new Tuple<float, float>(BitConverter.ToSingle(buffer16, 8), BitConverter.ToSingle(buffer16, 12));
     }
 
     public void FetchBookmarks()
     {
-        ReadProcessMemory(process.Handle, pBookmarksL, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pBookmarksL, buffer16, 16, ref bytesRead);
         pBookmarksA = ToIntPtr(buffer16, 4);
         numBookmarks = BitConverter.ToInt32(buffer16, 12);
         buffer = new byte[4 * numBookmarks];
         bookmarks = new int[numBookmarks];
-        ReadProcessMemory(process.Handle, pBookmarksA + 8, buffer, 4 * numBookmarks, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pBookmarksA + 8, buffer, 4 * numBookmarks, ref bytesRead);
         Buffer.BlockCopy(buffer, 0, bookmarks, 0, 4 * numBookmarks);
     }
 
     public void SetBeatmap()
     {
-        ReadProcessMemory(process.Handle, pHOM + 48, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pHOM + 48, buffer4, 4, ref bytesRead);
         pBeatmap = ToIntPtr(buffer4, 0);
     }
 
     public void ReadBeatmap()
     {
         buffer = new byte[320];
-        ReadProcessMemory(process.Handle, pBeatmap, buffer, 320, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pBeatmap, buffer, 320, ref bytesRead);
         SliderMultiplier = BitConverter.ToDouble(buffer, 8);
         SliderTickRate = BitConverter.ToDouble(buffer, 16);
         ApproachRate = BitConverter.ToSingle(buffer, 44);
@@ -398,13 +417,13 @@ public class EditorReader
     public void SetControlPoints()
     {
         buffer = new byte[192];
-        ReadProcessMemory(process.Handle, pBeatmap, buffer, 192, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pBeatmap, buffer, 192, ref bytesRead);
         pControlPointsL = ToIntPtr(buffer, 176);
-        ReadProcessMemory(process.Handle, pControlPointsL, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pControlPointsL, buffer16, 16, ref bytesRead);
         pControlPointsA = ToIntPtr(buffer16, 4);
         numControlPoints = BitConverter.ToInt32(buffer16, 12);
         pControlPoints = new byte[4 * numControlPoints];
-        ReadProcessMemory(process.Handle, pControlPointsA + 8, pControlPoints, 4 * numControlPoints, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pControlPointsA + 8, pControlPoints, 4 * numControlPoints, ref bytesRead);
     }
 
     public void ReadControlPoints()
@@ -418,7 +437,7 @@ public class EditorReader
 
     private ControlPoint ReadControlPoint(IntPtr pControlPoint)
     {
-        ReadProcessMemory(process.Handle, pControlPoint, bufferCp, 48, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pControlPoint, bufferCp, 48, ref bytesRead);
         return new ControlPoint
         {
             BeatLength = BitConverter.ToDouble(bufferCp, 4),
@@ -434,11 +453,11 @@ public class EditorReader
 
     public void SetObjects()
     {
-        ReadProcessMemory(process.Handle, pObjectsL, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pObjectsL, buffer16, 16, ref bytesRead);
         pObjectsA = ToIntPtr(buffer16, 4);
         numObjects = BitConverter.ToInt32(buffer16, 12);
         pObjects = new byte[4 * numObjects];
-        ReadProcessMemory(process.Handle, pObjectsA + 8, pObjects, 4 * numObjects, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pObjectsA + 8, pObjects, 4 * numObjects, ref bytesRead);
     }
 
     public void ReadObjects()
@@ -452,11 +471,11 @@ public class EditorReader
 
     public void SetClipboard()
     {
-        ReadProcessMemory(process.Handle, pClipboardL, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pClipboardL, buffer16, 16, ref bytesRead);
         pClipboardA = ToIntPtr(buffer16, 4);
         numClipboard = BitConverter.ToInt32(buffer16, 12);
         pClipboard = new byte[4 * numClipboard];
-        ReadProcessMemory(process.Handle, pClipboardA + 8, pClipboard, 4 * numClipboard, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pClipboardA + 8, pClipboard, 4 * numClipboard, ref bytesRead);
     }
 
     public void ReadClipboard()
@@ -470,11 +489,11 @@ public class EditorReader
 
     public void SetSelected()
     {
-        ReadProcessMemory(process.Handle, pSelectedL, buffer16, 16, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pSelectedL, buffer16, 16, ref bytesRead);
         pSelectedA = ToIntPtr(buffer16, 4);
         numSelected = BitConverter.ToInt32(buffer16, 12);
         pSelected = new byte[4 * numSelected];
-        ReadProcessMemory(process.Handle, pSelectedA + 8, pSelected, 4 * numSelected, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pSelectedA + 8, pSelected, 4 * numSelected, ref bytesRead);
     }
 
     public void ReadSelected()
@@ -488,7 +507,7 @@ public class EditorReader
 
     public void SetHovered()
     {
-        ReadProcessMemory(process.Handle, pCompose + 64, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pCompose + 64, buffer4, 4, ref bytesRead);
         pHoveredObject = ToIntPtr(buffer4, 0);
     }
 
@@ -506,7 +525,7 @@ public class EditorReader
 
     public void SetSliderPlacement()
     {
-        ReadProcessMemory(process.Handle, pCompose + 84, buffer4, 4, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pCompose + 84, buffer4, 4, ref bytesRead);
         pSliderPlacement = ToIntPtr(buffer4, 0);
     }
 
@@ -524,7 +543,7 @@ public class EditorReader
 
     private HitObject ReadObject(IntPtr pObject)
     {
-        ReadProcessMemory(process.Handle, pObject, bufferOb, 336, ref bytesRead);
+        SafeReadProcessMemory(process.Handle, pObject, bufferOb, 336, ref bytesRead);
         HitObject hitObject = new HitObject();
         hitObject.SpatialLength = BitConverter.ToDouble(bufferOb, 8);
         hitObject.StartTime = BitConverter.ToInt32(bufferOb, 16);
@@ -554,34 +573,55 @@ public class EditorReader
             pSTL = ToIntPtr(bufferOb, 240);
             pSSL = ToIntPtr(bufferOb, 244);
             pSSAL = ToIntPtr(bufferOb, 248);
-            ReadProcessMemory(process.Handle, pPointsL, buffer16, 16, ref bytesRead);
+            SafeReadProcessMemory(process.Handle, pPointsL, buffer16, 16, ref bytesRead);
             pTempA = ToIntPtr(buffer16, 4);
             numTemp = BitConverter.ToInt32(buffer16, 12);
+
+            if (numTemp < 0 || numTemp > 10000000)
+            {
+                Log.ConsoleLog("ReadSlider error : numTemp=" + numTemp, Log.LogType.EditorReader, Log.LogLevel.Error);
+                throw new Exception("ReadProcessMemory Error. Cancelled reading.");
+            }
+
             bTemp = new byte[8 * numTemp];
-            ReadProcessMemory(process.Handle, pTempA + 8, bTemp, 8 * numTemp, ref bytesRead);
+            SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 8 * numTemp, ref bytesRead);
             hitObject.sliderCurvePoints = new float[2 * numTemp];
             Buffer.BlockCopy(bTemp, 0, hitObject.sliderCurvePoints, 0, 8 * numTemp);
             if (!hitObject.unifiedSoundAddition)
             {
-                ReadProcessMemory(process.Handle, pSTL, buffer16, 16, ref bytesRead);
+                SafeReadProcessMemory(process.Handle, pSTL, buffer16, 16, ref bytesRead);
                 pTempA = ToIntPtr(buffer16, 4);
                 numTemp = BitConverter.ToInt32(buffer16, 12);
+
+                if (numTemp < 0 || numTemp > 10000000)
+                {
+                    Log.ConsoleLog("ReadSlider's SoundType error : numTemp=" + numTemp, Log.LogType.EditorReader, Log.LogLevel.Error);
+                    throw new Exception("ReadProcessMemory Error. Cancelled reading.");
+                }
+
                 bTemp = new byte[4 * numTemp];
-                ReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
+                SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
                 hitObject.SoundTypeList = new int[numTemp];
                 Buffer.BlockCopy(bTemp, 0, hitObject.SoundTypeList, 0, 4 * numTemp);
-                ReadProcessMemory(process.Handle, pSSL, buffer16, 16, ref bytesRead);
+                SafeReadProcessMemory(process.Handle, pSSL, buffer16, 16, ref bytesRead);
                 pTempA = ToIntPtr(buffer16, 4);
                 numTemp = BitConverter.ToInt32(buffer16, 12);
+
+                if (numTemp < 0 || numTemp > 10000000)
+                {
+                    Log.ConsoleLog("ReadSlider's SampleSet error : numTemp=" + numTemp, Log.LogType.EditorReader, Log.LogLevel.Error);
+                    throw new Exception("ReadProcessMemory Error. Cancelled reading.");
+                }
+
                 bTemp = new byte[4 * numTemp];
-                ReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
+                SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
                 hitObject.SampleSetList = new int[numTemp];
                 Buffer.BlockCopy(bTemp, 0, hitObject.SampleSetList, 0, 4 * numTemp);
-                ReadProcessMemory(process.Handle, pSSAL, buffer16, 16, ref bytesRead);
+                SafeReadProcessMemory(process.Handle, pSSAL, buffer16, 16, ref bytesRead);
                 pTempA = ToIntPtr(buffer16, 4);
                 numTemp = BitConverter.ToInt32(buffer16, 12);
                 bTemp = new byte[4 * numTemp];
-                ReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
+                SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
                 hitObject.SampleSetAdditionsList = new int[numTemp];
                 Buffer.BlockCopy(bTemp, 0, hitObject.SampleSetAdditionsList, 0, 4 * numTemp);
             }
