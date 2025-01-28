@@ -56,10 +56,6 @@ public class HitObject
 
     public int CurveType;
 
-    public float X2;
-
-    public float Y2;
-
     public float[] sliderCurvePoints;
 
     public double curveLength;
@@ -77,8 +73,6 @@ public class HitObject
         Y -= num2;
         if (IsSlider())
         {
-            X2 -= num;
-            Y2 -= num2;
             for (int i = 0; i < sliderCurvePoints.Length; i += 2)
             {
                 sliderCurvePoints[i] -= num;
@@ -100,19 +94,9 @@ public class HitObject
         }
     }
 
-    public bool IsCircle()
-    {
-        return (Type & 1) > 0;
-    }
-
     public bool IsSlider()
     {
         return (Type & 2) > 0;
-    }
-
-    public bool IsNewCombo()
-    {
-        return (Type & 4) > 0;
     }
 
     public bool IsSpinner()

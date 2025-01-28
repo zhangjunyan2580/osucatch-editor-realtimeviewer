@@ -320,12 +320,6 @@ public class EditorReader
         return true;
     }
 
-    public int BeatDivisor()
-    {
-        SafeReadProcessMemory(process.Handle, pEditor + 172, buffer4, 4, ref bytesRead);
-        return BitConverter.ToInt32(buffer4, 0);
-    }
-
     public int EditorTime()
     {
         SafeReadProcessMemory(process.Handle, pEditor + 176, buffer16, 16, ref bytesRead);
@@ -352,32 +346,6 @@ public class EditorReader
         SafeReadProcessMemory(process.Handle, pCompose, buffer, 256, ref bytesRead);
         pClipboardL = ToIntPtr(buffer, 48);
         pSelectedL = ToIntPtr(buffer, 72);
-    }
-
-    public int GridSize()
-    {
-        SafeReadProcessMemory(process.Handle, pCompose + 20, buffer4, 4, ref bytesRead);
-        IntPtr intPtr = ToIntPtr(buffer4, 0);
-        SafeReadProcessMemory(process.Handle, intPtr + 12, buffer4, 4, ref bytesRead);
-        return BitConverter.ToInt32(buffer4, 0);
-    }
-
-    public double DistanceSpacing()
-    {
-        SafeReadProcessMemory(process.Handle, pCompose + 20, buffer16, 16, ref bytesRead);
-        return BitConverter.ToDouble(buffer16, 8);
-    }
-
-    public int ComposeTool()
-    {
-        SafeReadProcessMemory(process.Handle, pCompose + 156, buffer4, 4, ref bytesRead);
-        return BitConverter.ToInt32(buffer4, 0);
-    }
-
-    public Tuple<float, float> SnapPosition()
-    {
-        SafeReadProcessMemory(process.Handle, pCompose + 228, buffer16, 16, ref bytesRead);
-        return new Tuple<float, float>(BitConverter.ToSingle(buffer16, 8), BitConverter.ToSingle(buffer16, 12));
     }
 
     public void FetchBookmarks()
@@ -469,78 +437,6 @@ public class EditorReader
         }
     }
 
-    public void SetClipboard()
-    {
-        SafeReadProcessMemory(process.Handle, pClipboardL, buffer16, 16, ref bytesRead);
-        pClipboardA = ToIntPtr(buffer16, 4);
-        numClipboard = BitConverter.ToInt32(buffer16, 12);
-        pClipboard = new byte[4 * numClipboard];
-        SafeReadProcessMemory(process.Handle, pClipboardA + 8, pClipboard, 4 * numClipboard, ref bytesRead);
-    }
-
-    public void ReadClipboard()
-    {
-        clipboardObjects = new List<HitObject>();
-        for (int i = 0; i < numClipboard; i++)
-        {
-            clipboardObjects.Add(ReadObject(ToIntPtr(pClipboard, 4 * i)));
-        }
-    }
-
-    public void SetSelected()
-    {
-        SafeReadProcessMemory(process.Handle, pSelectedL, buffer16, 16, ref bytesRead);
-        pSelectedA = ToIntPtr(buffer16, 4);
-        numSelected = BitConverter.ToInt32(buffer16, 12);
-        pSelected = new byte[4 * numSelected];
-        SafeReadProcessMemory(process.Handle, pSelectedA + 8, pSelected, 4 * numSelected, ref bytesRead);
-    }
-
-    public void ReadSelected()
-    {
-        selectedObjects = new List<HitObject>();
-        for (int i = 0; i < numSelected; i++)
-        {
-            selectedObjects.Add(ReadObject(ToIntPtr(pSelected, 4 * i)));
-        }
-    }
-
-    public void SetHovered()
-    {
-        SafeReadProcessMemory(process.Handle, pCompose + 64, buffer4, 4, ref bytesRead);
-        pHoveredObject = ToIntPtr(buffer4, 0);
-    }
-
-    public bool ReadHovered()
-    {
-        if (pHoveredObject == IntPtr.Zero)
-        {
-            hoveredObject = null;
-            return false;
-        }
-
-        hoveredObject = ReadObject(pHoveredObject);
-        return true;
-    }
-
-    public void SetSliderPlacement()
-    {
-        SafeReadProcessMemory(process.Handle, pCompose + 84, buffer4, 4, ref bytesRead);
-        pSliderPlacement = ToIntPtr(buffer4, 0);
-    }
-
-    public bool ReadSliderPlacement()
-    {
-        if (pSliderPlacement == IntPtr.Zero)
-        {
-            sliderPlacement = null;
-            return false;
-        }
-
-        sliderPlacement = ReadObject(pSliderPlacement);
-        return true;
-    }
-
     private HitObject ReadObject(IntPtr pObject)
     {
         SafeReadProcessMemory(process.Handle, pObject, bufferOb, 336, ref bytesRead);
@@ -567,8 +463,6 @@ public class EditorReader
         {
             hitObject.curveLength = BitConverter.ToDouble(bufferOb, 148);
             hitObject.CurveType = BitConverter.ToInt32(bufferOb, 264);
-            hitObject.X2 = BitConverter.ToSingle(bufferOb, 320);
-            hitObject.Y2 = BitConverter.ToSingle(bufferOb, 324);
             pPointsL = ToIntPtr(bufferOb, 212);
             pSTL = ToIntPtr(bufferOb, 240);
             pSSL = ToIntPtr(bufferOb, 244);
@@ -677,30 +571,6 @@ public class EditorReader
     {
         SetObjects();
         ReadObjects();
-    }
-
-    public void FetchClipboard()
-    {
-        SetClipboard();
-        ReadClipboard();
-    }
-
-    public void FetchSelected()
-    {
-        SetSelected();
-        ReadSelected();
-    }
-
-    public bool FetchHovered()
-    {
-        SetHovered();
-        return ReadHovered();
-    }
-
-    public bool FetchSliderPlacement()
-    {
-        SetSliderPlacement();
-        return ReadSliderPlacement();
     }
 
     public void FetchAll()
