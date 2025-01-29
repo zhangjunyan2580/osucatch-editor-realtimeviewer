@@ -432,16 +432,16 @@ public class EditorReader
         SafeReadProcessMemory(process.Handle, pObjectsA + 8, pObjects, 4 * numObjects, ref bytesRead);
     }
 
-    public void ReadObjects()
+    public void ReadObjects(bool fetchHitSound = true)
     {
         hitObjects = new List<HitObject>();
         for (int i = 0; i < numObjects; i++)
         {
-            hitObjects.Add(ReadObject(ToIntPtr(pObjects, 4 * i)));
+            hitObjects.Add(ReadObject(ToIntPtr(pObjects, 4 * i), fetchHitSound));
         }
     }
 
-    private HitObject ReadObject(IntPtr pObject)
+    private HitObject ReadObject(IntPtr pObject, bool fetchHitSound)
     {
         SafeReadProcessMemory(process.Handle, pObject, bufferOb, 336, ref bytesRead);
         HitObject hitObject = new HitObject();
@@ -462,7 +462,7 @@ public class EditorReader
         hitObject.IsSelected = BitConverter.ToBoolean(bufferOb, 133);
         hitObject.BaseX = BitConverter.ToSingle(bufferOb, 140);
         hitObject.BaseY = BitConverter.ToSingle(bufferOb, 144);
-        hitObject.unifiedSoundAddition = BitConverter.ToBoolean(bufferOb, 302);
+        hitObject.unifiedSoundAddition = (fetchHitSound) ? BitConverter.ToBoolean(bufferOb, 302) : true;
         if (hitObject.IsSlider())
         {
             hitObject.curveLength = BitConverter.ToDouble(bufferOb, 148);
@@ -550,18 +550,18 @@ public class EditorReader
         ReadControlPoints();
     }
 
-    public void FetchObjects()
+    public void FetchObjects(bool fetchHitSound = true)
     {
         SetObjects();
-        ReadObjects();
+        ReadObjects(fetchHitSound);
     }
 
-    public void FetchAll()
+    public void FetchAll(bool fetchFull = true)
     {
         FetchHOM();
         FetchBeatmap();
         FetchControlPoints();
-        FetchObjects();
-        FetchBookmarks();
+        FetchObjects(fetchFull);
+        if (fetchFull) FetchBookmarks();
     }
 }
