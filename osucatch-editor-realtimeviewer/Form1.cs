@@ -453,6 +453,7 @@ namespace osucatch_editor_realtimeviewer
                     Log.ConsoleLog("ContainingFolder: " + thisReader.ContainingFolder, Log.LogType.EditorReader, Log.LogLevel.Error);
                     Log.ConsoleLog("Filename: " + thisReader.Filename, Log.LogType.EditorReader, Log.LogLevel.Error);
                     reader_timer.Interval = app.Default.Idle_Interval;
+                    lastReader = null;
                     return;
                 }
 
@@ -559,7 +560,7 @@ namespace osucatch_editor_realtimeviewer
                 // change form's title
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    if (drawingHelper.LabelType == HitObjectLabelType.Difficulty_Stars)
+                    if (drawingHelper.LabelType == HitObjectLabelType.Difficulty_Stars && !app.Default.FilterNearbyHitObjects)
                         this.Text = "Stars: " + convertedBeatmap.BeatmapInfo.StarRating.ToString("0.00") + "*";
                     else this.Text = editorReaderHelper.beatmap_title;
                 }));

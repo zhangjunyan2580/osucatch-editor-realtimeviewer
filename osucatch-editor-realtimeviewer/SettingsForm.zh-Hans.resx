@@ -161,10 +161,10 @@
     <value>备份</value>
   </data>
   <data name="checkBox_enableBackup.Size" type="System.Drawing.Size, System.Drawing">
-    <value>99, 21</value>
+    <value>195, 21</value>
   </data>
   <data name="checkBox_enableBackup.Text" xml:space="preserve">
-    <value>启用自动备份</value>
+    <value>启用自动备份（略微影响性能）</value>
   </data>
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
     <value>104, 17</value>

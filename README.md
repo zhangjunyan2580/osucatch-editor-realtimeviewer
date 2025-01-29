@@ -17,11 +17,11 @@ Editor --(Editor Reader)--> Beatmap --(Osu BeatmapParser)--> HitObjects --(OpenG
 - OpenTK
 - OpenTK.GLControl
 
-## Used Libraries
+## Used Source Code
+
+### for reading editor
 
 - [Editor Reader](https://github.com/Karoo13/EditorReader)
-
-## Used Source Code
 
 ### for parsing beatmap
 
