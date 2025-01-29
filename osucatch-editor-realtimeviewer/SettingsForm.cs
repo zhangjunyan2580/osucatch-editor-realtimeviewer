@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace osucatch_editor_realtimeviewer
+﻿namespace osucatch_editor_realtimeviewer
 {
     public partial class SettingsForm : Form
     {

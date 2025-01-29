@@ -14,6 +14,9 @@ namespace osucatch_editor_realtimeviewer
         public string beatmap_path = "";
         public string beatmap_title = "";
 
+        private int fetchAll_Failed_Count = 0;
+        private const int FetchAll_MaxRetry_Count = 10;
+
         public EditorReaderHelper()
         {
             reader.autoDeStack = true;
@@ -153,17 +156,27 @@ namespace osucatch_editor_realtimeviewer
         {
             try
             {
+                if (fetchAll_Failed_Count > FetchAll_MaxRetry_Count)
+                {
+                    Log.ConsoleLog("Refetching editor...", Log.LogType.EditorReader, Log.LogLevel.Warning);
+                    fetchAll_Failed_Count = 0;
+                    FetchEditor();
+                    return null;
+                }
+
                 Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
 
                 reader.FetchAll();
                 var thisReaderData = new BeatmapInfoCollection(reader);
 
                 Log.ConsoleLog("FetchAll complete.", Log.LogType.EditorReader, Log.LogLevel.Debug);
+                fetchAll_Failed_Count = 0;
                 return thisReaderData;
             }
             catch (Exception ex)
             {
-                Log.ConsoleLog("FetchAll failed.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
+                Log.ConsoleLog("FetchAll failed.(" + fetchAll_Failed_Count + ")\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
+                fetchAll_Failed_Count++;
                 return null;
             }
         }
@@ -179,17 +192,27 @@ namespace osucatch_editor_realtimeviewer
         {
             try
             {
+                if (fetchAll_Failed_Count > FetchAll_MaxRetry_Count)
+                {
+                    Log.ConsoleLog("Refetching editor...", Log.LogType.EditorReader, Log.LogLevel.Warning);
+                    fetchAll_Failed_Count = 0;
+                    FetchEditor();
+                    return null;
+                }
+
                 Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
 
                 reader.FetchAll();
                 var thisReaderData = new BeatmapInfoCollection(reader, partialLoadingHalfTimeSpan);
 
                 Log.ConsoleLog("FetchAll complete.", Log.LogType.EditorReader, Log.LogLevel.Debug);
+                fetchAll_Failed_Count = 0;
                 return thisReaderData;
             }
             catch (Exception ex)
             {
-                Log.ConsoleLog("FetchAll failed.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
+                Log.ConsoleLog("FetchAll failed.(" + fetchAll_Failed_Count + ")\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
+                fetchAll_Failed_Count++;
                 return null;
             }
         }

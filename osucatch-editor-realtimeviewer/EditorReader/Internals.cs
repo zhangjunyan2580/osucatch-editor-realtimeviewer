@@ -3,8 +3,6 @@
 // https://github.com/Karoo13/EditorReader
 // Decompiled with ICSharpCode.Decompiler 8.1.1.7464
 
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Editor_Reader;

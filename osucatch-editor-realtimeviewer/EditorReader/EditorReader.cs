@@ -5,7 +5,6 @@
 
 using osucatch_editor_realtimeviewer;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -149,6 +148,18 @@ public class EditorReader
         return result;
     }
 
+    private static int SafeBitConverterToInt32(byte[] value, int startIndex, string varName = "")
+    {
+        const int MAX = 1000000;
+        int result = BitConverter.ToInt32(value, startIndex);
+        if (result < 0 || result > MAX)
+        {
+            Log.ConsoleLog("BitConverterToInt32 error: " + varName + "=" + result, Log.LogType.EditorReader, Log.LogLevel.Error);
+            throw new Exception("ReadProcessMemory Error. Reading cancelled.");
+        }
+        return result;
+    }
+
     private string ReadString(IntPtr pString)
     {
         if (pString == IntPtr.Zero)
@@ -157,14 +168,7 @@ public class EditorReader
         }
 
         SafeReadProcessMemory(process.Handle, pString + 4, buffer4, 4, ref bytesRead);
-        int num = BitConverter.ToInt32(buffer4, 0);
-
-        if (num <0 || num > 1000000)
-        {
-            Log.ConsoleLog("ReadString error : num=" + num, Log.LogType.EditorReader, Log.LogLevel.Error);
-            throw new Exception("ReadProcessMemory Error. Cancelled reading.");
-        }
-
+        int num = SafeBitConverterToInt32(buffer4, 0, "ReadString num");
         byte[] array = new byte[2 * num];
         SafeReadProcessMemory(process.Handle, pString + 8, array, 2 * num, ref bytesRead);
         char[] array2 = new char[num];
@@ -352,7 +356,7 @@ public class EditorReader
     {
         SafeReadProcessMemory(process.Handle, pBookmarksL, buffer16, 16, ref bytesRead);
         pBookmarksA = ToIntPtr(buffer16, 4);
-        numBookmarks = BitConverter.ToInt32(buffer16, 12);
+        numBookmarks = SafeBitConverterToInt32(buffer16, 12, "numBookmarks");
         buffer = new byte[4 * numBookmarks];
         bookmarks = new int[numBookmarks];
         SafeReadProcessMemory(process.Handle, pBookmarksA + 8, buffer, 4 * numBookmarks, ref bytesRead);
@@ -389,7 +393,7 @@ public class EditorReader
         pControlPointsL = ToIntPtr(buffer, 176);
         SafeReadProcessMemory(process.Handle, pControlPointsL, buffer16, 16, ref bytesRead);
         pControlPointsA = ToIntPtr(buffer16, 4);
-        numControlPoints = BitConverter.ToInt32(buffer16, 12);
+        numControlPoints = SafeBitConverterToInt32(buffer16, 12, "numControlPoints");
         pControlPoints = new byte[4 * numControlPoints];
         SafeReadProcessMemory(process.Handle, pControlPointsA + 8, pControlPoints, 4 * numControlPoints, ref bytesRead);
     }
@@ -423,7 +427,7 @@ public class EditorReader
     {
         SafeReadProcessMemory(process.Handle, pObjectsL, buffer16, 16, ref bytesRead);
         pObjectsA = ToIntPtr(buffer16, 4);
-        numObjects = BitConverter.ToInt32(buffer16, 12);
+        numObjects = SafeBitConverterToInt32(buffer16, 12, "numObjects");
         pObjects = new byte[4 * numObjects];
         SafeReadProcessMemory(process.Handle, pObjectsA + 8, pObjects, 4 * numObjects, ref bytesRead);
     }
@@ -469,14 +473,7 @@ public class EditorReader
             pSSAL = ToIntPtr(bufferOb, 248);
             SafeReadProcessMemory(process.Handle, pPointsL, buffer16, 16, ref bytesRead);
             pTempA = ToIntPtr(buffer16, 4);
-            numTemp = BitConverter.ToInt32(buffer16, 12);
-
-            if (numTemp < 0 || numTemp > 10000000)
-            {
-                Log.ConsoleLog("ReadSlider error : numTemp=" + numTemp, Log.LogType.EditorReader, Log.LogLevel.Error);
-                throw new Exception("ReadProcessMemory Error. Cancelled reading.");
-            }
-
+            numTemp = SafeBitConverterToInt32(buffer16, 12, "numTemp");
             bTemp = new byte[8 * numTemp];
             SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 8 * numTemp, ref bytesRead);
             hitObject.sliderCurvePoints = new float[2 * numTemp];
@@ -485,35 +482,21 @@ public class EditorReader
             {
                 SafeReadProcessMemory(process.Handle, pSTL, buffer16, 16, ref bytesRead);
                 pTempA = ToIntPtr(buffer16, 4);
-                numTemp = BitConverter.ToInt32(buffer16, 12);
-
-                if (numTemp < 0 || numTemp > 10000000)
-                {
-                    Log.ConsoleLog("ReadSlider's SoundType error : numTemp=" + numTemp, Log.LogType.EditorReader, Log.LogLevel.Error);
-                    throw new Exception("ReadProcessMemory Error. Cancelled reading.");
-                }
-
+                numTemp = SafeBitConverterToInt32(buffer16, 12, "numTemp");
                 bTemp = new byte[4 * numTemp];
                 SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
                 hitObject.SoundTypeList = new int[numTemp];
                 Buffer.BlockCopy(bTemp, 0, hitObject.SoundTypeList, 0, 4 * numTemp);
                 SafeReadProcessMemory(process.Handle, pSSL, buffer16, 16, ref bytesRead);
                 pTempA = ToIntPtr(buffer16, 4);
-                numTemp = BitConverter.ToInt32(buffer16, 12);
-
-                if (numTemp < 0 || numTemp > 10000000)
-                {
-                    Log.ConsoleLog("ReadSlider's SampleSet error : numTemp=" + numTemp, Log.LogType.EditorReader, Log.LogLevel.Error);
-                    throw new Exception("ReadProcessMemory Error. Cancelled reading.");
-                }
-
+                numTemp = SafeBitConverterToInt32(buffer16, 12, "numTemp");
                 bTemp = new byte[4 * numTemp];
                 SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
                 hitObject.SampleSetList = new int[numTemp];
                 Buffer.BlockCopy(bTemp, 0, hitObject.SampleSetList, 0, 4 * numTemp);
                 SafeReadProcessMemory(process.Handle, pSSAL, buffer16, 16, ref bytesRead);
                 pTempA = ToIntPtr(buffer16, 4);
-                numTemp = BitConverter.ToInt32(buffer16, 12);
+                numTemp = SafeBitConverterToInt32(buffer16, 12, "numTemp");
                 bTemp = new byte[4 * numTemp];
                 SafeReadProcessMemory(process.Handle, pTempA + 8, bTemp, 4 * numTemp, ref bytesRead);
                 hitObject.SampleSetAdditionsList = new int[numTemp];
