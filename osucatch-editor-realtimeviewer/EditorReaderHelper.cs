@@ -166,7 +166,7 @@ namespace osucatch_editor_realtimeviewer
 
                 Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
 
-                bool needFetchFull = app.Default.Backup_Enabled;
+                bool needFetchFull = app.Default.Backup_Enabled && !app.Default.FilterNearbyHitObjects;
                 reader.FetchAll(needFetchFull);
                 var thisReaderData = new BeatmapInfoCollection(reader);
 
@@ -203,7 +203,7 @@ namespace osucatch_editor_realtimeviewer
 
                 Log.ConsoleLog("Start FetchAll().", Log.LogType.EditorReader, Log.LogLevel.Debug);
 
-                bool needFetchFull = app.Default.Backup_Enabled;
+                bool needFetchFull = app.Default.Backup_Enabled && !app.Default.FilterNearbyHitObjects;
                 reader.FetchAll(needFetchFull);
                 var thisReaderData = new BeatmapInfoCollection(reader, partialLoadingHalfTimeSpan);
 
