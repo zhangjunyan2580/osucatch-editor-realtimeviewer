@@ -62,6 +62,8 @@
             englishLanguageToolStripMenuItem = new ToolStripMenuItem();
             zhHansLanguageToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator2 = new ToolStripSeparator();
+            TopWhenEditorFocusToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator5 = new ToolStripSeparator();
             backupToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator4 = new ToolStripSeparator();
             forceResetStripMenuItem = new ToolStripMenuItem();
@@ -230,7 +232,7 @@
             // settingsToolStripMenuItem
             // 
             resources.ApplyResources(settingsToolStripMenuItem, "settingsToolStripMenuItem");
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openSettingsFileToolStripMenuItem, languageToolStripMenuItem, toolStripSeparator2, backupToolStripMenuItem, toolStripSeparator4, forceResetStripMenuItem, restartProgramStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openSettingsFileToolStripMenuItem, languageToolStripMenuItem, toolStripSeparator2, TopWhenEditorFocusToolStripMenuItem, toolStripSeparator5, backupToolStripMenuItem, toolStripSeparator4, forceResetStripMenuItem, restartProgramStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             // 
             // openSettingsFileToolStripMenuItem
@@ -272,6 +274,17 @@
             // 
             resources.ApplyResources(toolStripSeparator2, "toolStripSeparator2");
             toolStripSeparator2.Name = "toolStripSeparator2";
+            // 
+            // TopWhenEditorFocusToolStripMenuItem
+            // 
+            resources.ApplyResources(TopWhenEditorFocusToolStripMenuItem, "TopWhenEditorFocusToolStripMenuItem");
+            TopWhenEditorFocusToolStripMenuItem.Name = "TopWhenEditorFocusToolStripMenuItem";
+            TopWhenEditorFocusToolStripMenuItem.Click += TopWhenEditorFocusToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator5
+            // 
+            resources.ApplyResources(toolStripSeparator5, "toolStripSeparator5");
+            toolStripSeparator5.Name = "toolStripSeparator5";
             // 
             // backupToolStripMenuItem
             // 
@@ -364,5 +377,7 @@
         private ToolStripMenuItem forceResetStripMenuItem;
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripMenuItem restartProgramStripMenuItem;
+        private ToolStripMenuItem TopWhenEditorFocusToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator5;
     }
 }

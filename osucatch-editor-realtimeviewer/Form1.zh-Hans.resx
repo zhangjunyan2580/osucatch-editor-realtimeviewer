@@ -260,13 +260,13 @@
     <value>设置 (&amp;S)</value>
   </data>
   <data name="openSettingsFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>170, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="openSettingsFileToolStripMenuItem.Text" xml:space="preserve">
     <value>打开设置面板 (&amp;O)</value>
   </data>
   <data name="languageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>170, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="languageToolStripMenuItem.Text" xml:space="preserve">
     <value>语言 (&amp;L)</value>
@@ -275,25 +275,34 @@
     <value>默认</value>
   </data>
   <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>167, 6</value>
+    <value>177, 6</value>
+  </data>
+  <data name="TopWhenEditorFocusToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="TopWhenEditorFocusToolStripMenuItem.Text" xml:space="preserve">
+    <value>自动前置 (&amp;T)</value>
+  </data>
+  <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>177, 6</value>
   </data>
   <data name="backupToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>170, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="backupToolStripMenuItem.Text" xml:space="preserve">
     <value>立即备份 (&amp;B)</value>
   </data>
   <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>167, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="forceResetStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>170, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="forceResetStripMenuItem.Text" xml:space="preserve">
     <value>重置 (&amp;R)</value>
   </data>
   <data name="restartProgramStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>170, 22</value>
+    <value>180, 22</value>
   </data>
   <data name="restartProgramStripMenuItem.Text" xml:space="preserve">
     <value>重启程序 (&amp;P)</value>
