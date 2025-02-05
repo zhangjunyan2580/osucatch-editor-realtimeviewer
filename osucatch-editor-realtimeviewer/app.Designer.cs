@@ -382,5 +382,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Color_HitObject_Label"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Auto_Topmost {
+            get {
+                return ((bool)(this["Auto_Topmost"]));
+            }
+            set {
+                this["Auto_Topmost"] = value;
+            }
+        }
     }
 }

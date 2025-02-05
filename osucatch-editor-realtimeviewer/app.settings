@@ -92,5 +92,8 @@
     <Setting Name="Color_HitObject_Label" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">LightBlue</Value>
     </Setting>
+    <Setting Name="Auto_Topmost" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

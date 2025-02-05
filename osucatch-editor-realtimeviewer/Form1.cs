@@ -26,6 +26,8 @@ namespace osucatch_editor_realtimeviewer
         int dpi = 96;
         float fontscale = 1;
 
+        bool topmostCheck = false;
+
         public static string Path_Img_Hitcircle = @"img/fruit-apple.png";
         public static string Path_Img_Drop = @"img/fruit-drop.png";
         public static string Path_Img_Banana = @"img/fruit-bananas.png";
@@ -115,6 +117,9 @@ namespace osucatch_editor_realtimeviewer
 
             if (app.Default.Window_Maximized) this.WindowState = FormWindowState.Maximized;
 
+            topmostCheck = app.Default.Auto_Topmost;
+            TopWhenEditorFocusToolStripMenuItem.Checked = topmostCheck;
+
             // osu path
             if (app.Default.osu_path == "")
             {
@@ -194,6 +199,38 @@ namespace osucatch_editor_realtimeviewer
             else
             {
                 Log.ConsoleLog("Total Memory: " + (1.0 * memorySize / 1024 / 1024).ToString("F3") + "MB", Log.LogType.Program, Log.LogLevel.Debug);
+            }
+
+            CheckTopmost();
+        }
+
+        private void CheckTopmost()
+        {
+            if (!topmostCheck)
+            {
+                if (this.TopMost == true)
+                {
+                    Invoke(new MethodInvoker(delegate ()
+                    {
+                        this.TopMost = false;
+                    }));
+                    return;
+                }
+                return;
+            }
+            if (ProcessFocus.IsEditorForeground())
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.TopMost = true;
+                }));
+            }
+            else
+            {
+                Invoke(new MethodInvoker(delegate ()
+                {
+                    this.TopMost = false;
+                }));
             }
         }
 
@@ -955,6 +992,49 @@ namespace osucatch_editor_realtimeviewer
             Form1.ApplyResources(this);
 
             app.Default.Language_String = "";
+            app.Default.Save();
+        }
+
+        private void forceResetStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lastReader = null;
+            lastColourLines = null;
+            lastBeatmap = null;
+            lastConvertedBeatmap = null;
+            lastMods = -1;
+            lastLabelType = HitObjectLabelType.None;
+
+            editorReaderHelper = new();
+
+            reader_timer.Start();
+        }
+
+        private void restartProgramStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // 获取当前应用程序的可执行文件路径
+            string applicationPath = Application.ExecutablePath;
+
+            // 启动一个新的进程来运行当前应用程序
+            ProcessStartInfo processStartInfo = new ProcessStartInfo(applicationPath);
+            Process.Start(processStartInfo);
+
+            // 关闭当前应用程序
+            Application.Exit();
+        }
+
+        private void TopWhenEditorFocusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (topmostCheck)
+            {
+                topmostCheck = false;
+                TopWhenEditorFocusToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                topmostCheck = true;
+                TopWhenEditorFocusToolStripMenuItem.Checked = true;
+            }
+            app.Default.Auto_Topmost = topmostCheck;
             app.Default.Save();
         }
     }
