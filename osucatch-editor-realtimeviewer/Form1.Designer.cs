@@ -62,9 +62,12 @@
             englishLanguageToolStripMenuItem = new ToolStripMenuItem();
             zhHansLanguageToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator2 = new ToolStripSeparator();
+            forceResetStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator4 = new ToolStripSeparator();
             backupToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem1 = new ToolStripMenuItem();
+            restartProgramStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -226,7 +229,7 @@
             // 
             // settingsToolStripMenuItem
             // 
-            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openSettingsFileToolStripMenuItem, languageToolStripMenuItem, toolStripSeparator2, backupToolStripMenuItem });
+            settingsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openSettingsFileToolStripMenuItem, languageToolStripMenuItem, toolStripSeparator2, backupToolStripMenuItem, toolStripSeparator4, forceResetStripMenuItem, restartProgramStripMenuItem });
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             resources.ApplyResources(settingsToolStripMenuItem, "settingsToolStripMenuItem");
             // 
@@ -270,6 +273,17 @@
             toolStripSeparator2.Name = "toolStripSeparator2";
             resources.ApplyResources(toolStripSeparator2, "toolStripSeparator2");
             // 
+            // forceResetStripMenuItem
+            // 
+            forceResetStripMenuItem.Name = "forceResetStripMenuItem";
+            resources.ApplyResources(forceResetStripMenuItem, "forceResetStripMenuItem");
+            forceResetStripMenuItem.Click += forceResetStripMenuItem_Click;
+            // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            resources.ApplyResources(toolStripSeparator4, "toolStripSeparator4");
+            // 
             // backupToolStripMenuItem
             // 
             backupToolStripMenuItem.Name = "backupToolStripMenuItem";
@@ -287,6 +301,12 @@
             githubToolStripMenuItem1.Name = "githubToolStripMenuItem1";
             resources.ApplyResources(githubToolStripMenuItem1, "githubToolStripMenuItem1");
             githubToolStripMenuItem1.Click += githubToolStripMenuItem1_Click;
+            // 
+            // restartProgramStripMenuItem
+            // 
+            restartProgramStripMenuItem.Name = "restartProgramStripMenuItem";
+            resources.ApplyResources(restartProgramStripMenuItem, "restartProgramStripMenuItem");
+            restartProgramStripMenuItem.Click += restartProgramStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -341,5 +361,8 @@
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripMenuItem difficultyStarsToolStripMenuItem;
         private ToolStripMenuItem fruitCountInComboToolStripMenuItem;
+        private ToolStripMenuItem forceResetStripMenuItem;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripMenuItem restartProgramStripMenuItem;
     }
 }

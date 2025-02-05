@@ -957,6 +957,33 @@ namespace osucatch_editor_realtimeviewer
             app.Default.Language_String = "";
             app.Default.Save();
         }
+
+        private void forceResetStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lastReader = null;
+            lastColourLines = null;
+            lastBeatmap = null;
+            lastConvertedBeatmap = null;
+            lastMods = -1;
+            lastLabelType = HitObjectLabelType.None;
+
+            editorReaderHelper = new();
+
+            reader_timer.Start();
+        }
+
+        private void restartProgramStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // 获取当前应用程序的可执行文件路径
+            string applicationPath = Application.ExecutablePath;
+
+            // 启动一个新的进程来运行当前应用程序
+            ProcessStartInfo processStartInfo = new ProcessStartInfo(applicationPath);
+            Process.Start(processStartInfo);
+
+            // 关闭当前应用程序
+            Application.Exit();
+        }
     }
 
 

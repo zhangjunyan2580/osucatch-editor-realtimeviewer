@@ -179,7 +179,7 @@
     <value>&amp;NoMod</value>
   </data>
   <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>168, 22</value>
   </data>
   <data name="modToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Mod</value>
@@ -239,7 +239,7 @@
     <value>&amp;Fruit Count in Combo</value>
   </data>
   <data name="hitobjectLabelToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>168, 22</value>
   </data>
   <data name="hitobjectLabelToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Fruits Label</value>
@@ -293,16 +293,16 @@
     <value>8</value>
   </data>
   <data name="screenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>168, 22</value>
   </data>
   <data name="screenToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Range of Vision</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>177, 6</value>
+    <value>165, 6</value>
   </data>
   <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>168, 22</value>
   </data>
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Exit</value>
@@ -354,6 +354,24 @@
   </data>
   <data name="backupToolStripMenuItem.Text" xml:space="preserve">
     <value>Make a &amp;Backup</value>
+  </data>
+  <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>177, 6</value>
+  </data>
+  <data name="forceResetStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>F5</value>
+  </data>
+  <data name="forceResetStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="forceResetStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Reset</value>
+  </data>
+  <data name="restartProgramStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="restartProgramStripMenuItem.Text" xml:space="preserve">
+    <value>Restart &amp;Program</value>
   </data>
   <data name="settingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>66, 21</value>
@@ -595,6 +613,18 @@
   <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;forceResetStripMenuItem.Name" xml:space="preserve">
+    <value>forceResetStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;forceResetStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator4.Name" xml:space="preserve">
+    <value>toolStripSeparator4</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;backupToolStripMenuItem.Name" xml:space="preserve">
     <value>backupToolStripMenuItem</value>
   </data>
@@ -611,6 +641,12 @@
     <value>githubToolStripMenuItem1</value>
   </data>
   <data name="&gt;&gt;githubToolStripMenuItem1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;restartProgramStripMenuItem.Name" xml:space="preserve">
+    <value>restartProgramStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;restartProgramStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
