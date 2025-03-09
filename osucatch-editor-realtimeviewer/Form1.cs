@@ -28,6 +28,8 @@ namespace osucatch_editor_realtimeviewer
 
         bool topmostCheck = false;
 
+        private SettingsForm? SettingsFormInstance = null;
+
         public static string Path_Img_Hitcircle = @"img/fruit-apple.png";
         public static string Path_Img_Drop = @"img/fruit-drop.png";
         public static string Path_Img_Banana = @"img/fruit-bananas.png";
@@ -206,7 +208,7 @@ namespace osucatch_editor_realtimeviewer
 
         private void CheckTopmost()
         {
-            if (!topmostCheck)
+            if (!topmostCheck || (SettingsFormInstance != null))
             {
                 if (this.TopMost == true)
                 {
@@ -637,7 +639,14 @@ namespace osucatch_editor_realtimeviewer
             cancellationTokenSource.CancelAfter(app.Default.WorkCancelAfter);
             var task = Task.Run(() => reader_timer_Work(cancellationTokenSource.Token), cancellationTokenSource.Token);
 
-            await Task.WhenAll(task);
+            try
+            {
+                await Task.WhenAll(task);
+            }
+            catch(AggregateException ae)
+            {
+                Log.ConsoleLog(ae.ToString(), Log.LogType.Program, Log.LogLevel.Error);
+            }
 
             Log.ConsoleLog("Start Timer", Log.LogType.Timer, Log.LogLevel.Debug);
             Log.ConsoleLog("Timer Interval = " + reader_timer.Interval, Log.LogType.Timer, Log.LogLevel.Debug);
@@ -691,8 +700,14 @@ namespace osucatch_editor_realtimeviewer
 
         private void openSettingsFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SettingsForm sf = new SettingsForm();
-            sf.ShowDialog();
+            if (SettingsFormInstance != null && !SettingsFormInstance.IsDisposed)
+                SettingsFormInstance.Activate();
+            else
+            {
+                SettingsFormInstance = new SettingsForm();
+                SettingsFormInstance.FormClosed += (s, args) => { SettingsFormInstance = null; }; // 关闭时重置变量
+                SettingsFormInstance.ShowDialog();
+            }
         }
 
         private void backup_timer_Tick(object? source, ElapsedEventArgs? e)
