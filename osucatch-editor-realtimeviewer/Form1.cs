@@ -3,6 +3,7 @@ using osu.Game.Beatmaps;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Timers;
+using System.Windows.Forms;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -37,8 +38,9 @@ namespace osucatch_editor_realtimeviewer
         public static bool NeedReapplySettings = false;
 
         private static System.Timers.Timer backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
-        private static System.Timers.Timer reader_timer = new System.Timers.Timer(app.Default.Idle_Interval);
         private static System.Timers.Timer Memory_Monitor_Timer = new System.Timers.Timer(200);
+
+        private PeriodicTaskRunner runner;
 
         public Form1()
         {
@@ -169,18 +171,12 @@ namespace osucatch_editor_realtimeviewer
             this.Canvas.Init();
 
             // reader timer
-            reader_timer = new System.Timers.Timer(app.Default.Idle_Interval);
-            reader_timer.AutoReset = false;
-            reader_timer.Elapsed += reader_timer_Tick;
-            reader_timer.Start();
+            runner = new PeriodicTaskRunner(app.Default.Drawing_Interval, app.Default.Idle_Interval, reader_timer_Work);
+            runner.Start();
 
             // backup timer
-            if (app.Default.Backup_Enabled == true)
-            {
-                backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
-                backup_timer.Elapsed += backup_timer_Tick;
-                backup_timer.Start();
-            }
+            backup_timer.Elapsed += backup_timer_Tick;
+            backup_timer.Start();
 
             // memory monitor timer
             Memory_Monitor_Timer.Elapsed += Memory_Monitor;
@@ -244,25 +240,10 @@ namespace osucatch_editor_realtimeviewer
                 this.Height = app.Default.Window_Height;
 
             }));
+            runner.SetInterval(app.Default.Drawing_Interval, app.Default.Idle_Interval);
             if (app.Default.Backup_Enabled)
             {
-                if (backup_timer == null)
-                {
-                    backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
-                    backup_timer.Elapsed += backup_timer_Tick;
-                    backup_timer.Start();
-                }
-                else
-                {
-                    backup_timer.Interval = app.Default.Backup_Interval;
-                }
-            }
-            else
-            {
-                if (backup_timer != null)
-                {
-                    backup_timer.Stop();
-                }
+                backup_timer.Interval = app.Default.Backup_Interval;
             }
             if (app.Default.FilterNearbyHitObjects)
             {
@@ -281,9 +262,8 @@ namespace osucatch_editor_realtimeviewer
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    this.Text = "Osu!.exe is not running";
+                    StateToolStripStatusLabel.Text = "Osu!.exe is not running";
                 }));
-                reader_timer.Interval = app.Default.Idle_Interval;
                 lastReader = null;
                 return false;
             }
@@ -296,9 +276,8 @@ namespace osucatch_editor_realtimeviewer
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    this.Text = "Editor is not running";
+                    StateToolStripStatusLabel.Text = "Editor is not running";
                 }));
-                reader_timer.Interval = app.Default.Idle_Interval;
                 lastReader = null;
                 return false;
             }
@@ -321,7 +300,6 @@ namespace osucatch_editor_realtimeviewer
                 catch (Exception ex)
                 {
                     Log.ConsoleLog("Build new beatmap from beatmap file failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
                     return null;
                 }
                 lastBeatmap = beatmap;
@@ -335,7 +313,6 @@ namespace osucatch_editor_realtimeviewer
                 catch (Exception ex)
                 {
                     Log.ConsoleLog("Build new beatmap from reader failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
                     return null;
                 }
                 lastBeatmap = beatmap;
@@ -414,7 +391,7 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private void reader_timer_Work(CancellationToken cancellationToken)
+        private async Task reader_timer_Work(CancellationToken cancellationToken)
         {
             // Step0. check settings change
             if (NeedReapplySettings)
@@ -426,27 +403,11 @@ namespace osucatch_editor_realtimeviewer
             try
             {
                 // Step1. fetch osu! process
-                if (!FetchOsuProcess()) return;
-
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled after fetching osu! process.", Log.LogType.Program, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
-                }
+                if (!FetchOsuProcess()) throw new Exception("FetchOsuProcess error.");
 
 
                 // Step2. fetch editor
-                if (!FetchEditor()) return;
-
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled after fetching editor.", Log.LogType.Program, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
-                }
+                if (!FetchEditor()) throw new Exception("FetchEditor error.");
 
 
                 // Step3. fetch all
@@ -462,22 +423,10 @@ namespace osucatch_editor_realtimeviewer
                     thisReader = editorReaderHelper.FetchAll(partialLoadingHalfTimeSpan);
                 }
                 else thisReader = editorReaderHelper.FetchAll();
-                if (thisReader == null)
-                {
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
-                }
+                if (thisReader == null) throw new Exception("FetchAll error.");
                 // save last reader
                 DifferenceType differenceType = thisReader.CheckDifference(lastReader, app.Default.Selected_Show);
                 lastReader = thisReader;
-
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled after FetchAll().", Log.LogType.Program, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
-                }
 
 
                 // Step4. Build osu file Path
@@ -491,37 +440,16 @@ namespace osucatch_editor_realtimeviewer
                     Log.ConsoleLog("Path is invalid.\r\n" + ex.ToString(), Log.LogType.EditorReader, Log.LogLevel.Error);
                     Log.ConsoleLog("ContainingFolder: " + thisReader.ContainingFolder, Log.LogType.EditorReader, Log.LogLevel.Error);
                     Log.ConsoleLog("Filename: " + thisReader.Filename, Log.LogType.EditorReader, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
                     lastReader = null;
-                    return;
-                }
-
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled after checking editor reader's data.", Log.LogType.Program, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
+                    throw new Exception("Build Filepath error.");
                 }
 
 
                 // Step5. build new beatmap
                 Log.ConsoleLog("Start build new beatmap.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
                 Beatmap? beatmap = BuildNewBeatmap(thisReader, differenceType, filepath);
-                if (beatmap == null)
-                {
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
-                }
+                if (beatmap == null) throw new Exception("Build beatmap error.");
                 Log.ConsoleLog("Build new beatmap successfully.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
-
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled after building new beatmap.", Log.LogType.Program, Log.LogLevel.Error);
-                    reader_timer.Interval = app.Default.Idle_Interval;
-                    return;
-                }
 
 
                 // Step6. cache mods & distanceType
@@ -543,18 +471,11 @@ namespace osucatch_editor_realtimeviewer
                 }
 
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    Log.ConsoleLog("Task Timeout, cancelled after backup.", Log.LogType.Program, Log.LogLevel.Error);
-                    return;
-                }
-
-
                 // Step8. drop outdated data (really need it?)
                 if (DateTime.Now.Ticks <= LastDrawingTimeStamp)
                 {
                     Log.ConsoleLog("Drop an outdated data.", Log.LogType.Program, Log.LogLevel.Warning);
-                    return;
+                    throw new Exception("Timing error.");
                 }
 
 
@@ -564,12 +485,6 @@ namespace osucatch_editor_realtimeviewer
                 {
                     convertedBeatmap = BeatmapConverter.GetConvertedBeatmap(beatmap, mods);
                     lastConvertedBeatmap = convertedBeatmap;
-
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        Log.ConsoleLog("Task Timeout, cancelled after converting beatmap.", Log.LogType.Program, Log.LogLevel.Warning);
-                        return;
-                    }
                 }
                 else
                 {
@@ -586,12 +501,6 @@ namespace osucatch_editor_realtimeviewer
                 {
                     Log.ConsoleLog("Try building drawing objects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                     drawingHelper.LoadBeatmap(convertedBeatmap);
-
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        Log.ConsoleLog("Task Timeout, cancelled after preparing drawing.", Log.LogType.Program, Log.LogLevel.Warning);
-                        return;
-                    }
 
                     Log.ConsoleLog("Build drawing objects successfully.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
@@ -623,39 +532,31 @@ namespace osucatch_editor_realtimeviewer
 
 
                 if (DateTime.Now.Ticks > LastDrawingTimeStamp) LastDrawingTimeStamp = DateTime.Now.Ticks;
-                reader_timer.Interval = app.Default.Drawing_Interval;
+
+
+                this.Invoke((MethodInvoker)delegate
+                {
+                    StateToolStripStatusLabel.Text = "Drawing";
+                });
+
             }
-            catch (Exception ex)
+
+            catch (OperationCanceledException)
             {
-                Log.ConsoleLog(ex.ToString(), Log.LogType.Program, Log.LogLevel.Error);
+                // 任务被取消
+                this.Invoke((MethodInvoker)delegate
+                {
+                    StateToolStripStatusLabel.Text = "Idle";
+                });
+                throw;
             }
 
         }
 
-        private async void reader_timer_Tick(object? sender, EventArgs? e)
+
+        private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            reader_timer.Stop();
-            var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(app.Default.WorkCancelAfter);
-            var task = Task.Run(() => reader_timer_Work(cancellationTokenSource.Token), cancellationTokenSource.Token);
-
-            try
-            {
-                await Task.WhenAll(task);
-            }
-            catch(AggregateException ae)
-            {
-                Log.ConsoleLog(ae.ToString(), Log.LogType.Program, Log.LogLevel.Error);
-            }
-
-            Log.ConsoleLog("Start Timer", Log.LogType.Timer, Log.LogLevel.Debug);
-            Log.ConsoleLog("Timer Interval = " + reader_timer.Interval, Log.LogType.Timer, Log.LogLevel.Debug);
-            reader_timer.Start();
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            reader_timer.Stop();
+            await runner.StopAsync();
             backup_timer.Stop();
             Memory_Monitor_Timer.Stop();
 
@@ -712,7 +613,7 @@ namespace osucatch_editor_realtimeviewer
 
         private void backup_timer_Tick(object? source, ElapsedEventArgs? e)
         {
-            Need_Backup = true;
+            if (app.Default.Backup_Enabled) Need_Backup = true;
         }
 
         private void hideToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1010,7 +911,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.Save();
         }
 
-        private void forceResetStripMenuItem_Click(object sender, EventArgs e)
+        private async void forceResetStripMenuItem_Click(object sender, EventArgs e)
         {
             lastReader = null;
             lastColourLines = null;
@@ -1021,7 +922,9 @@ namespace osucatch_editor_realtimeviewer
 
             editorReaderHelper = new();
 
-            reader_timer.Start();
+            await runner.StopAsync();
+            runner = new PeriodicTaskRunner(app.Default.Idle_Interval, app.Default.Idle_Interval, reader_timer_Work);
+            runner.Start();
         }
 
         private void restartProgramStripMenuItem_Click(object sender, EventArgs e)

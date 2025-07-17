@@ -13,8 +13,10 @@ namespace osucatch_editor_realtimeviewer
 
         public static string BuildNewBeatmapFileFromFilepath(string orgpath, BeatmapInfoCollection thisReaderData)
         {
-            StreamReader file = File.OpenText(orgpath);
-            return BuildNewBeatmapFile(file, thisReaderData);
+            using (StreamReader file = File.OpenText(orgpath))
+            {
+                return BuildNewBeatmapFile(file, thisReaderData);
+            }
         }
 
         private static string BuildNewBeatmapFile(StreamReader file, BeatmapInfoCollection thisReaderData)
@@ -110,25 +112,27 @@ namespace osucatch_editor_realtimeviewer
 
         private static List<string> GetColourLinesFromBeatmapFilepath(string orgpath)
         {
-            StreamReader file = File.OpenText(orgpath);
-            StringBuilder newfile = new StringBuilder();
-            List<string> colourLines = new List<string>();
-            string? line;
-            while ((line = file.ReadLine()) != null)
+            using (StreamReader file = File.OpenText(orgpath))
             {
-                if (Regex.IsMatch(line, @"^\[Colours\]"))
+                StringBuilder newfile = new StringBuilder();
+                List<string> colourLines = new List<string>();
+                string? line;
+                while ((line = file.ReadLine()) != null)
                 {
-                    string? innerLine;
-                    while ((innerLine = file.ReadLine()) != null)
+                    if (Regex.IsMatch(line, @"^\[Colours\]"))
                     {
-                        if (innerLine.StartsWith("[")) break;
-                        if (innerLine.Trim() == "") continue;
-                        colourLines.Add(innerLine);
+                        string? innerLine;
+                        while ((innerLine = file.ReadLine()) != null)
+                        {
+                            if (innerLine.StartsWith("[")) break;
+                            if (innerLine.Trim() == "") continue;
+                            colourLines.Add(innerLine);
+                        }
+                        return colourLines;
                     }
-                    return colourLines;
                 }
+                return colourLines;
             }
-            return colourLines;
         }
 
         public static Beatmap? BuildNewBeatmapWithFilePath(BeatmapInfoCollection thisReaderData, string beatmappath, out List<string>? colourLines)

@@ -97,7 +97,7 @@ namespace osucatch_editor_realtimeviewer {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
         public int Idle_Interval {
             get {
                 return ((int)(this["Idle_Interval"]));
