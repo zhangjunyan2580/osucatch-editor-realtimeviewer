@@ -11,26 +11,26 @@ namespace osucatch_editor_realtimeviewer
     * screen size: 640x480
     * playfield size: 512x384
     * 
-    * TimePerPixels = ApproachTime / 384
+    * TimePerPixels = ApproachTime / 432  //is it right?????
     * 
     * |                  |
     * |==================|
     * |<---width: 640--->|
+    * | <--width: 512--> |
     * |                  |
-    * |                  |
-    * |------------------| N screen catcher | ΔTime = N * ApproachTime * 1.25
+    * |------------------| N screen catcher | ΔTime = N * RealApproachTime = N * ApproachTime / 0.85
     * |                  |
     * |==================| (screen top) | ΔTime = ApproachTime
     * |                  |
     * |                  |
     * |                  |
-    * |------------------| catcher height: 384 (current time) | ΔTime = 0
+    * |------------------| catcher height: 408 (current time) | ΔTime = 0  // is it right?????
     * |                  | 
-    * |==================| screen height: 480 (screen bottom) | ΔTime = -TimePerPixels * (480 - 384) = -ApproachTime / 4
+    * |==================| screen height: 480 (screen bottom) | ΔTime = -72 * TimePerPixels = -ApproachTime * 3 / 17
     * |                  |
     * |                  |
     * |                  |
-    * |------------------| -N screen catcher | ΔTime = -N * ApproachTime * 1.25
+    * |------------------| -N screen catcher | ΔTime = -N * RealApproachTime = -N * ApproachTime / 0.85
     * |                  |
     * |==================|
     * |                  |
@@ -92,7 +92,7 @@ namespace osucatch_editor_realtimeviewer
 
             float moddedAR = convertedBeatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);
-            TimePerPixels = ApproachTime / 384.0f;
+            TimePerPixels = ApproachTime / 432f;
             float moddedCS = convertedBeatmap.Difficulty.CircleSize;
             CircleDiameter = (int)(108.848 - moddedCS * 8.9646);
             CustomComboColours = convertedBeatmap.CustomComboColours;
@@ -126,7 +126,7 @@ namespace osucatch_editor_realtimeviewer
                 else
                 {
                     double upTime = ApproachTime + CircleDiameter * TimePerPixels;
-                    double bottomTime = ApproachTime / 4 + CircleDiameter * TimePerPixels;
+                    double bottomTime = ApproachTime * 3 / 17 + CircleDiameter * TimePerPixels;
                     if (deltaTime <= upTime && deltaTime >= -bottomTime)
                     {
                         this.DrawHitcircle(hitObject, deltaTime);
@@ -187,7 +187,7 @@ namespace osucatch_editor_realtimeviewer
                 else
                 {
                     double upTime = ApproachTime;
-                    double bottomTime = ApproachTime / 4;
+                    double bottomTime = ApproachTime * 3 / 17;
                     if (deltaTime <= upTime && deltaTime >= -bottomTime)
                     {
                         int posY = (int)(384 - deltaTime / TimePerPixels);
@@ -218,7 +218,7 @@ namespace osucatch_editor_realtimeviewer
                 else
                 {
                     double upTime = ApproachTime;
-                    double bottomTime = ApproachTime / 4;
+                    double bottomTime = ApproachTime * 3 / 17;
                     if (deltaTime <= upTime && deltaTime >= -bottomTime)
                     {
                         int posY = (int)(384 - deltaTime / TimePerPixels);
@@ -246,7 +246,7 @@ namespace osucatch_editor_realtimeviewer
                 else
                 {
                     double upTime = ApproachTime;
-                    double bottomTime = ApproachTime / 4;
+                    double bottomTime = ApproachTime * 3 / 17;
                     if (deltaTime <= upTime && deltaTime >= -bottomTime)
                     {
                         int posY = (int)(384 - deltaTime / TimePerPixels);
@@ -258,7 +258,7 @@ namespace osucatch_editor_realtimeviewer
 
         private void DrawHitcircle(PalpableCatchHitObject hitObject, double deltaTime)
         {
-            double baseY = (ScreensContain <= 1) ? 384 : 240.0 * this.ScreensContain;
+            double baseY = (ScreensContain <= 1) ? 408 : 240.0 * this.ScreensContain;
             Vector2 pos = new Vector2(64 + hitObject.EffectiveX, (float)(baseY - deltaTime / TimePerPixels));
             bool withColor = app.Default.Combo_Colour;
             int comboColorIndex = (hitObject.ComboIndex) % CustomComboColours.Count;
@@ -286,7 +286,7 @@ namespace osucatch_editor_realtimeviewer
                 throw new Exception("Please LoadBeatmap before Drawing.");
             }
             double timeSpan = ScreensContain * ApproachTime * 1.25 + CircleDiameter * TimePerPixels * 2;
-            int startIndex = (ScreensContain <= 1) ? this.HitObjectsLowerBound(CurrentTime - ApproachTime / 4 - CircleDiameter * TimePerPixels) : this.HitObjectsLowerBound(CurrentTime - timeSpan / 2);
+            int startIndex = (ScreensContain <= 1) ? this.HitObjectsLowerBound(CurrentTime - ApproachTime * 3 / 17 - CircleDiameter * TimePerPixels) : this.HitObjectsLowerBound(CurrentTime - timeSpan / 2);
             int endIndex = (ScreensContain <= 1) ? this.HitObjectsUpperBound(CurrentTime + ApproachTime + CircleDiameter * TimePerPixels) : this.HitObjectsUpperBound(CurrentTime + timeSpan / 2);
             // Console.WriteLine(startIndex + "->" + endIndex);
             for (int k = startIndex; k <= endIndex; k++)

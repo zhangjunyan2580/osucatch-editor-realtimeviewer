@@ -242,8 +242,8 @@ namespace osucatch_editor_realtimeviewer
             }
             else
             {
-                Vector2 rp0 = new Vector2(64, 384);
-                Vector2 rp1 = new Vector2(576, 384);
+                Vector2 rp0 = new Vector2(64, 408);
+                Vector2 rp1 = new Vector2(576, 408);
                 DrawLine(rp0, rp1, Color.White);
             }
         }
