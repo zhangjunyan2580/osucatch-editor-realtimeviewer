@@ -46,6 +46,7 @@ namespace osucatch_editor_realtimeviewer
 
             autoLoadSaveCheckBox.Checked = app.Default.Bookmark_AutoLoadSave;
             loadWithStyleCheckBox.Checked = app.Default.Bookmark_AutoLoadWithStyle;
+            RegisterHotKeyCheckBox.Checked = app.Default.Bookmark_RegisterHotKey;
 
             SetBookmarkStyleSettingsFromConfig();
         }
@@ -61,6 +62,7 @@ namespace osucatch_editor_realtimeviewer
             app.Default.Bookmark_FolderPath = textBox_saveFolder.Text;
             app.Default.Bookmark_AutoLoadSave = autoLoadSaveCheckBox.Checked;
             app.Default.Bookmark_AutoLoadWithStyle = loadWithStyleCheckBox.Checked;
+            app.Default.Bookmark_RegisterHotKey = RegisterHotKeyCheckBox.Checked;
 
             SaveBookmarkStyleSettings();
 

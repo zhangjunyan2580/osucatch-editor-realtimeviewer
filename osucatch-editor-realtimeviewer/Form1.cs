@@ -188,6 +188,13 @@ namespace osucatch_editor_realtimeviewer
             Memory_Monitor_Timer.Elapsed += Memory_Monitor;
             Memory_Monitor_Timer.Start();
 
+
+            // RegisterHotKey
+            if (app.Default.Bookmark_RegisterHotKey)
+            {
+                GlobalHotkey.RegisterGlobalHotKey(this.Handle);
+            }
+
         }
 
         private void Memory_Monitor(object? sender, EventArgs e)
@@ -265,14 +272,20 @@ namespace osucatch_editor_realtimeviewer
         {
             Invoke(new MethodInvoker(delegate ()
             {
-                bookmarkSetStripMenuItem_1.Text = "Set/Del " + ((app.Default.Bookmark_Comment_1 != "") ? app.Default.Bookmark_Comment_1 : "Type 1");
-                bookmarkSetStripMenuItem_2.Text = "Set/Del " + ((app.Default.Bookmark_Comment_2 != "") ? app.Default.Bookmark_Comment_2 : "Type 2");
-                bookmarkSetStripMenuItem_3.Text = "Set/Del " + ((app.Default.Bookmark_Comment_3 != "") ? app.Default.Bookmark_Comment_3 : "Type 3");
-                bookmarkSetStripMenuItem_4.Text = "Set/Del " + ((app.Default.Bookmark_Comment_4 != "") ? app.Default.Bookmark_Comment_4 : "Type 4");
-                bookmarkSetStripMenuItem_5.Text = "Set/Del " + ((app.Default.Bookmark_Comment_5 != "") ? app.Default.Bookmark_Comment_5 : "Type 5");
-                bookmarkSetStripMenuItem_6.Text = "Set/Del " + ((app.Default.Bookmark_Comment_6 != "") ? app.Default.Bookmark_Comment_6 : "Type 6");
-                bookmarkSetStripMenuItem_7.Text = "Set/Del " + ((app.Default.Bookmark_Comment_7 != "") ? app.Default.Bookmark_Comment_7 : "Type 7");
-                bookmarkSetStripMenuItem_8.Text = "Set/Del " + ((app.Default.Bookmark_Comment_8 != "") ? app.Default.Bookmark_Comment_8 : "Type 8");
+                string setdel = "Set/Del ";
+                if (Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "zh")
+                {
+                    setdel = "标记/删除 ";
+                }
+
+                bookmarkSetStripMenuItem_1.Text = setdel + ((app.Default.Bookmark_Comment_1 != "") ? app.Default.Bookmark_Comment_1 : "Type 1");
+                bookmarkSetStripMenuItem_2.Text = setdel + ((app.Default.Bookmark_Comment_2 != "") ? app.Default.Bookmark_Comment_2 : "Type 2");
+                bookmarkSetStripMenuItem_3.Text = setdel + ((app.Default.Bookmark_Comment_3 != "") ? app.Default.Bookmark_Comment_3 : "Type 3");
+                bookmarkSetStripMenuItem_4.Text = setdel + ((app.Default.Bookmark_Comment_4 != "") ? app.Default.Bookmark_Comment_4 : "Type 4");
+                bookmarkSetStripMenuItem_5.Text = setdel + ((app.Default.Bookmark_Comment_5 != "") ? app.Default.Bookmark_Comment_5 : "Type 5");
+                bookmarkSetStripMenuItem_6.Text = setdel + ((app.Default.Bookmark_Comment_6 != "") ? app.Default.Bookmark_Comment_6 : "Type 6");
+                bookmarkSetStripMenuItem_7.Text = setdel + ((app.Default.Bookmark_Comment_7 != "") ? app.Default.Bookmark_Comment_7 : "Type 7");
+                bookmarkSetStripMenuItem_8.Text = setdel + ((app.Default.Bookmark_Comment_8 != "") ? app.Default.Bookmark_Comment_8 : "Type 8");
 
             }));
 
@@ -599,6 +612,11 @@ namespace osucatch_editor_realtimeviewer
 
         private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (app.Default.Bookmark_RegisterHotKey)
+            {
+                GlobalHotkey.UnRegisterGlobalHotKey(this.Handle);
+            }
+
             await runner.StopAsync();
             backup_timer.Stop();
             Memory_Monitor_Timer.Stop();
@@ -939,6 +957,7 @@ namespace osucatch_editor_realtimeviewer
             Form1.ApplyResources(this);
 
             app.Default.Language_String = "en-US";
+            ReapplyBookmarkStyles();
             app.Default.Save();
         }
 
@@ -951,6 +970,7 @@ namespace osucatch_editor_realtimeviewer
             Form1.ApplyResources(this);
 
             app.Default.Language_String = "zh-Hans";
+            ReapplyBookmarkStyles();
             app.Default.Save();
         }
 
@@ -963,6 +983,7 @@ namespace osucatch_editor_realtimeviewer
             Form1.ApplyResources(this);
 
             app.Default.Language_String = "";
+            ReapplyBookmarkStyles();
             app.Default.Save();
         }
 
@@ -1074,140 +1095,80 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
-        private void bookmarkSetStripMenuItem_1_Click(object sender, EventArgs e)
+        private void SetDelBookmark(int styleId)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            if (bookmarkManager.BeatmapFolder == null || bookmarkManager.BeatmapFilename == null)
             {
                 MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 1, Time = currentTime });
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = styleId, Time = currentTime });
             if (app.Default.Bookmark_AutoLoadSave)
             {
                 string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
                 BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
             }
+        }
+
+        private void bookmarkSetStripMenuItem_1_Click(object sender, EventArgs e)
+        {
+            SetDelBookmark(1);
         }
 
         private void bookmarkSetStripMenuItem_2_Click(object sender, EventArgs e)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
-            {
-                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 2, Time = currentTime });
-            if (app.Default.Bookmark_AutoLoadSave)
-            {
-                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
-                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
-            }
+            SetDelBookmark(2);
         }
 
         private void bookmarkSetStripMenuItem_3_Click(object sender, EventArgs e)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
-            {
-                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 3, Time = currentTime });
-            if (app.Default.Bookmark_AutoLoadSave)
-            {
-                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
-                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
-            }
+            SetDelBookmark(3);
         }
 
         private void bookmarkSetStripMenuItem_4_Click(object sender, EventArgs e)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
-            {
-                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 4, Time = currentTime });
-            if (app.Default.Bookmark_AutoLoadSave)
-            {
-                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
-                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
-            }
+            SetDelBookmark(4);
         }
 
         private void bookmarkSetStripMenuItem_5_Click(object sender, EventArgs e)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
-            {
-                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 5, Time = currentTime });
-            if (app.Default.Bookmark_AutoLoadSave)
-            {
-                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
-                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
-            }
+            SetDelBookmark(5);
         }
 
         private void bookmarkSetStripMenuItem_6_Click(object sender, EventArgs e)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
-            {
-                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 6, Time = currentTime });
-            if (app.Default.Bookmark_AutoLoadSave)
-            {
-                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
-                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
-            }
+            SetDelBookmark(6);
         }
 
         private void bookmarkSetStripMenuItem_7_Click(object sender, EventArgs e)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
-            {
-                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 7, Time = currentTime });
-            if (app.Default.Bookmark_AutoLoadSave)
-            {
-                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
-                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
-            }
+            SetDelBookmark(7);
         }
 
         private void bookmarkSetStripMenuItem_8_Click(object sender, EventArgs e)
         {
-            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
-            {
-                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            SetDelBookmark(8);
+        }
 
-            double currentTime = drawingHelper.CurrentTime;
-            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 8, Time = currentTime });
-            if (app.Default.Bookmark_AutoLoadSave)
+        private const int WM_HOTKEY = 0x0312;
+        // 处理Windows消息
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_HOTKEY)
             {
-                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
-                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+                int id = m.WParam.ToInt32();
+                if (id == 101) SetDelBookmark(1);
+                else if (id == 102) SetDelBookmark(2);
+                else if (id == 103) SetDelBookmark(3);
+                else if (id == 104) SetDelBookmark(4);
+                else if (id == 105) SetDelBookmark(5);
+                else if (id == 106) SetDelBookmark(6);
+                else if (id == 107) SetDelBookmark(7);
+                else if (id == 108) SetDelBookmark(8);
             }
+            base.WndProc(ref m);
         }
     }
 

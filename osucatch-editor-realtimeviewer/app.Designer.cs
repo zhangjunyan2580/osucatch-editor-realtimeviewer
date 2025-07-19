@@ -826,5 +826,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Log_Bookmark"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Bookmark_RegisterHotKey {
+            get {
+                return ((bool)(this["Bookmark_RegisterHotKey"]));
+            }
+            set {
+                this["Bookmark_RegisterHotKey"] = value;
+            }
+        }
     }
 }

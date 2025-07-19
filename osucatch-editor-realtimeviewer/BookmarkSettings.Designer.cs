@@ -38,6 +38,7 @@
             textBox_saveFolder = new TextBox();
             label3 = new Label();
             groupBox2 = new GroupBox();
+            RegisterHotKeyCheckBox = new CheckBox();
             button_loadStyle = new Button();
             button_saveStyle = new Button();
             commentTextBox_8 = new TextBox();
@@ -176,6 +177,7 @@
             // groupBox2
             // 
             resources.ApplyResources(groupBox2, "groupBox2");
+            groupBox2.Controls.Add(RegisterHotKeyCheckBox);
             groupBox2.Controls.Add(button_loadStyle);
             groupBox2.Controls.Add(button_saveStyle);
             groupBox2.Controls.Add(commentTextBox_8);
@@ -252,6 +254,12 @@
             groupBox2.Controls.Add(label2);
             groupBox2.Name = "groupBox2";
             groupBox2.TabStop = false;
+            // 
+            // RegisterHotKeyCheckBox
+            // 
+            resources.ApplyResources(RegisterHotKeyCheckBox, "RegisterHotKeyCheckBox");
+            RegisterHotKeyCheckBox.Name = "RegisterHotKeyCheckBox";
+            RegisterHotKeyCheckBox.UseVisualStyleBackColor = true;
             // 
             // button_loadStyle
             // 
@@ -828,5 +836,6 @@
         private Button button_default;
         private Button button_loadStyle;
         private Button button_saveStyle;
+        private CheckBox RegisterHotKeyCheckBox;
     }
 }

@@ -141,11 +141,11 @@ namespace osucatch_editor_realtimeviewer
             {
                 case LineType.Dash:
                     GL.Enable(EnableCap.LineStipple);
-                    GL.LineStipple(1, 0x00FF); // 虚线模式
+                    GL.LineStipple(2, 0x00FF); // 虚线模式
                     break;
                 case LineType.Dot:
                     GL.Enable(EnableCap.LineStipple);
-                    GL.LineStipple(1, 0x0101); // 点线模式
+                    GL.LineStipple(2, 0x0101); // 点线模式
                     break;
                 case LineType.DashDot:
                     GL.Enable(EnableCap.LineStipple);
