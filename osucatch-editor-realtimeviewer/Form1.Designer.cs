@@ -59,6 +59,8 @@
             loadFullBookmarkToolStripMenuItem = new ToolStripMenuItem();
             saveBookmarkToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator6 = new ToolStripSeparator();
+            ClearBookmarkToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator8 = new ToolStripSeparator();
             bookmarkSetStripMenuItem_1 = new ToolStripMenuItem();
             bookmarkSetStripMenuItem_2 = new ToolStripMenuItem();
             bookmarkSetStripMenuItem_3 = new ToolStripMenuItem();
@@ -85,6 +87,7 @@
             restartProgramStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem = new ToolStripMenuItem();
             githubToolStripMenuItem1 = new ToolStripMenuItem();
+            toolStripMenuItem1 = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
             StateToolStripStatusLabel = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
@@ -101,7 +104,7 @@
             // menuStrip1
             // 
             resources.ApplyResources(menuStrip1, "menuStrip1");
-            menuStrip1.Items.AddRange(new ToolStripItem[] { viewerToolStripMenuItem, settingsToolStripMenuItem, githubToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { viewerToolStripMenuItem, settingsToolStripMenuItem, githubToolStripMenuItem, toolStripMenuItem1 });
             menuStrip1.Name = "menuStrip1";
             // 
             // viewerToolStripMenuItem
@@ -239,7 +242,7 @@
             // bookmarkToolStripMenuItem
             // 
             resources.ApplyResources(bookmarkToolStripMenuItem, "bookmarkToolStripMenuItem");
-            bookmarkToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { bookmarkSettingsToolStripMenuItem, toolStripSeparator7, loadOnlyBookmarkToolStripMenuItem, loadFullBookmarkToolStripMenuItem, saveBookmarkToolStripMenuItem, toolStripSeparator6, bookmarkSetStripMenuItem_1, bookmarkSetStripMenuItem_2, bookmarkSetStripMenuItem_3, bookmarkSetStripMenuItem_4, bookmarkSetStripMenuItem_5, bookmarkSetStripMenuItem_6, bookmarkSetStripMenuItem_7, bookmarkSetStripMenuItem_8 });
+            bookmarkToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { bookmarkSettingsToolStripMenuItem, toolStripSeparator7, loadOnlyBookmarkToolStripMenuItem, loadFullBookmarkToolStripMenuItem, saveBookmarkToolStripMenuItem, toolStripSeparator6, ClearBookmarkToolStripMenuItem, toolStripSeparator8, bookmarkSetStripMenuItem_1, bookmarkSetStripMenuItem_2, bookmarkSetStripMenuItem_3, bookmarkSetStripMenuItem_4, bookmarkSetStripMenuItem_5, bookmarkSetStripMenuItem_6, bookmarkSetStripMenuItem_7, bookmarkSetStripMenuItem_8 });
             bookmarkToolStripMenuItem.Name = "bookmarkToolStripMenuItem";
             // 
             // bookmarkSettingsToolStripMenuItem
@@ -275,6 +278,17 @@
             // 
             resources.ApplyResources(toolStripSeparator6, "toolStripSeparator6");
             toolStripSeparator6.Name = "toolStripSeparator6";
+            // 
+            // ClearBookmarkToolStripMenuItem
+            // 
+            resources.ApplyResources(ClearBookmarkToolStripMenuItem, "ClearBookmarkToolStripMenuItem");
+            ClearBookmarkToolStripMenuItem.Name = "ClearBookmarkToolStripMenuItem";
+            ClearBookmarkToolStripMenuItem.Click += ClearBookmarkToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator8
+            // 
+            resources.ApplyResources(toolStripSeparator8, "toolStripSeparator8");
+            toolStripSeparator8.Name = "toolStripSeparator8";
             // 
             // bookmarkSetStripMenuItem_1
             // 
@@ -427,6 +441,11 @@
             githubToolStripMenuItem1.Name = "githubToolStripMenuItem1";
             githubToolStripMenuItem1.Click += githubToolStripMenuItem1_Click;
             // 
+            // toolStripMenuItem1
+            // 
+            resources.ApplyResources(toolStripMenuItem1, "toolStripMenuItem1");
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            // 
             // statusStrip1
             // 
             resources.ApplyResources(statusStrip1, "statusStrip1");
@@ -516,5 +535,8 @@
         private ToolStripMenuItem loadOnlyBookmarkToolStripMenuItem;
         private ToolStripMenuItem loadFullBookmarkToolStripMenuItem;
         private ToolStripMenuItem saveBookmarkToolStripMenuItem;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem ClearBookmarkToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator8;
     }
 }

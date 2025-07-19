@@ -357,7 +357,7 @@ namespace osucatch_editor_realtimeviewer
 
         private int FindSameTimeBookmark(Bookmark[] bookmarks, Bookmark target)
         {
-            const double MaxTimeRangeAsSameTime = 10;
+            const double MaxTimeRangeAsSameTime = 100;
 
             if (Bookmarks.Count <= 0) return -1;
 
