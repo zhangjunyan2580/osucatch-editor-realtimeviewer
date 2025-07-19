@@ -1043,6 +1043,7 @@ namespace osucatch_editor_realtimeviewer
                 {
                     string filePath = openFileDialog.FileName;
                     List<Bookmark> bookmarks = BookmarkPlus.loadBookmarksFromFile(filePath, false);
+                    bookmarkManager.Bookmarks = bookmarks;
                     drawingHelper.Bookmarks = bookmarks;
                     if (bookmarks.Count <= 0) MessageBox.Show("There are no Bookmarks in this file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     else MessageBox.Show("Loaded " + bookmarks.Count + " Bookmark(s).", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
