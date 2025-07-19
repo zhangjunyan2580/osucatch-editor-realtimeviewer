@@ -52,6 +52,21 @@
             Screens6ToolStripMenuItem = new ToolStripMenuItem();
             Screens7ToolStripMenuItem = new ToolStripMenuItem();
             Screens8ToolStripMenuItem = new ToolStripMenuItem();
+            bookmarkToolStripMenuItem = new ToolStripMenuItem();
+            bookmarkSettingsToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator7 = new ToolStripSeparator();
+            loadOnlyBookmarkToolStripMenuItem = new ToolStripMenuItem();
+            loadFullBookmarkToolStripMenuItem = new ToolStripMenuItem();
+            saveBookmarkToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator6 = new ToolStripSeparator();
+            bookmarkSetStripMenuItem_1 = new ToolStripMenuItem();
+            bookmarkSetStripMenuItem_2 = new ToolStripMenuItem();
+            bookmarkSetStripMenuItem_3 = new ToolStripMenuItem();
+            bookmarkSetStripMenuItem_4 = new ToolStripMenuItem();
+            bookmarkSetStripMenuItem_5 = new ToolStripMenuItem();
+            bookmarkSetStripMenuItem_6 = new ToolStripMenuItem();
+            bookmarkSetStripMenuItem_7 = new ToolStripMenuItem();
+            bookmarkSetStripMenuItem_8 = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             exitToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
@@ -91,7 +106,7 @@
             // 
             // viewerToolStripMenuItem
             // 
-            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, hitobjectLabelToolStripMenuItem, screenToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, hitobjectLabelToolStripMenuItem, screenToolStripMenuItem, bookmarkToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             viewerToolStripMenuItem.Name = "viewerToolStripMenuItem";
             resources.ApplyResources(viewerToolStripMenuItem, "viewerToolStripMenuItem");
             // 
@@ -220,6 +235,94 @@
             Screens8ToolStripMenuItem.Name = "Screens8ToolStripMenuItem";
             resources.ApplyResources(Screens8ToolStripMenuItem, "Screens8ToolStripMenuItem");
             Screens8ToolStripMenuItem.Click += Screens8ToolStripMenuItem_Click;
+            // 
+            // bookmarkToolStripMenuItem
+            // 
+            bookmarkToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { bookmarkSettingsToolStripMenuItem, toolStripSeparator7, loadOnlyBookmarkToolStripMenuItem, loadFullBookmarkToolStripMenuItem, saveBookmarkToolStripMenuItem, toolStripSeparator6, bookmarkSetStripMenuItem_1, bookmarkSetStripMenuItem_2, bookmarkSetStripMenuItem_3, bookmarkSetStripMenuItem_4, bookmarkSetStripMenuItem_5, bookmarkSetStripMenuItem_6, bookmarkSetStripMenuItem_7, bookmarkSetStripMenuItem_8 });
+            bookmarkToolStripMenuItem.Name = "bookmarkToolStripMenuItem";
+            resources.ApplyResources(bookmarkToolStripMenuItem, "bookmarkToolStripMenuItem");
+            // 
+            // bookmarkSettingsToolStripMenuItem
+            // 
+            bookmarkSettingsToolStripMenuItem.Name = "bookmarkSettingsToolStripMenuItem";
+            resources.ApplyResources(bookmarkSettingsToolStripMenuItem, "bookmarkSettingsToolStripMenuItem");
+            bookmarkSettingsToolStripMenuItem.Click += bookmarkSettingsToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator7
+            // 
+            toolStripSeparator7.Name = "toolStripSeparator7";
+            resources.ApplyResources(toolStripSeparator7, "toolStripSeparator7");
+            // 
+            // loadOnlyBookmarkToolStripMenuItem
+            // 
+            loadOnlyBookmarkToolStripMenuItem.Name = "loadOnlyBookmarkToolStripMenuItem";
+            resources.ApplyResources(loadOnlyBookmarkToolStripMenuItem, "loadOnlyBookmarkToolStripMenuItem");
+            loadOnlyBookmarkToolStripMenuItem.Click += loadOnlyBookmarkToolStripMenuItem_Click;
+            // 
+            // loadFullBookmarkToolStripMenuItem
+            // 
+            loadFullBookmarkToolStripMenuItem.Name = "loadFullBookmarkToolStripMenuItem";
+            resources.ApplyResources(loadFullBookmarkToolStripMenuItem, "loadFullBookmarkToolStripMenuItem");
+            loadFullBookmarkToolStripMenuItem.Click += loadFullBookmarkToolStripMenuItem_Click;
+            // 
+            // saveBookmarkToolStripMenuItem
+            // 
+            saveBookmarkToolStripMenuItem.Name = "saveBookmarkToolStripMenuItem";
+            resources.ApplyResources(saveBookmarkToolStripMenuItem, "saveBookmarkToolStripMenuItem");
+            saveBookmarkToolStripMenuItem.Click += saveBookmarkToolStripMenuItem_Click;
+            // 
+            // toolStripSeparator6
+            // 
+            toolStripSeparator6.Name = "toolStripSeparator6";
+            resources.ApplyResources(toolStripSeparator6, "toolStripSeparator6");
+            // 
+            // bookmarkSetStripMenuItem_1
+            // 
+            bookmarkSetStripMenuItem_1.Name = "bookmarkSetStripMenuItem_1";
+            resources.ApplyResources(bookmarkSetStripMenuItem_1, "bookmarkSetStripMenuItem_1");
+            bookmarkSetStripMenuItem_1.Click += bookmarkSetStripMenuItem_1_Click;
+            // 
+            // bookmarkSetStripMenuItem_2
+            // 
+            bookmarkSetStripMenuItem_2.Name = "bookmarkSetStripMenuItem_2";
+            resources.ApplyResources(bookmarkSetStripMenuItem_2, "bookmarkSetStripMenuItem_2");
+            bookmarkSetStripMenuItem_2.Click += bookmarkSetStripMenuItem_2_Click;
+            // 
+            // bookmarkSetStripMenuItem_3
+            // 
+            bookmarkSetStripMenuItem_3.Name = "bookmarkSetStripMenuItem_3";
+            resources.ApplyResources(bookmarkSetStripMenuItem_3, "bookmarkSetStripMenuItem_3");
+            bookmarkSetStripMenuItem_3.Click += bookmarkSetStripMenuItem_3_Click;
+            // 
+            // bookmarkSetStripMenuItem_4
+            // 
+            bookmarkSetStripMenuItem_4.Name = "bookmarkSetStripMenuItem_4";
+            resources.ApplyResources(bookmarkSetStripMenuItem_4, "bookmarkSetStripMenuItem_4");
+            bookmarkSetStripMenuItem_4.Click += bookmarkSetStripMenuItem_4_Click;
+            // 
+            // bookmarkSetStripMenuItem_5
+            // 
+            bookmarkSetStripMenuItem_5.Name = "bookmarkSetStripMenuItem_5";
+            resources.ApplyResources(bookmarkSetStripMenuItem_5, "bookmarkSetStripMenuItem_5");
+            bookmarkSetStripMenuItem_5.Click += bookmarkSetStripMenuItem_5_Click;
+            // 
+            // bookmarkSetStripMenuItem_6
+            // 
+            bookmarkSetStripMenuItem_6.Name = "bookmarkSetStripMenuItem_6";
+            resources.ApplyResources(bookmarkSetStripMenuItem_6, "bookmarkSetStripMenuItem_6");
+            bookmarkSetStripMenuItem_6.Click += bookmarkSetStripMenuItem_6_Click;
+            // 
+            // bookmarkSetStripMenuItem_7
+            // 
+            bookmarkSetStripMenuItem_7.Name = "bookmarkSetStripMenuItem_7";
+            resources.ApplyResources(bookmarkSetStripMenuItem_7, "bookmarkSetStripMenuItem_7");
+            bookmarkSetStripMenuItem_7.Click += bookmarkSetStripMenuItem_7_Click;
+            // 
+            // bookmarkSetStripMenuItem_8
+            // 
+            bookmarkSetStripMenuItem_8.Name = "bookmarkSetStripMenuItem_8";
+            resources.ApplyResources(bookmarkSetStripMenuItem_8, "bookmarkSetStripMenuItem_8");
+            bookmarkSetStripMenuItem_8.Click += bookmarkSetStripMenuItem_8_Click;
             // 
             // toolStripSeparator1
             // 
@@ -398,5 +501,20 @@
         private ToolStripSeparator toolStripSeparator5;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel StateToolStripStatusLabel;
+        private ToolStripMenuItem bookmarkToolStripMenuItem;
+        private ToolStripMenuItem bookmarkSettingsToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator6;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_1;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_2;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_3;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_4;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_5;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_6;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_7;
+        private ToolStripMenuItem bookmarkSetStripMenuItem_8;
+        private ToolStripSeparator toolStripSeparator7;
+        private ToolStripMenuItem loadOnlyBookmarkToolStripMenuItem;
+        private ToolStripMenuItem loadFullBookmarkToolStripMenuItem;
+        private ToolStripMenuItem saveBookmarkToolStripMenuItem;
     }
 }

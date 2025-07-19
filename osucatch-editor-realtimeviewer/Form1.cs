@@ -30,12 +30,16 @@ namespace osucatch_editor_realtimeviewer
         bool topmostCheck = false;
 
         private SettingsForm? SettingsFormInstance = null;
+        private BookmarkSettingsForm? BookmarkSettingsFormInstance = null;
 
         public static string Path_Img_Hitcircle = @"img/fruit-apple.png";
         public static string Path_Img_Drop = @"img/fruit-drop.png";
         public static string Path_Img_Banana = @"img/fruit-bananas.png";
 
         public static bool NeedReapplySettings = false;
+        public static bool NeedReapplyBookmarkStyles = false;
+
+        public BookmarkManager bookmarkManager = new BookmarkManager();
 
         private static System.Timers.Timer backup_timer = new System.Timers.Timer(app.Default.Backup_Interval);
         private static System.Timers.Timer Memory_Monitor_Timer = new System.Timers.Timer(200);
@@ -124,6 +128,8 @@ namespace osucatch_editor_realtimeviewer
             topmostCheck = app.Default.Auto_Topmost;
             TopWhenEditorFocusToolStripMenuItem.Checked = topmostCheck;
 
+            ReapplyBookmarkStyles();
+
             // osu path
             if (app.Default.osu_path == "")
             {
@@ -204,7 +210,7 @@ namespace osucatch_editor_realtimeviewer
 
         private void CheckTopmost()
         {
-            if (!topmostCheck || (SettingsFormInstance != null))
+            if (!topmostCheck || (SettingsFormInstance != null) || (BookmarkSettingsFormInstance != null))
             {
                 if (this.TopMost == true)
                 {
@@ -252,6 +258,32 @@ namespace osucatch_editor_realtimeviewer
             else
             {
                 backupToolStripMenuItem.Enabled = true;
+            }
+        }
+
+        private void ReapplyBookmarkStyles()
+        {
+            Invoke(new MethodInvoker(delegate ()
+            {
+                bookmarkSetStripMenuItem_1.Text = "Set/Del " + ((app.Default.Bookmark_Comment_1 != "") ? app.Default.Bookmark_Comment_1 : "Type 1");
+                bookmarkSetStripMenuItem_2.Text = "Set/Del " + ((app.Default.Bookmark_Comment_2 != "") ? app.Default.Bookmark_Comment_2 : "Type 2");
+                bookmarkSetStripMenuItem_3.Text = "Set/Del " + ((app.Default.Bookmark_Comment_3 != "") ? app.Default.Bookmark_Comment_3 : "Type 3");
+                bookmarkSetStripMenuItem_4.Text = "Set/Del " + ((app.Default.Bookmark_Comment_4 != "") ? app.Default.Bookmark_Comment_4 : "Type 4");
+                bookmarkSetStripMenuItem_5.Text = "Set/Del " + ((app.Default.Bookmark_Comment_5 != "") ? app.Default.Bookmark_Comment_5 : "Type 5");
+                bookmarkSetStripMenuItem_6.Text = "Set/Del " + ((app.Default.Bookmark_Comment_6 != "") ? app.Default.Bookmark_Comment_6 : "Type 6");
+                bookmarkSetStripMenuItem_7.Text = "Set/Del " + ((app.Default.Bookmark_Comment_7 != "") ? app.Default.Bookmark_Comment_7 : "Type 7");
+                bookmarkSetStripMenuItem_8.Text = "Set/Del " + ((app.Default.Bookmark_Comment_8 != "") ? app.Default.Bookmark_Comment_8 : "Type 8");
+
+            }));
+
+            if (bookmarkManager.Bookmarks.Count > 0 && bookmarkManager.BeatmapFilename != "")
+            {
+                if (app.Default.Bookmark_AutoLoadSave)
+                {
+                    // 自动更新书签
+                    string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                    BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+                }
             }
         }
 
@@ -399,6 +431,11 @@ namespace osucatch_editor_realtimeviewer
                 ReapplySettings();
                 NeedReapplySettings = false;
             }
+            if (NeedReapplyBookmarkStyles)
+            {
+                ReapplyBookmarkStyles();
+                NeedReapplyBookmarkStyles = false;
+            }
 
             try
             {
@@ -513,6 +550,12 @@ namespace osucatch_editor_realtimeviewer
                     else this.Text = editorReaderHelper.beatmap_title;
                 }));
 
+                // set bookmarkplus
+                if (bookmarkManager.IsBeatmapChanged(thisReader.ContainingFolder, thisReader.Filename))
+                {
+                    drawingHelper.Bookmarks = bookmarkManager.Bookmarks;
+                }
+
 
                 // Step11. drawing
                 try
@@ -608,6 +651,18 @@ namespace osucatch_editor_realtimeviewer
                 SettingsFormInstance = new SettingsForm();
                 SettingsFormInstance.FormClosed += (s, args) => { SettingsFormInstance = null; }; // 关闭时重置变量
                 SettingsFormInstance.ShowDialog();
+            }
+        }
+
+        private void bookmarkSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (BookmarkSettingsFormInstance != null && !BookmarkSettingsFormInstance.IsDisposed)
+                BookmarkSettingsFormInstance.Activate();
+            else
+            {
+                BookmarkSettingsFormInstance = new BookmarkSettingsForm();
+                BookmarkSettingsFormInstance.FormClosed += (s, args) => { BookmarkSettingsFormInstance = null; }; // 关闭时重置变量
+                BookmarkSettingsFormInstance.ShowDialog();
             }
         }
 
@@ -954,6 +1009,205 @@ namespace osucatch_editor_realtimeviewer
             }
             app.Default.Auto_Topmost = topmostCheck;
             app.Default.Save();
+        }
+
+        private void loadOnlyBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Select Bookmark file";
+                openFileDialog.Filter = "BookmarkPlus File (*.bps)|*.bps";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    List<Bookmark> bookmarks = BookmarkPlus.loadBookmarksFromFile(filePath, false);
+                    drawingHelper.Bookmarks = bookmarks;
+                    if (bookmarks.Count <= 0) MessageBox.Show("There are no Bookmarks in this file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else MessageBox.Show("Loaded " + bookmarks.Count + " Bookmark(s).", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        private void loadFullBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Select Bookmark file";
+                openFileDialog.Filter = "BookmarkPlus File (*.bps)|*.bps";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    List<Bookmark> bookmarks = BookmarkPlus.loadBookmarksFromFile(filePath, true);
+                    bookmarkManager = new BookmarkManager(bookmarks);
+                    drawingHelper.Bookmarks = bookmarks;
+                    if (bookmarks.Count <= 0) MessageBox.Show("There are no Bookmarks in this file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else MessageBox.Show("Loaded " + bookmarks.Count + " Bookmark(s).", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        private void saveBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // 创建SaveFileDialog实例
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Save Bookmark";
+            saveFileDialog.Filter = "BookmarkPlus File (*.bps)|*.bps"; // 文件类型过滤器
+            saveFileDialog.FileName = editorReaderHelper.beatmap_title;
+            saveFileDialog.DefaultExt = "bps"; // 默认扩展名
+
+            // 显示对话框并获取结果
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // 获取选中的文件路径
+                string filePath = saveFileDialog.FileName;
+                // 写入文件
+                if (BookmarkPlus.SaveBookmarksToFile(filePath, bookmarkManager.Bookmarks))
+                    MessageBox.Show("Bookmarks saved to " + filePath, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_1_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 1, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_2_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 2, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_3_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 3, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_4_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 4, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_5_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 5, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_6_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 6, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_7_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 7, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
+        }
+
+        private void bookmarkSetStripMenuItem_8_Click(object sender, EventArgs e)
+        {
+            if (bookmarkManager.BeatmapFolder == "" || bookmarkManager.BeatmapFilename == "")
+            {
+                MessageBox.Show("Editor is not running.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            double currentTime = drawingHelper.CurrentTime;
+            bookmarkManager.Add_Del_Bookmark(new Bookmark { StyleId = 8, Time = currentTime });
+            if (app.Default.Bookmark_AutoLoadSave)
+            {
+                string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
+                BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
+            }
         }
     }
 

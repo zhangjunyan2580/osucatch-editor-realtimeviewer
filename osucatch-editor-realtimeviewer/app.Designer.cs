@@ -394,5 +394,437 @@ namespace osucatch_editor_realtimeviewer {
                 this["Auto_Topmost"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Bookmark_FolderPath {
+            get {
+                return ((string)(this["Bookmark_FolderPath"]));
+            }
+            set {
+                this["Bookmark_FolderPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Bookmark_AutoLoadSave {
+            get {
+                return ((bool)(this["Bookmark_AutoLoadSave"]));
+            }
+            set {
+                this["Bookmark_AutoLoadSave"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Bookmark_AutoLoadWithStyle {
+            get {
+                return ((bool)(this["Bookmark_AutoLoadWithStyle"]));
+            }
+            set {
+                this["Bookmark_AutoLoadWithStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Bookmark_LineStyle_1 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_1"]));
+            }
+            set {
+                this["Bookmark_LineStyle_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Bookmark_LineStyle_2 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_2"]));
+            }
+            set {
+                this["Bookmark_LineStyle_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Bookmark_LineStyle_3 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_3"]));
+            }
+            set {
+                this["Bookmark_LineStyle_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Bookmark_LineStyle_4 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_4"]));
+            }
+            set {
+                this["Bookmark_LineStyle_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Bookmark_LineStyle_5 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_5"]));
+            }
+            set {
+                this["Bookmark_LineStyle_5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Bookmark_LineStyle_6 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_6"]));
+            }
+            set {
+                this["Bookmark_LineStyle_6"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Bookmark_LineStyle_7 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_7"]));
+            }
+            set {
+                this["Bookmark_LineStyle_7"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Bookmark_LineStyle_8 {
+            get {
+                return ((int)(this["Bookmark_LineStyle_8"]));
+            }
+            set {
+                this["Bookmark_LineStyle_8"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Bookmark_Width_1 {
+            get {
+                return ((int)(this["Bookmark_Width_1"]));
+            }
+            set {
+                this["Bookmark_Width_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Bookmark_Width_2 {
+            get {
+                return ((int)(this["Bookmark_Width_2"]));
+            }
+            set {
+                this["Bookmark_Width_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Bookmark_Width_3 {
+            get {
+                return ((int)(this["Bookmark_Width_3"]));
+            }
+            set {
+                this["Bookmark_Width_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Bookmark_Width_4 {
+            get {
+                return ((int)(this["Bookmark_Width_4"]));
+            }
+            set {
+                this["Bookmark_Width_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Bookmark_Width_5 {
+            get {
+                return ((int)(this["Bookmark_Width_5"]));
+            }
+            set {
+                this["Bookmark_Width_5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Bookmark_Width_6 {
+            get {
+                return ((int)(this["Bookmark_Width_6"]));
+            }
+            set {
+                this["Bookmark_Width_6"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Bookmark_Width_7 {
+            get {
+                return ((int)(this["Bookmark_Width_7"]));
+            }
+            set {
+                this["Bookmark_Width_7"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Bookmark_Width_8 {
+            get {
+                return ((int)(this["Bookmark_Width_8"]));
+            }
+            set {
+                this["Bookmark_Width_8"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public global::System.Drawing.Color Bookmark_Color_1 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_1"]));
+            }
+            set {
+                this["Bookmark_Color_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Pink")]
+        public global::System.Drawing.Color Bookmark_Color_2 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_2"]));
+            }
+            set {
+                this["Bookmark_Color_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Yellow")]
+        public global::System.Drawing.Color Bookmark_Color_3 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_3"]));
+            }
+            set {
+                this["Bookmark_Color_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
+        public global::System.Drawing.Color Bookmark_Color_4 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_4"]));
+            }
+            set {
+                this["Bookmark_Color_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
+        public global::System.Drawing.Color Bookmark_Color_5 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_5"]));
+            }
+            set {
+                this["Bookmark_Color_5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        public global::System.Drawing.Color Bookmark_Color_6 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_6"]));
+            }
+            set {
+                this["Bookmark_Color_6"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Aqua")]
+        public global::System.Drawing.Color Bookmark_Color_7 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_7"]));
+            }
+            set {
+                this["Bookmark_Color_7"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Purple")]
+        public global::System.Drawing.Color Bookmark_Color_8 {
+            get {
+                return ((global::System.Drawing.Color)(this["Bookmark_Color_8"]));
+            }
+            set {
+                this["Bookmark_Color_8"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("HyperDash")]
+        public string Bookmark_Comment_1 {
+            get {
+                return ((string)(this["Bookmark_Comment_1"]));
+            }
+            set {
+                this["Bookmark_Comment_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Dash")]
+        public string Bookmark_Comment_2 {
+            get {
+                return ((string)(this["Bookmark_Comment_2"]));
+            }
+            set {
+                this["Bookmark_Comment_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("AntiFlow")]
+        public string Bookmark_Comment_3 {
+            get {
+                return ((string)(this["Bookmark_Comment_3"]));
+            }
+            set {
+                this["Bookmark_Comment_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Move")]
+        public string Bookmark_Comment_4 {
+            get {
+                return ((string)(this["Bookmark_Comment_4"]));
+            }
+            set {
+                this["Bookmark_Comment_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Type 5")]
+        public string Bookmark_Comment_5 {
+            get {
+                return ((string)(this["Bookmark_Comment_5"]));
+            }
+            set {
+                this["Bookmark_Comment_5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Type 6")]
+        public string Bookmark_Comment_6 {
+            get {
+                return ((string)(this["Bookmark_Comment_6"]));
+            }
+            set {
+                this["Bookmark_Comment_6"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Type 7")]
+        public string Bookmark_Comment_7 {
+            get {
+                return ((string)(this["Bookmark_Comment_7"]));
+            }
+            set {
+                this["Bookmark_Comment_7"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Type 8")]
+        public string Bookmark_Comment_8 {
+            get {
+                return ((string)(this["Bookmark_Comment_8"]));
+            }
+            set {
+                this["Bookmark_Comment_8"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Log_Bookmark {
+            get {
+                return ((bool)(this["Log_Bookmark"]));
+            }
+            set {
+                this["Log_Bookmark"] = value;
+            }
+        }
     }
 }

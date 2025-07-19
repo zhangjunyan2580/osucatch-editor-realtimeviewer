@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Color = OpenTK.Graphics.Color4;
 
@@ -120,11 +121,53 @@ namespace osucatch_editor_realtimeviewer
         public static void DrawLine(Vector2 start, Vector2 end, Color color)
         {
             GL.Disable(EnableCap.Texture2D);
+            GL.LineWidth(1);
             GL.Color4(color);
             GL.Begin(PrimitiveType.Lines);
             GL.Vertex2(start.X, start.Y);
             GL.Vertex2(end.X, end.Y);
             GL.End();
+            GL.Enable(EnableCap.Texture2D);
+        }
+
+        public static void DrawLine(Vector2 start, Vector2 end, Color color, float width, LineType lineType)
+        {
+            GL.Disable(EnableCap.Texture2D);
+            GL.LineWidth(width);
+            GL.Color4(color);
+
+            // 设置线型
+            switch (lineType)
+            {
+                case LineType.Dash:
+                    GL.Enable(EnableCap.LineStipple);
+                    GL.LineStipple(1, 0x00FF); // 虚线模式
+                    break;
+                case LineType.Dot:
+                    GL.Enable(EnableCap.LineStipple);
+                    GL.LineStipple(1, 0x0101); // 点线模式
+                    break;
+                case LineType.DashDot:
+                    GL.Enable(EnableCap.LineStipple);
+                    GL.LineStipple(1, 0x1C47); // 点划线模式
+                    break;
+                case LineType.DashDotDot:
+                    GL.Enable(EnableCap.LineStipple);
+                    GL.LineStipple(1, 0xE4E4); // 双点划线模式
+                    break;
+                default:
+                    GL.Disable(EnableCap.LineStipple); // 实线
+                    break;
+            }
+
+            // 绘制直线
+            GL.Begin(PrimitiveType.Lines);
+            GL.Vertex2(start.X, start.Y);
+            GL.Vertex2(end.X, end.Y);
+            GL.End();
+
+            // 重置线型设置
+            GL.Disable(EnableCap.LineStipple);
             GL.Enable(EnableCap.Texture2D);
         }
 
@@ -168,6 +211,15 @@ namespace osucatch_editor_realtimeviewer
             if (BPMTexture == null) return;
             DrawLineLabel(BPMTexture, rp1, false, Color.LightGreen);
             BPMTexture.Dispose();
+        }
+
+        public static void DrawBookmarkLabel(string comment, Color color, int posY)
+        {
+            Vector2 rp1 = new Vector2(576, posY);
+            Texture2D? commentTexture = TextureFromString(comment, fontScale);
+            if (commentTexture == null) return;
+            DrawLineLabel(commentTexture, rp1, false, color);
+            commentTexture.Dispose();
         }
 
         public static void DrawHitObjectLabel(string hitObjectString, Vector2 pos, float circleDiameter, Color color)

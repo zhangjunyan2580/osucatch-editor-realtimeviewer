@@ -68,6 +68,8 @@ namespace osucatch_editor_realtimeviewer
             new (128, 255, 255, 255),
         };
 
+        public List<Bookmark> Bookmarks { get; set; } = new();
+
         /// <summary>
         /// How many screens add up to the height of canvas.
         /// </summary>
@@ -164,6 +166,8 @@ namespace osucatch_editor_realtimeviewer
                 timingControlPoints = timingControlPoints.Distinct().ToList();
                 DrawTimingPoints(timingControlPoints);
             }
+
+            DrawBookmarkPlus(Bookmarks);
         }
 
         public void DrawBarLines(List<BarLine> barLines)
@@ -195,6 +199,48 @@ namespace osucatch_editor_realtimeviewer
                         Vector2 rp1 = new Vector2(576, posY);
                         if (barLine.Major) Canvas.DrawLine(rp0, rp1, Color.LightGray);
                         else Canvas.DrawLine(rp0, rp1, Color.Gray);
+                    }
+                }
+            });
+        }
+
+        public void DrawBookmarkPlus(List<Bookmark> bookmarks)
+        {
+            bookmarks.ForEach(bookmark =>
+            {
+                if (bookmark.Time < 0) return;
+                double deltaTime = bookmark.Time - CurrentTime;
+                if (ScreensContain > 1)
+                {
+                    double timeSpan = ScreensContain * ApproachTime * 1.25;
+                    if (deltaTime <= timeSpan && deltaTime >= -timeSpan)
+                    {
+                        int posY = (int)(240.0 * ScreensContain - deltaTime / TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        int width = BookmarkPlus.GetLineWidthByStyleId(bookmark.StyleId);
+                        Color color = BookmarkPlus.GetLineColorByStyleId(bookmark.StyleId);
+                        LineType lineType = BookmarkPlus.GetLineStyleByStyleId(bookmark.StyleId);
+                        string label = BookmarkPlus.GetLineLabelByStyleId(bookmark.StyleId);
+                        Canvas.DrawLine(rp0, rp1, color, width, lineType);
+                        Canvas.DrawBookmarkLabel(label, color, posY);
+                    }
+                }
+                else
+                {
+                    double upTime = ApproachTime;
+                    double bottomTime = ApproachTime * 3 / 17;
+                    if (deltaTime <= upTime && deltaTime >= -bottomTime)
+                    {
+                        int posY = (int)(384 - deltaTime / TimePerPixels);
+                        Vector2 rp0 = new Vector2(64, posY);
+                        Vector2 rp1 = new Vector2(576, posY);
+                        int width = BookmarkPlus.GetLineWidthByStyleId(bookmark.StyleId);
+                        Color color = BookmarkPlus.GetLineColorByStyleId(bookmark.StyleId);
+                        LineType lineType = BookmarkPlus.GetLineStyleByStyleId(bookmark.StyleId);
+                        string label = BookmarkPlus.GetLineLabelByStyleId(bookmark.StyleId);
+                        Canvas.DrawLine(rp0, rp1, color, width, lineType);
+                        Canvas.DrawBookmarkLabel(label, color, posY);
                     }
                 }
             });
