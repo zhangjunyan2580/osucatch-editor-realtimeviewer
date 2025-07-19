@@ -1,4 +1,4 @@
-using Microsoft.Win32;
+ï»¿using Microsoft.Win32;
 using osu.Game.Beatmaps;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -275,7 +275,7 @@ namespace osucatch_editor_realtimeviewer
                 string setdel = "Set/Del ";
                 if (Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName == "zh")
                 {
-                    setdel = "±ê¼Ç/É¾³ı ";
+                    setdel = "æ ‡è®°/åˆ é™¤ ";
                 }
 
                 bookmarkSetStripMenuItem_1.Text = setdel + ((app.Default.Bookmark_Comment_1 != "") ? app.Default.Bookmark_Comment_1 : "Type 1");
@@ -293,7 +293,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 if (app.Default.Bookmark_AutoLoadSave)
                 {
-                    // ×Ô¶¯¸üĞÂÊéÇ©
+                    // è‡ªåŠ¨æ›´æ–°ä¹¦ç­¾
                     string filepath = Path.Combine(app.Default.Bookmark_FolderPath, bookmarkManager.BeatmapFolder, bookmarkManager.BeatmapFilename) + ".bps";
                     BookmarkPlus.SaveBookmarksToFile(filepath, bookmarkManager.Bookmarks);
                 }
@@ -599,7 +599,7 @@ namespace osucatch_editor_realtimeviewer
 
             catch (OperationCanceledException)
             {
-                // ÈÎÎñ±»È¡Ïû
+                // ä»»åŠ¡è¢«å–æ¶ˆ
                 this.Invoke((MethodInvoker)delegate
                 {
                     StateToolStripStatusLabel.Text = "Idle";
@@ -667,7 +667,7 @@ namespace osucatch_editor_realtimeviewer
             else
             {
                 SettingsFormInstance = new SettingsForm();
-                SettingsFormInstance.FormClosed += (s, args) => { SettingsFormInstance = null; }; // ¹Ø±ÕÊ±ÖØÖÃ±äÁ¿
+                SettingsFormInstance.FormClosed += (s, args) => { SettingsFormInstance = null; }; // å…³é—­æ—¶é‡ç½®å˜é‡
                 SettingsFormInstance.ShowDialog();
             }
         }
@@ -679,7 +679,7 @@ namespace osucatch_editor_realtimeviewer
             else
             {
                 BookmarkSettingsFormInstance = new BookmarkSettingsForm();
-                BookmarkSettingsFormInstance.FormClosed += (s, args) => { BookmarkSettingsFormInstance = null; }; // ¹Ø±ÕÊ±ÖØÖÃ±äÁ¿
+                BookmarkSettingsFormInstance.FormClosed += (s, args) => { BookmarkSettingsFormInstance = null; }; // å…³é—­æ—¶é‡ç½®å˜é‡
                 BookmarkSettingsFormInstance.ShowDialog();
             }
         }
@@ -1005,14 +1005,14 @@ namespace osucatch_editor_realtimeviewer
 
         private void restartProgramStripMenuItem_Click(object sender, EventArgs e)
         {
-            // »ñÈ¡µ±Ç°Ó¦ÓÃ³ÌĞòµÄ¿ÉÖ´ĞĞÎÄ¼şÂ·¾¶
+            // è·å–å½“å‰åº”ç”¨ç¨‹åºçš„å¯æ‰§è¡Œæ–‡ä»¶è·¯å¾„
             string applicationPath = Application.ExecutablePath;
 
-            // Æô¶¯Ò»¸öĞÂµÄ½ø³ÌÀ´ÔËĞĞµ±Ç°Ó¦ÓÃ³ÌĞò
+            // å¯åŠ¨ä¸€ä¸ªæ–°çš„è¿›ç¨‹æ¥è¿è¡Œå½“å‰åº”ç”¨ç¨‹åº
             ProcessStartInfo processStartInfo = new ProcessStartInfo(applicationPath);
             Process.Start(processStartInfo);
 
-            // ¹Ø±Õµ±Ç°Ó¦ÓÃ³ÌĞò
+            // å…³é—­å½“å‰åº”ç”¨ç¨‹åº
             Application.Exit();
         }
 
@@ -1077,19 +1077,19 @@ namespace osucatch_editor_realtimeviewer
                 return;
             }
 
-            // ´´½¨SaveFileDialogÊµÀı
+            // åˆ›å»ºSaveFileDialogå®ä¾‹
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Save Bookmark";
-            saveFileDialog.Filter = "BookmarkPlus File (*.bps)|*.bps"; // ÎÄ¼şÀàĞÍ¹ıÂËÆ÷
+            saveFileDialog.Filter = "BookmarkPlus File (*.bps)|*.bps"; // æ–‡ä»¶ç±»å‹è¿‡æ»¤å™¨
             saveFileDialog.FileName = editorReaderHelper.beatmap_title;
-            saveFileDialog.DefaultExt = "bps"; // Ä¬ÈÏÀ©Õ¹Ãû
+            saveFileDialog.DefaultExt = "bps"; // é»˜è®¤æ‰©å±•å
 
-            // ÏÔÊ¾¶Ô»°¿ò²¢»ñÈ¡½á¹û
+            // æ˜¾ç¤ºå¯¹è¯æ¡†å¹¶è·å–ç»“æœ
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                // »ñÈ¡Ñ¡ÖĞµÄÎÄ¼şÂ·¾¶
+                // è·å–é€‰ä¸­çš„æ–‡ä»¶è·¯å¾„
                 string filePath = saveFileDialog.FileName;
-                // Ğ´ÈëÎÄ¼ş
+                // å†™å…¥æ–‡ä»¶
                 if (BookmarkPlus.SaveBookmarksToFile(filePath, bookmarkManager.Bookmarks))
                     MessageBox.Show("Bookmarks saved to " + filePath, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -1153,7 +1153,7 @@ namespace osucatch_editor_realtimeviewer
         }
 
         private const int WM_HOTKEY = 0x0312;
-        // ´¦ÀíWindowsÏûÏ¢
+        // å¤„ç†Windowsæ¶ˆæ¯
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == WM_HOTKEY)
