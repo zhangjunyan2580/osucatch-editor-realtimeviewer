@@ -124,9 +124,6 @@
   <data name="viewerToolStripMenuItem.Text" xml:space="preserve">
     <value>预览器 (&amp;V)</value>
   </data>
-  <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>144, 22</value>
-  </data>
   <data name="modToolStripMenuItem.Text" xml:space="preserve">
     <value>Mod (&amp;M)</value>
   </data>
@@ -147,9 +144,6 @@
   </data>
   <data name="noneToolStripMenuItem.Text" xml:space="preserve">
     <value>NoMod (&amp;N)</value>
-  </data>
-  <data name="hitobjectLabelToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>144, 22</value>
   </data>
   <data name="hitobjectLabelToolStripMenuItem.Text" xml:space="preserve">
     <value>果子标注 (&amp;F)</value>
@@ -189,9 +183,6 @@
   </data>
   <data name="fruitCountInComboToolStripMenuItem.Text" xml:space="preserve">
     <value>连击果子数 (&amp;F)</value>
-  </data>
-  <data name="screenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>144, 22</value>
   </data>
   <data name="screenToolStripMenuItem.Text" xml:space="preserve">
     <value>视野范围 (&amp;R)</value>
@@ -244,11 +235,86 @@
   <data name="Screens8ToolStripMenuItem.Text" xml:space="preserve">
     <value>8 个屏幕</value>
   </data>
-  <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 6</value>
+  <data name="bookmarkToolStripMenuItem.Text" xml:space="preserve">
+    <value>书签+ (&amp;B)</value>
   </data>
-  <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>144, 22</value>
+  <data name="bookmarkSettingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>书签+ 设置 (&amp;B)</value>
+  </data>
+  <data name="toolStripSeparator7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 6</value>
+  </data>
+  <data name="loadOnlyBookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="loadOnlyBookmarkToolStripMenuItem.Text" xml:space="preserve">
+    <value>加载书签 (&amp;L)</value>
+  </data>
+  <data name="loadFullBookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="loadFullBookmarkToolStripMenuItem.Text" xml:space="preserve">
+    <value>加载书签和样式 (&amp;O)</value>
+  </data>
+  <data name="saveBookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="saveBookmarkToolStripMenuItem.Text" xml:space="preserve">
+    <value>保存书签 (&amp;S)</value>
+  </data>
+  <data name="toolStripSeparator6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 6</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_1.Text" xml:space="preserve">
+    <value>设置/删除 书签 1</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_2.Text" xml:space="preserve">
+    <value>设置/删除 书签 2</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_3.Text" xml:space="preserve">
+    <value>设置/删除 书签 3</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_4.Text" xml:space="preserve">
+    <value>设置/删除 书签 4</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_5.Text" xml:space="preserve">
+    <value>设置/删除 书签 5</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_6.Text" xml:space="preserve">
+    <value>设置/删除 书签 6</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_7.Text" xml:space="preserve">
+    <value>设置/删除 书签 7</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_8.Size" type="System.Drawing.Size, System.Drawing">
+    <value>207, 22</value>
+  </data>
+  <data name="bookmarkSetStripMenuItem_8.Text" xml:space="preserve">
+    <value>设置/删除 书签 8</value>
   </data>
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>退出 (&amp;E)</value>
@@ -260,13 +326,13 @@
     <value>设置 (&amp;S)</value>
   </data>
   <data name="openSettingsFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>170, 22</value>
   </data>
   <data name="openSettingsFileToolStripMenuItem.Text" xml:space="preserve">
     <value>打开设置面板 (&amp;O)</value>
   </data>
   <data name="languageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>170, 22</value>
   </data>
   <data name="languageToolStripMenuItem.Text" xml:space="preserve">
     <value>语言 (&amp;L)</value>
@@ -275,34 +341,34 @@
     <value>默认</value>
   </data>
   <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>177, 6</value>
+    <value>167, 6</value>
   </data>
   <data name="TopWhenEditorFocusToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>170, 22</value>
   </data>
   <data name="TopWhenEditorFocusToolStripMenuItem.Text" xml:space="preserve">
     <value>自动前置 (&amp;T)</value>
   </data>
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>177, 6</value>
+    <value>167, 6</value>
   </data>
   <data name="backupToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>170, 22</value>
   </data>
   <data name="backupToolStripMenuItem.Text" xml:space="preserve">
     <value>立即备份 (&amp;B)</value>
   </data>
   <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>177, 6</value>
+    <value>167, 6</value>
   </data>
   <data name="forceResetStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>170, 22</value>
   </data>
   <data name="forceResetStripMenuItem.Text" xml:space="preserve">
     <value>重置 (&amp;R)</value>
   </data>
   <data name="restartProgramStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>170, 22</value>
   </data>
   <data name="restartProgramStripMenuItem.Text" xml:space="preserve">
     <value>重启程序 (&amp;P)</value>

@@ -12,6 +12,7 @@
             Drawing,
             Backup,
             Timer,
+            Bookmark,
         }
 
         public enum LogLevel { Debug, Info, Warning, Error }
@@ -27,6 +28,7 @@
             if (logType == LogType.Drawing && !app.Default.Log_Drawing) return;
             if (logType == LogType.Backup && !app.Default.Log_Backup) return;
             if (logType == LogType.Timer && !app.Default.Log_Timer) return;
+            if (logType == LogType.Bookmark && !app.Default.Log_Bookmark) return;
 
             if (app.Default.Log_Level > (int)logLevel) return;
 

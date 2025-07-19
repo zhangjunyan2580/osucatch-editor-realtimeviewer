@@ -95,5 +95,116 @@
     <Setting Name="Auto_Topmost" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="Bookmark_FolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Bookmark_AutoLoadSave" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Bookmark_AutoLoadWithStyle" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_1" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_2" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_3" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_4" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_5" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_6" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_7" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Bookmark_LineStyle_8" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_1" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_2" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_3" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_4" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_5" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_6" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_7" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Bookmark_Width_8" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_1" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Red</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_2" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Pink</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_3" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Yellow</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_4" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_5" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Blue</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_6" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Green</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_7" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Aqua</Value>
+    </Setting>
+    <Setting Name="Bookmark_Color_8" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Purple</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HyperDash</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Dash</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AntiFlow</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Move</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_5" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Type 5</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_6" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Type 6</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_7" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Type 7</Value>
+    </Setting>
+    <Setting Name="Bookmark_Comment_8" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Type 8</Value>
+    </Setting>
+    <Setting Name="Log_Bookmark" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Bookmark_RegisterHotKey" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

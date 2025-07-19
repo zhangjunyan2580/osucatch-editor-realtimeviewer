@@ -32,6 +32,7 @@
             checkBox_Log_Drawing.Checked = app.Default.Log_Drawing;
             checkBox_Log_Backup.Checked = app.Default.Log_Backup;
             checkBox_Log_Timer.Checked = app.Default.Log_Timer;
+            checkBox_Log_BookmarkPlus.Checked = app.Default.Log_Bookmark;
             comboBox_Log_Level.SelectedIndex = app.Default.Log_Level;
             comboBox_Log_Level.DropDownStyle = ComboBoxStyle.DropDownList;
 
@@ -112,6 +113,7 @@
             app.Default.Log_Drawing = checkBox_Log_Drawing.Checked;
             app.Default.Log_Backup = checkBox_Log_Backup.Checked;
             app.Default.Log_Timer = checkBox_Log_Timer.Checked;
+            app.Default.Log_Bookmark = checkBox_Log_BookmarkPlus.Checked;
             app.Default.Log_Level = comboBox_Log_Level.SelectedIndex;
 
             app.Default.TimingLine_ShowRed = checkBox_TimingLine_ShowRed.Checked;
