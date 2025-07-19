@@ -1170,6 +1170,11 @@ namespace osucatch_editor_realtimeviewer
             }
             base.WndProc(ref m);
         }
+
+        private void ClearBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bookmarkManager.Bookmarks.Clear();
+        }
     }
 
 
