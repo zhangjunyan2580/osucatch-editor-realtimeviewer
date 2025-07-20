@@ -28,3 +28,8 @@ Editor --(Editor Reader)--> Beatmap --(Osu BeatmapParser)--> HitObjects --(OpenG
 - [osu](https://github.com/ppy/osu)
 - [osu-framework](https://github.com/ppy/osu-framework)
 - [osuTK](https://github.com/ppy/osuTK)
+
+## Contributors
+
+- [Exsper](https://github.com/Exsper) (osu! ID: [Candy](https://osu.ppy.sh/u/2360046))
+- [zhangjunyan2580](https://github.com/zhangjunyan2580) (osu! ID: [zhangjunyan](https://osu.ppy.sh/users/12729608))
