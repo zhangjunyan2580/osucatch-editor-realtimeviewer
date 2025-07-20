@@ -157,7 +157,7 @@ namespace osucatch_editor_realtimeviewer
         {
             if (hitObject.lastObject == null) return;
             double timeToNext = (int)hitObject.StartTime - (int)hitObject.lastObject.StartTime; // - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
-            double distanceToNext = Math.Abs(hitObject.OriginalX - hitObject.lastObject.OriginalX);
+            double distanceToNext = Math.Abs(hitObject.EffectiveX - hitObject.lastObject.EffectiveX);
             DifficultyControlPoint nextDifficultyControlPoint = (beatmap.ControlPointInfo as LegacyControlPointInfo)?.DifficultyPointAt(hitObject.StartTime) ?? DifficultyControlPoint.DEFAULT;
             var nextTimingPoint = beatmap.ControlPointInfo.TimingPointAt(hitObject.StartTime);
             if (timeToNext <= 0) return;
@@ -206,8 +206,14 @@ namespace osucatch_editor_realtimeviewer
 
         public static void CalDifficultyToLast(StrainSkill skill, PalpableCatchHitObject hitObject, float scalingFactor)
         {
+            if (hitObject.lastObject == null)
+            {
+                hitObject.DifficultyToLast = 0;
+                return;
+            }
+
             hitObject.NormalizedPosition = hitObject.EffectiveX * scalingFactor;
-            hitObject.LastNormalizedPosition = (hitObject.lastObject == null) ? 0 : hitObject.lastObject.EffectiveX * scalingFactor;
+            hitObject.LastNormalizedPosition = hitObject.lastObject.EffectiveX * scalingFactor;
             // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
             hitObject.DeltaTime = (hitObject.StartTime - ((hitObject.lastObject == null) ? 0 : hitObject.lastObject.StartTime));
             hitObject.StrainTime = Math.Max(40, hitObject.DeltaTime);
