@@ -215,7 +215,7 @@ namespace osucatch_editor_realtimeviewer
             hitObject.NormalizedPosition = hitObject.EffectiveX * scalingFactor;
             hitObject.LastNormalizedPosition = hitObject.lastObject.EffectiveX * scalingFactor;
             // Every strain interval is hard capped at the equivalent of 375 BPM streaming speed as a safety measure
-            hitObject.DeltaTime = (hitObject.StartTime - ((hitObject.lastObject == null) ? 0 : hitObject.lastObject.StartTime));
+            hitObject.DeltaTime = hitObject.StartTime - hitObject.lastObject.StartTime;
             hitObject.StrainTime = Math.Max(40, hitObject.DeltaTime);
             skill.Process(hitObject);
         }
