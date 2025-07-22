@@ -128,6 +128,8 @@ namespace osucatch_editor_realtimeviewer
             topmostCheck = app.Default.Auto_Topmost;
             TopWhenEditorFocusToolStripMenuItem.Checked = topmostCheck;
 
+            cubicFittingCurveToolStripMenuItem.Checked = app.Default.Show_CubicFittingCurve;
+
             ReapplyBookmarkStyles();
 
             // osu path
@@ -1175,6 +1177,21 @@ namespace osucatch_editor_realtimeviewer
         private void ClearBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             bookmarkManager.Bookmarks.Clear();
+        }
+
+        private void cubicFittingCurveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (app.Default.Show_CubicFittingCurve)
+            {
+                app.Default.Show_CubicFittingCurve = false;
+                cubicFittingCurveToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                app.Default.Show_CubicFittingCurve = true;
+                cubicFittingCurveToolStripMenuItem.Checked = true;
+            }
+            app.Default.Save();
         }
     }
 

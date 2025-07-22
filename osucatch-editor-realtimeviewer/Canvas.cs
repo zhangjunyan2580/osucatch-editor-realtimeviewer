@@ -1,6 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 using Color = OpenTK.Graphics.Color4;
 
 namespace osucatch_editor_realtimeviewer
@@ -234,7 +235,7 @@ namespace osucatch_editor_realtimeviewer
         private static void DrawHyperDashCircle(Texture2D? texture, Vector2 pos, float diameter)
         {
             if (texture == null) return;
-            texture.Draw(pos, diameter * 1.4f, diameter * 1.4f, new Vector2(diameter * 1.4f * 0.5f), Color.Red);
+            texture.Draw(pos, diameter * 1.3f, diameter * 1.3f, new Vector2(diameter * 1.3f * 0.5f), Color.Red);
         }
 
         private static void DrawSelectedCircle(Texture2D? texture, Vector2 pos, float diameter)
@@ -251,12 +252,21 @@ namespace osucatch_editor_realtimeviewer
             if (isSelected) DrawSelectedCircle(texture, pos, diameter);
         }
 
+        public static void DrawSplinePoint(Vector2 pos)
+        {
+            GL.Disable(EnableCap.Texture2D);
+            GL.Color4(Color.Gray);
+            GL.Begin(PrimitiveType.Points);
+            GL.Vertex2(pos);
+            GL.End();
+            GL.Enable(EnableCap.Texture2D);
+        }
+
         private static void DrawCircle(Texture2D? texture, Vector2 pos, float diameter, bool isHyperDash, bool isSelected)
         {
             if (texture == null) return;
-            Color color = (isHyperDash) ? Color.Red : Color.White;
-            texture.Draw(pos, diameter, diameter, new Vector2(diameter * 0.5f), color);
-            if (isSelected) DrawSelectedCircle(texture, pos, diameter);
+            Color circleColor = Color.White;
+            DrawCircleWithCircleColor(texture, pos, diameter, circleColor, isHyperDash, isSelected);
         }
 
         public static void DrawFruit(Vector2 pos, float circleDiameter, Color color, bool withCircleColor, bool isHyperDash, bool isSelected)

@@ -53,7 +53,7 @@ namespace osucatch_editor_realtimeviewer
         public int ApproachTime { get; set; }
 
         /// <summary>
-        /// The time spent for fruit to move one pixel. ( = ApproachTime / 384 )
+        /// The time spent for fruit to move one pixel. ( = ApproachTime / 432 )
         /// </summary>
         public float TimePerPixels { get; set; }
         private int CircleDiameter { get; set; }
@@ -104,6 +104,8 @@ namespace osucatch_editor_realtimeviewer
         public void Draw()
         {
             BuildNearby();
+
+            if (app.Default.Show_CubicFittingCurve) DrawSpline();
 
             List<TimingControlPoint> timingControlPoints = new List<TimingControlPoint>();
             List<DifficultyControlPoint> difficultyControlPoints = new List<DifficultyControlPoint>();
@@ -349,55 +351,223 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
+
+        private void DrawSpline()
+        {
+            List<PointF> points = new List<PointF>();
+            this.NearbyHitObjects.ForEach((obj) =>
+            {
+                if (obj is not Banana && obj is not TinyDroplet)
+                points.Add(new PointF(obj.EffectiveX, (float)obj.StartTime));
+            });
+            if (points.Count <= 2) return;
+            CubicSpline spline = new CubicSpline(points);
+            float tMin = points.Min(p => p.Y);
+            float tMax = points.Max(p => p.Y);
+            int splitCount = (int)((tMax - tMin) / 5);
+            if (splitCount > 2000) splitCount = 2000;
+            for (int i = 0; i < splitCount; i++)
+            {
+                float tVal = tMin + (tMax - tMin) * i / splitCount;
+                float xVal = spline.InterpolateX(tVal);
+                if (xVal < 0) xVal = 0;
+                else if (xVal > 512) xVal = 512;
+                double baseY = (ScreensContain <= 1) ? 408 : 240.0 * this.ScreensContain;
+                double deltaTime = tVal - CurrentTime;
+                Vector2 pos = new Vector2(64 + xVal, (float)(baseY - deltaTime / TimePerPixels));
+                Canvas.DrawSplinePoint(pos);
+            }
+        }
+
         private int HitObjectsLowerBound(double target)
         {
             if (this.CatchHitObjects == null) return 0;
-            int first = 0;
-            int last = this.CatchHitObjects.Count - 1;
-            int count = last - first;
-            while (count > 0)
+            int left = 0;
+            int right = this.CatchHitObjects.Count - 1;
+            while (left <= right)
             {
-                int step = count / 2;
-                int it = first + step;
-                var hitObject = this.CatchHitObjects[it];
-                float endTime = (float)hitObject.StartTime;
-                if (endTime < target)
+                int mid = left + (right - left) / 2;
+                double midTime = this.CatchHitObjects[mid].StartTime;
+                if (midTime < target)
                 {
-                    first = ++it;
-                    count -= step + 1;
+                    left = mid + 1;
                 }
                 else
                 {
-                    count = step;
+                    right = mid - 1;
                 }
             }
-            return first;
+            return right >= 0 ? right : 0;
         }
 
         private int HitObjectsUpperBound(double target)
         {
             if (this.CatchHitObjects == null) return 0;
-            int first = 0;
-            int last = this.CatchHitObjects.Count - 1;
-            int count = last - first;
-            while (count > 0)
+            int left = 0;
+            int right = this.CatchHitObjects.Count - 1;
+            while (left <= right)
             {
-                int step = count / 2;
-                int it = first + step;
-                float startTime = (float)(this.CatchHitObjects[it].StartTime);
-                if (!(target < startTime))
+                int mid = left + (right - left) / 2;
+                double midTime = this.CatchHitObjects[mid].StartTime;
+                if (midTime <= target)
                 {
-                    first = ++it;
-                    count -= step + 1;
+                    left = mid + 1;
                 }
                 else
                 {
-                    count = step;
+                    right = mid - 1;
                 }
             }
-            return first;
+            return left < this.CatchHitObjects.Count ? left : this.CatchHitObjects.Count - 1;
         }
     }
 
 
+    public class CubicSpline
+    {
+        private readonly double[] t;
+        private readonly double[] x;
+        private readonly SplineSegment[] segments;
+
+        public CubicSpline(IEnumerable<PointF> points)
+        {
+            // 按 t 值排序点
+            var sortedPoints = points.OrderBy(p => p.Y).ToArray();
+
+            if (sortedPoints.Length < 2)
+                throw new ArgumentException("Need at least 2 points");
+
+            t = sortedPoints.Select(p => (double)p.Y).ToArray();
+            x = sortedPoints.Select(p => (double)p.X).ToArray();
+
+            segments = CalculateSplineCoefficients();
+        }
+
+        private SplineSegment[] CalculateSplineCoefficients()
+        {
+            int n = t.Length - 1; // 段数
+
+            if (n == 1)
+            {
+                // 只有两个点 - 线性插值
+                double slope = (x[1] - x[0]) / (t[1] - t[0]);
+                return new[]
+                {
+                new SplineSegment
+                {
+                    A = x[0],
+                    B = slope,
+                    C = 0,
+                    D = 0,
+                    T0 = t[0],
+                    T1 = t[1]
+                }
+            };
+            }
+
+            // 计算步长 h[i] = t[i+1] - t[i]
+            double[] h = new double[n];
+            for (int i = 0; i < n; i++)
+                h[i] = t[i + 1] - t[i];
+
+            // 计算 alpha 数组
+            double[] alpha = new double[n];
+            for (int i = 1; i < n; i++)
+            {
+                alpha[i] = 3 * ((x[i + 1] - x[i]) / h[i] -
+                             (x[i] - x[i - 1]) / h[i - 1]);
+            }
+
+            // 初始化三对角矩阵
+            double[] l = new double[n + 1];
+            double[] mu = new double[n + 1];
+            double[] z = new double[n + 1];
+            double[] c = new double[n + 1];
+
+            // 边界条件：自然样条（二阶导数为零）
+            l[0] = 1;
+            mu[0] = 0;
+            z[0] = 0;
+
+            // 前向消元
+            for (int i = 1; i < n; i++)
+            {
+                l[i] = 2 * (t[i + 1] - t[i - 1]) - h[i - 1] * mu[i - 1];
+                mu[i] = h[i] / l[i];
+                z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
+            }
+
+            // 边界条件
+            l[n] = 1;
+            z[n] = 0;
+            c[n] = 0;
+
+            // 回代计算 c 系数
+            for (int i = n - 1; i >= 0; i--)
+            {
+                c[i] = z[i] - mu[i] * c[i + 1];
+            }
+
+            // 计算 b 和 d 系数
+            double[] b = new double[n];
+            double[] d = new double[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                b[i] = (x[i + 1] - x[i]) / h[i] -
+                       h[i] * (c[i + 1] + 2 * c[i]) / 3;
+                d[i] = (c[i + 1] - c[i]) / (3 * h[i]);
+            }
+
+            // 创建分段
+            SplineSegment[] segments = new SplineSegment[n];
+            for (int i = 0; i < n; i++)
+            {
+                segments[i] = new SplineSegment
+                {
+                    A = x[i],
+                    B = b[i],
+                    C = c[i],
+                    D = d[i],
+                    T0 = t[i],
+                    T1 = t[i + 1]
+                };
+            }
+
+            return segments;
+        }
+
+        public float InterpolateX(float tValue)
+        {
+            // 边界检查
+            if (tValue <= t[0]) return (float)x[0];
+            if (tValue >= t[^1]) return (float)x[^1];
+
+            // 找到正确的分段
+            int segmentIndex = Array.BinarySearch(t, tValue);
+            if (segmentIndex < 0)
+                segmentIndex = ~segmentIndex - 1;
+            else if (segmentIndex >= segments.Length)
+                segmentIndex = segments.Length - 1;
+
+            SplineSegment seg = segments[segmentIndex];
+            double dt = tValue - seg.T0;
+
+            // 三次多项式计算：S(t) = a + b*dt + c*dt² + d*dt³
+            return (float)(seg.A +
+                          seg.B * dt +
+                          seg.C * Math.Pow(dt, 2) +
+                          seg.D * Math.Pow(dt, 3));
+        }
+
+        private class SplineSegment
+        {
+            public double A { get; set; }
+            public double B { get; set; }
+            public double C { get; set; }
+            public double D { get; set; }
+            public double T0 { get; set; }
+            public double T1 { get; set; }
+        }
+    }
 }
