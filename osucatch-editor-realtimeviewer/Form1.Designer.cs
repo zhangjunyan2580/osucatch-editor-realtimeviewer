@@ -36,6 +36,7 @@
             hRToolStripMenuItem = new ToolStripMenuItem();
             eZToolStripMenuItem = new ToolStripMenuItem();
             noneToolStripMenuItem = new ToolStripMenuItem();
+            cubicFittingCurveToolStripMenuItem = new ToolStripMenuItem();
             hitobjectLabelToolStripMenuItem = new ToolStripMenuItem();
             hideToolStripMenuItem = new ToolStripMenuItem();
             sameWithEditorToolStripMenuItem = new ToolStripMenuItem();
@@ -110,7 +111,7 @@
             // viewerToolStripMenuItem
             // 
             resources.ApplyResources(viewerToolStripMenuItem, "viewerToolStripMenuItem");
-            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, hitobjectLabelToolStripMenuItem, screenToolStripMenuItem, bookmarkToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, cubicFittingCurveToolStripMenuItem, hitobjectLabelToolStripMenuItem, screenToolStripMenuItem, bookmarkToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             viewerToolStripMenuItem.Name = "viewerToolStripMenuItem";
             // 
             // modToolStripMenuItem
@@ -138,6 +139,12 @@
             noneToolStripMenuItem.CheckState = CheckState.Checked;
             noneToolStripMenuItem.Name = "noneToolStripMenuItem";
             noneToolStripMenuItem.Click += noneToolStripMenuItem_Click;
+            // 
+            // cubicFittingCurveToolStripMenuItem
+            // 
+            resources.ApplyResources(cubicFittingCurveToolStripMenuItem, "cubicFittingCurveToolStripMenuItem");
+            cubicFittingCurveToolStripMenuItem.Name = "cubicFittingCurveToolStripMenuItem";
+            cubicFittingCurveToolStripMenuItem.Click += cubicFittingCurveToolStripMenuItem_Click;
             // 
             // hitobjectLabelToolStripMenuItem
             // 
@@ -538,5 +545,6 @@
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem ClearBookmarkToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator8;
+        private ToolStripMenuItem cubicFittingCurveToolStripMenuItem;
     }
 }
