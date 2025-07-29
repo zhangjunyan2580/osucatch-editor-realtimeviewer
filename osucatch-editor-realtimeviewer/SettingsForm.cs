@@ -44,6 +44,10 @@
             numericUpDown_timeOut.Value = app.Default.WorkCancelAfter;
 
             button_Label_Color.BackColor = app.Default.Color_HitObject_Label;
+
+            CurveWidthComboBox.SelectedIndex = app.Default.Curve_Width - 1;
+            CurveDashStyleComboBox.SelectedIndex = app.Default.Curve_LineStyle;
+            CurveColorButton.BackColor = app.Default.Curve_Color;
         }
 
         private void button_width_reset_Click(object sender, EventArgs e)
@@ -125,6 +129,10 @@
 
             app.Default.Color_HitObject_Label = button_Label_Color.BackColor;
 
+            app.Default.Curve_Width = CurveWidthComboBox.SelectedIndex + 1;
+            app.Default.Curve_LineStyle = CurveDashStyleComboBox.SelectedIndex;
+            app.Default.Curve_Color = CurveColorButton.BackColor;
+
             app.Default.Save();
 
             Form1.NeedReapplySettings = true;
@@ -195,6 +203,15 @@
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
                 button_Label_Color.BackColor = colorDialog.Color;
+            }
+        }
+
+        private void CurveColorButton_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                CurveColorButton.BackColor = colorDialog.Color;
             }
         }
     }
