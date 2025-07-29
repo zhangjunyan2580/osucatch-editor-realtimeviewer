@@ -236,7 +236,7 @@ namespace osucatch_editor_realtimeviewer
 
         private void CheckTopmost()
         {
-            if (this == null || this.IsDisposed)
+            if (this == null || this.IsDisposed || this.Disposing)
             {
                 return;
             }
@@ -246,7 +246,7 @@ namespace osucatch_editor_realtimeviewer
                 {
                     Invoke(new MethodInvoker(delegate ()
                     {
-                        if (this != null && !this.IsDisposed) this.TopMost = false;
+                        if (this != null && !this.IsDisposed && !this.Disposing) this.TopMost = false;
                     }));
                     return;
                 }
@@ -256,14 +256,14 @@ namespace osucatch_editor_realtimeviewer
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    if (this != null && !this.IsDisposed) this.TopMost = true;
+                    if (this != null && !this.IsDisposed && !this.Disposing) this.TopMost = true;
                 }));
             }
             else
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    if (this != null && !this.IsDisposed) this.TopMost = false;
+                    if (this != null && !this.IsDisposed && !this.Disposing) this.TopMost = false;
                 }));
             }
         }
@@ -651,7 +651,9 @@ namespace osucatch_editor_realtimeviewer
 
             await runner.StopAsync();
             backup_timer.Stop();
+            backup_timer.Dispose();
             Memory_Monitor_Timer.Stop();
+            Memory_Monitor_Timer.Dispose();
 
             app.Default.Window_X = this.Location.X;
             app.Default.Window_Y = this.Location.Y;
