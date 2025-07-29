@@ -90,8 +90,16 @@ namespace osucatch_editor_realtimeviewer
         {
             ControlPointInfo = convertedBeatmap.ControlPointInfo;
             BarLines = convertedBeatmap.BarLines;
-            CatchHitObjects = Form1.currentBeatmapConverter.GetPalpableObjects(convertedBeatmap);
-            Form1.currentBeatmapConverter.CalHitObjectLabel(convertedBeatmap, CatchHitObjects, LabelType);
+            if (app.Default.Use_Stable_Converter)
+            {
+                CatchHitObjects = Form1.stableBeatmapConverter.GetPalpableObjects(convertedBeatmap);
+                Form1.stableBeatmapConverter.CalHitObjectLabel(convertedBeatmap, CatchHitObjects, LabelType);
+            }
+            else
+            {
+                CatchHitObjects = Form1.lazerBeatmapConverter.GetPalpableObjects(convertedBeatmap);
+                Form1.lazerBeatmapConverter.CalHitObjectLabel(convertedBeatmap, CatchHitObjects, LabelType);
+            }
 
             float moddedAR = convertedBeatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);

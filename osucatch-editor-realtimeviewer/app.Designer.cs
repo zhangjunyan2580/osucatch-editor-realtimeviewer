@@ -850,5 +850,17 @@ namespace osucatch_editor_realtimeviewer {
                 this["Show_CubicFittingCurve"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Use_Stable_Converter {
+            get {
+                return ((bool)(this["Use_Stable_Converter"]));
+            }
+            set {
+                this["Use_Stable_Converter"] = value;
+            }
+        }
     }
 }

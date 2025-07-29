@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Timers;
 using System.Windows.Forms;
+using static System.Windows.Forms.DataFormats;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -14,7 +15,9 @@ namespace osucatch_editor_realtimeviewer
         public EditorReaderHelper editorReaderHelper = new();
 
         public static DrawingHelper drawingHelper = new();
-        public static BeatmapConverter currentBeatmapConverter => new BeatmapConverter();
+
+        public static BeatmapConverter lazerBeatmapConverter => new BeatmapConverter();
+        public static BeatmapConverter stableBeatmapConverter => new BeatmapConverterOsuStable();
 
         BeatmapInfoCollection? lastReader = null;
         List<string>? lastColourLines = null;
@@ -22,6 +25,7 @@ namespace osucatch_editor_realtimeviewer
         IBeatmap? lastConvertedBeatmap = null;
         int lastMods = -1;
         HitObjectLabelType lastLabelType = HitObjectLabelType.None;
+        bool lastConverterIsStable = app.Default.Use_Stable_Converter;
 
         bool Need_Backup = false;
         Int64 LastDrawingTimeStamp = DateTime.Now.Ticks;
@@ -146,6 +150,18 @@ namespace osucatch_editor_realtimeviewer
                 app.Default.Save();
             }
 
+            // converter
+            if (app.Default.Use_Stable_Converter)
+            {
+                lazerConverterToolStripMenuItem.Checked = false;
+                stableConverterToolStripMenuItem.Checked = true;
+            }
+            else
+            {
+                lazerConverterToolStripMenuItem.Checked = true;
+                stableConverterToolStripMenuItem.Checked = false;
+            }
+
             // contain screens count
             drawingHelper.ScreensContain = app.Default.ScreensContain;
             Canvas.screensContain = app.Default.ScreensContain;
@@ -220,13 +236,17 @@ namespace osucatch_editor_realtimeviewer
 
         private void CheckTopmost()
         {
+            if (this == null || this.IsDisposed)
+            {
+                return;
+            }
             if (!topmostCheck || (SettingsFormInstance != null) || (BookmarkSettingsFormInstance != null))
             {
                 if (this.TopMost == true)
                 {
                     Invoke(new MethodInvoker(delegate ()
                     {
-                        this.TopMost = false;
+                        if (this != null && !this.IsDisposed) this.TopMost = false;
                     }));
                     return;
                 }
@@ -236,14 +256,14 @@ namespace osucatch_editor_realtimeviewer
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    this.TopMost = true;
+                    if (this != null && !this.IsDisposed) this.TopMost = true;
                 }));
             }
             else
             {
                 Invoke(new MethodInvoker(delegate ()
                 {
-                    this.TopMost = false;
+                    if (this != null && !this.IsDisposed) this.TopMost = false;
                 }));
             }
         }
@@ -513,6 +533,14 @@ namespace osucatch_editor_realtimeviewer
                 // isSameDistanceType
                 drawingHelper.LabelType = GetHitObjectLabelType(out isSameLabelType);
 
+                // isSameConverter
+                bool isSameConverter = true;
+                if (lastConverterIsStable != app.Default.Use_Stable_Converter)
+                {
+                    isSameConverter = false;
+                    lastConverterIsStable = app.Default.Use_Stable_Converter;
+                }
+
 
                 // Step7. Backup
                 if (!blockBackup & Need_Backup)
@@ -534,9 +562,10 @@ namespace osucatch_editor_realtimeviewer
 
                 // Step9. convert beatmap to catch
                 IBeatmap? convertedBeatmap = null;
-                if (differenceType != DifferenceType.None || lastConvertedBeatmap == null || !isSameMods)
+                if (differenceType != DifferenceType.None || lastConvertedBeatmap == null || !isSameMods || !isSameConverter)
                 {
-                    convertedBeatmap = currentBeatmapConverter.GetConvertedBeatmap(beatmap, mods);
+                    if (app.Default.Use_Stable_Converter) convertedBeatmap = stableBeatmapConverter.GetConvertedBeatmap(beatmap, mods);
+                    else convertedBeatmap = lazerBeatmapConverter.GetConvertedBeatmap(beatmap, mods);
                     lastConvertedBeatmap = convertedBeatmap;
                 }
                 else
@@ -546,7 +575,7 @@ namespace osucatch_editor_realtimeviewer
 
 
                 // Step10. prepare drawing objects
-                if (drawingHelper.CatchHitObjects != null && drawingHelper.CatchHitObjects.Count > 0 && differenceType == DifferenceType.None && isSameMods && isSameLabelType)
+                if (drawingHelper.CatchHitObjects != null && drawingHelper.CatchHitObjects.Count > 0 && differenceType == DifferenceType.None && isSameMods && isSameLabelType && isSameConverter)
                 {
                     Log.ConsoleLog("Beatmap no changes. Using last data.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
@@ -1193,6 +1222,22 @@ namespace osucatch_editor_realtimeviewer
                 cubicFittingCurveToolStripMenuItem.Checked = true;
             }
             app.Default.Save();
+        }
+
+        private void lazerConverterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            app.Default.Use_Stable_Converter = false;
+            app.Default.Save();
+            lazerConverterToolStripMenuItem.Checked = true;
+            stableConverterToolStripMenuItem.Checked = false;
+        }
+
+        private void stableConverterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            app.Default.Use_Stable_Converter = true;
+            app.Default.Save();
+            lazerConverterToolStripMenuItem.Checked = false;
+            stableConverterToolStripMenuItem.Checked = true;
         }
     }
 

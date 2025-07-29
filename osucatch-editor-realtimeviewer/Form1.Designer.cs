@@ -32,6 +32,9 @@
             Canvas = new Canvas();
             menuStrip1 = new MenuStrip();
             viewerToolStripMenuItem = new ToolStripMenuItem();
+            converterToolStripMenuItem = new ToolStripMenuItem();
+            lazerConverterToolStripMenuItem = new ToolStripMenuItem();
+            stableConverterToolStripMenuItem = new ToolStripMenuItem();
             modToolStripMenuItem = new ToolStripMenuItem();
             hRToolStripMenuItem = new ToolStripMenuItem();
             eZToolStripMenuItem = new ToolStripMenuItem();
@@ -111,8 +114,26 @@
             // viewerToolStripMenuItem
             // 
             resources.ApplyResources(viewerToolStripMenuItem, "viewerToolStripMenuItem");
-            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { modToolStripMenuItem, cubicFittingCurveToolStripMenuItem, hitobjectLabelToolStripMenuItem, screenToolStripMenuItem, bookmarkToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
+            viewerToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { converterToolStripMenuItem, modToolStripMenuItem, cubicFittingCurveToolStripMenuItem, hitobjectLabelToolStripMenuItem, screenToolStripMenuItem, bookmarkToolStripMenuItem, toolStripSeparator1, exitToolStripMenuItem });
             viewerToolStripMenuItem.Name = "viewerToolStripMenuItem";
+            // 
+            // converterToolStripMenuItem
+            // 
+            resources.ApplyResources(converterToolStripMenuItem, "converterToolStripMenuItem");
+            converterToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { lazerConverterToolStripMenuItem, stableConverterToolStripMenuItem });
+            converterToolStripMenuItem.Name = "converterToolStripMenuItem";
+            // 
+            // lazerConverterToolStripMenuItem
+            // 
+            resources.ApplyResources(lazerConverterToolStripMenuItem, "lazerConverterToolStripMenuItem");
+            lazerConverterToolStripMenuItem.Name = "lazerConverterToolStripMenuItem";
+            lazerConverterToolStripMenuItem.Click += lazerConverterToolStripMenuItem_Click;
+            // 
+            // stableConverterToolStripMenuItem
+            // 
+            resources.ApplyResources(stableConverterToolStripMenuItem, "stableConverterToolStripMenuItem");
+            stableConverterToolStripMenuItem.Name = "stableConverterToolStripMenuItem";
+            stableConverterToolStripMenuItem.Click += stableConverterToolStripMenuItem_Click;
             // 
             // modToolStripMenuItem
             // 
@@ -546,5 +567,8 @@
         private ToolStripMenuItem ClearBookmarkToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripMenuItem cubicFittingCurveToolStripMenuItem;
+        private ToolStripMenuItem converterToolStripMenuItem;
+        private ToolStripMenuItem lazerConverterToolStripMenuItem;
+        private ToolStripMenuItem stableConverterToolStripMenuItem;
     }
 }

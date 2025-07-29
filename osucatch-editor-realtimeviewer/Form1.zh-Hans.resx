@@ -124,6 +124,18 @@
   <data name="viewerToolStripMenuItem.Text" xml:space="preserve">
     <value>预览器 (&amp;V)</value>
   </data>
+  <data name="converterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="converterToolStripMenuItem.Text" xml:space="preserve">
+    <value>谱面解析 (&amp;U)</value>
+  </data>
+  <data name="lazerConverterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="stableConverterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
   <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>180, 22</value>
   </data>
