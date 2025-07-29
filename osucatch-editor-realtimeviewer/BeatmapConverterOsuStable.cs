@@ -604,7 +604,6 @@ namespace osucatch_editor_realtimeviewer
                                 X = sliderData.GetPositionByTime(time).X,
                                 ComboIndex = juiceStream.ComboIndex
                             });
-                            random.Next();
                         }
                     }
                 }
