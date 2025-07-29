@@ -603,6 +603,7 @@ namespace osucatch_editor_realtimeviewer
                                 X = sliderData.GetPositionByTime(time).X,
                                 ComboIndex = juiceStream.ComboIndex
                             });
+                            random.Next();
                         }
                     }
                 }
@@ -621,7 +622,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 List<PalpableCatchHitObject> palpableHitObjects = new List<PalpableCatchHitObject>();
                 
-                float interval = (int) bananaShower.StartTime - (int) bananaShower.EndTime;
+                float interval = (int) bananaShower.EndTime - (int) bananaShower.StartTime;
                 while (interval > 100)
                     interval /= 2;
 
@@ -639,6 +640,9 @@ namespace osucatch_editor_realtimeviewer
                         OriginalX = random.Next(0, 512),
                         BananaIndex = count
                     });
+                    random.Next();
+                    random.Next();
+                    random.Next();
                     count++;
                 }
                 return palpableHitObjects;
