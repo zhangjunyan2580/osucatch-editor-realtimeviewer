@@ -597,6 +597,7 @@ namespace osucatch_editor_realtimeviewer
                         }
                         else
                         {
+                            random.Next();
                             palpableHitObjects.Add(new Droplet
                             {
                                 StartTime = time,
