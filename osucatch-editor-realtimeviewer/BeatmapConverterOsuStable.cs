@@ -36,7 +36,7 @@ namespace osucatch_editor_realtimeviewer
 
                 else if (currentObject is JuiceStream)
                 {
-                    foreach (var juice in manager.ConvertSlider(beatmap, (JuiceStream)currentObject))
+                    foreach (var juice in manager.convertSlider(beatmap, (JuiceStream)currentObject))
                     {
                         if (juice is PalpableCatchHitObject palpableObject) {
                             juice.ApplyDefaults(beatmap.ControlPointInfo, beatmap.Difficulty);
@@ -46,7 +46,7 @@ namespace osucatch_editor_realtimeviewer
                 }
                 else if (currentObject is BananaShower)
                 {
-                    foreach (var banana in manager.ConvertSpinner(beatmap, (BananaShower)currentObject))
+                    foreach (var banana in currentObject.NestedHitObjects)
                     {
                         if (banana is PalpableCatchHitObject palpableObject)
                             palpableObjects.Add(palpableObject);
@@ -265,6 +265,8 @@ namespace osucatch_editor_realtimeviewer
                     sliderComboPointDistance
                 );
 
+                #region Calculate Path
+
                 List<Segment> path = new List<Segment>();
 
                 SliderPath pathData = slider.Path;
@@ -389,6 +391,10 @@ namespace osucatch_editor_realtimeviewer
 
                 CurveSegmentPath = path;
 
+                #endregion
+
+                #region Calculate slider length
+
                 const double LENGTH_EPS = 0.0001;
 
                 CurveLength = 0;
@@ -443,9 +449,12 @@ namespace osucatch_editor_realtimeviewer
                     }
                 }
 
+                #endregion
+
                 if (path.Count < 1)
                     return;
 
+                #region Calculate Position
                 {
                     double scoringLengthTotal = 0;
                     double currentTime = StartTime;
@@ -533,6 +542,7 @@ namespace osucatch_editor_realtimeviewer
                             if ((i + 1) % timingPointsPerSegment == 0)
                                 SliderRepeatPoints.Add(SliderScoreTimingPoints[i]);
                 }
+                #endregion
             }
         }
 
@@ -540,8 +550,10 @@ namespace osucatch_editor_realtimeviewer
         {
             private LegacyRandom random = new(1337);
 
-            public List<PalpableCatchHitObject> ConvertSlider(IBeatmap beatmap, JuiceStream juiceStream)
+            public List<PalpableCatchHitObject> convertSlider(IBeatmap beatmap, JuiceStream juiceStream)
             {
+
+                #region Calculate Drops
 
                 List<PalpableCatchHitObject> palpableHitObjects = new();
 
@@ -615,33 +627,8 @@ namespace osucatch_editor_realtimeviewer
                     ComboIndex = juiceStream.ComboIndex
                 });
 
-                return palpableHitObjects;
-            }
+                #endregion
 
-            public List<PalpableCatchHitObject> ConvertSpinner(IBeatmap beatmap, BananaShower bananaShower)
-            {
-                List<PalpableCatchHitObject> palpableHitObjects = new List<PalpableCatchHitObject>();
-                
-                float interval = (int) bananaShower.StartTime - (int) bananaShower.EndTime;
-                while (interval > 100)
-                    interval /= 2;
-
-                if (interval <= 0)
-                {
-                    return palpableHitObjects;
-                }
-
-                int count = 0;
-                for (float currentTime = (int) bananaShower.StartTime; currentTime <= (int) bananaShower.EndTime; currentTime += interval)
-                {
-                    palpableHitObjects.Add(new Banana
-                    {
-                        StartTime = currentTime,
-                        OriginalX = random.Next(0, 512),
-                        BananaIndex = count
-                    });
-                    count++;
-                }
                 return palpableHitObjects;
             }
 
