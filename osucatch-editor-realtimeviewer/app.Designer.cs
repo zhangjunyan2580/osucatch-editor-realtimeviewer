@@ -850,5 +850,53 @@ namespace osucatch_editor_realtimeviewer {
                 this["Show_CubicFittingCurve"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Use_Stable_Converter {
+            get {
+                return ((bool)(this["Use_Stable_Converter"]));
+            }
+            set {
+                this["Use_Stable_Converter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Curve_LineStyle {
+            get {
+                return ((int)(this["Curve_LineStyle"]));
+            }
+            set {
+                this["Curve_LineStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Curve_Width {
+            get {
+                return ((int)(this["Curve_Width"]));
+            }
+            set {
+                this["Curve_Width"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Gray")]
+        public global::System.Drawing.Color Curve_Color {
+            get {
+                return ((global::System.Drawing.Color)(this["Curve_Color"]));
+            }
+            set {
+                this["Curve_Color"] = value;
+            }
+        }
     }
 }

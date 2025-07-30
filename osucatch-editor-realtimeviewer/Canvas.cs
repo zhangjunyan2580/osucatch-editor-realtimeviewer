@@ -252,16 +252,6 @@ namespace osucatch_editor_realtimeviewer
             if (isSelected) DrawSelectedCircle(texture, pos, diameter);
         }
 
-        public static void DrawSplinePoint(Vector2 pos)
-        {
-            GL.Disable(EnableCap.Texture2D);
-            GL.Color4(Color.Gray);
-            GL.Begin(PrimitiveType.Points);
-            GL.Vertex2(pos);
-            GL.End();
-            GL.Enable(EnableCap.Texture2D);
-        }
-
         private static void DrawCircle(Texture2D? texture, Vector2 pos, float diameter, bool isHyperDash, bool isSelected)
         {
             if (texture == null) return;

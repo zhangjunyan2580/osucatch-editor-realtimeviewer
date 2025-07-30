@@ -65,6 +65,7 @@
             checkBox_ShowSelected = new CheckBox();
             checkBox_withColor = new CheckBox();
             groupBox6 = new GroupBox();
+            checkBox_Log_BookmarkPlus = new CheckBox();
             checkBox_Log_BeatmapBuilder = new CheckBox();
             comboBox_Log_Level = new ComboBox();
             label8 = new Label();
@@ -86,7 +87,13 @@
             numericUpDown_timeOut = new NumericUpDown();
             label9 = new Label();
             checkBox_FilterNearbyHitObjects = new CheckBox();
-            checkBox_Log_BookmarkPlus = new CheckBox();
+            groupBox9 = new GroupBox();
+            CurveColorButton = new Button();
+            CurveWidthComboBox = new ComboBox();
+            CurveDashStyleComboBox = new ComboBox();
+            label15 = new Label();
+            label14 = new Label();
+            label13 = new Label();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_height).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_width).BeginInit();
@@ -101,17 +108,18 @@
             groupBox7.SuspendLayout();
             groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_timeOut).BeginInit();
+            groupBox9.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
             // 
+            resources.ApplyResources(groupBox1, "groupBox1");
             groupBox1.Controls.Add(button_height_reset);
             groupBox1.Controls.Add(button_width_reset);
             groupBox1.Controls.Add(numericUpDown_height);
             groupBox1.Controls.Add(numericUpDown_width);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(label1);
-            resources.ApplyResources(groupBox1, "groupBox1");
             groupBox1.Name = "groupBox1";
             groupBox1.TabStop = false;
             // 
@@ -157,11 +165,11 @@
             // 
             // groupBox2
             // 
+            resources.ApplyResources(groupBox2, "groupBox2");
             groupBox2.Controls.Add(button_osuFolder_reset);
             groupBox2.Controls.Add(button_osuFolder_select);
             groupBox2.Controls.Add(textBox_osuFolder);
             groupBox2.Controls.Add(label3);
-            resources.ApplyResources(groupBox2, "groupBox2");
             groupBox2.Name = "groupBox2";
             groupBox2.TabStop = false;
             // 
@@ -191,13 +199,13 @@
             // 
             // groupBox3
             // 
+            resources.ApplyResources(groupBox3, "groupBox3");
             groupBox3.Controls.Add(button_drawingInterval_reset);
             groupBox3.Controls.Add(numericUpDown_idleInterval);
             groupBox3.Controls.Add(button_idleInterval_reset);
             groupBox3.Controls.Add(label5);
             groupBox3.Controls.Add(numericUpDown_drawingInterval);
             groupBox3.Controls.Add(label4);
-            resources.ApplyResources(groupBox3, "groupBox3");
             groupBox3.Name = "groupBox3";
             groupBox3.TabStop = false;
             // 
@@ -243,6 +251,7 @@
             // 
             // groupBox4
             // 
+            resources.ApplyResources(groupBox4, "groupBox4");
             groupBox4.Controls.Add(checkBox_enableBackup);
             groupBox4.Controls.Add(numericUpDown_backupInterval);
             groupBox4.Controls.Add(button_backupFolder_reset);
@@ -251,7 +260,6 @@
             groupBox4.Controls.Add(label7);
             groupBox4.Controls.Add(label6);
             groupBox4.Controls.Add(button_backupFolder_select);
-            resources.ApplyResources(groupBox4, "groupBox4");
             groupBox4.Name = "groupBox4";
             groupBox4.TabStop = false;
             // 
@@ -321,11 +329,11 @@
             // 
             // groupBox5
             // 
+            resources.ApplyResources(groupBox5, "groupBox5");
             groupBox5.Controls.Add(label12);
             groupBox5.Controls.Add(button_Label_Color);
             groupBox5.Controls.Add(checkBox_ShowSelected);
             groupBox5.Controls.Add(checkBox_withColor);
-            resources.ApplyResources(groupBox5, "groupBox5");
             groupBox5.Name = "groupBox5";
             groupBox5.TabStop = false;
             // 
@@ -336,8 +344,8 @@
             // 
             // button_Label_Color
             // 
-            button_Label_Color.BackColor = Color.LightBlue;
             resources.ApplyResources(button_Label_Color, "button_Label_Color");
+            button_Label_Color.BackColor = Color.LightBlue;
             button_Label_Color.Name = "button_Label_Color";
             button_Label_Color.UseVisualStyleBackColor = false;
             button_Label_Color.Click += button_Label_Color_Click;
@@ -356,6 +364,7 @@
             // 
             // groupBox6
             // 
+            resources.ApplyResources(groupBox6, "groupBox6");
             groupBox6.Controls.Add(checkBox_Log_BookmarkPlus);
             groupBox6.Controls.Add(checkBox_Log_BeatmapBuilder);
             groupBox6.Controls.Add(comboBox_Log_Level);
@@ -367,9 +376,14 @@
             groupBox6.Controls.Add(checkBox_Log_EditorReader);
             groupBox6.Controls.Add(checkBox_Log_Program);
             groupBox6.Controls.Add(checkBox_showConsole);
-            resources.ApplyResources(groupBox6, "groupBox6");
             groupBox6.Name = "groupBox6";
             groupBox6.TabStop = false;
+            // 
+            // checkBox_Log_BookmarkPlus
+            // 
+            resources.ApplyResources(checkBox_Log_BookmarkPlus, "checkBox_Log_BookmarkPlus");
+            checkBox_Log_BookmarkPlus.Name = "checkBox_Log_BookmarkPlus";
+            checkBox_Log_BookmarkPlus.UseVisualStyleBackColor = true;
             // 
             // checkBox_Log_BeatmapBuilder
             // 
@@ -379,9 +393,9 @@
             // 
             // comboBox_Log_Level
             // 
+            resources.ApplyResources(comboBox_Log_Level, "comboBox_Log_Level");
             comboBox_Log_Level.FormattingEnabled = true;
             comboBox_Log_Level.Items.AddRange(new object[] { resources.GetString("comboBox_Log_Level.Items"), resources.GetString("comboBox_Log_Level.Items1"), resources.GetString("comboBox_Log_Level.Items2"), resources.GetString("comboBox_Log_Level.Items3") });
-            resources.ApplyResources(comboBox_Log_Level, "comboBox_Log_Level");
             comboBox_Log_Level.Name = "comboBox_Log_Level";
             // 
             // label8
@@ -433,10 +447,10 @@
             // 
             // groupBox7
             // 
+            resources.ApplyResources(groupBox7, "groupBox7");
             groupBox7.Controls.Add(checkBox_BarLine_Show);
             groupBox7.Controls.Add(checkBox_TimingLine_ShowGreen);
             groupBox7.Controls.Add(checkBox_TimingLine_ShowRed);
-            resources.ApplyResources(groupBox7, "groupBox7");
             groupBox7.Name = "groupBox7";
             groupBox7.TabStop = false;
             // 
@@ -460,13 +474,13 @@
             // 
             // groupBox8
             // 
+            resources.ApplyResources(groupBox8, "groupBox8");
             groupBox8.Controls.Add(button_timeOut_reset);
             groupBox8.Controls.Add(label11);
             groupBox8.Controls.Add(label10);
             groupBox8.Controls.Add(numericUpDown_timeOut);
             groupBox8.Controls.Add(label9);
             groupBox8.Controls.Add(checkBox_FilterNearbyHitObjects);
-            resources.ApplyResources(groupBox8, "groupBox8");
             groupBox8.Name = "groupBox8";
             groupBox8.TabStop = false;
             // 
@@ -507,16 +521,62 @@
             checkBox_FilterNearbyHitObjects.UseVisualStyleBackColor = true;
             checkBox_FilterNearbyHitObjects.CheckedChanged += checkBox_FilterNearbyHitObjects_CheckedChanged;
             // 
-            // checkBox_Log_BookmarkPlus
+            // groupBox9
             // 
-            resources.ApplyResources(checkBox_Log_BookmarkPlus, "checkBox_Log_BookmarkPlus");
-            checkBox_Log_BookmarkPlus.Name = "checkBox_Log_BookmarkPlus";
-            checkBox_Log_BookmarkPlus.UseVisualStyleBackColor = true;
+            resources.ApplyResources(groupBox9, "groupBox9");
+            groupBox9.Controls.Add(CurveColorButton);
+            groupBox9.Controls.Add(CurveWidthComboBox);
+            groupBox9.Controls.Add(CurveDashStyleComboBox);
+            groupBox9.Controls.Add(label15);
+            groupBox9.Controls.Add(label14);
+            groupBox9.Controls.Add(label13);
+            groupBox9.Name = "groupBox9";
+            groupBox9.TabStop = false;
+            // 
+            // CurveColorButton
+            // 
+            resources.ApplyResources(CurveColorButton, "CurveColorButton");
+            CurveColorButton.BackColor = Color.Gray;
+            CurveColorButton.Name = "CurveColorButton";
+            CurveColorButton.UseVisualStyleBackColor = false;
+            CurveColorButton.Click += CurveColorButton_Click;
+            // 
+            // CurveWidthComboBox
+            // 
+            resources.ApplyResources(CurveWidthComboBox, "CurveWidthComboBox");
+            CurveWidthComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            CurveWidthComboBox.FormattingEnabled = true;
+            CurveWidthComboBox.Items.AddRange(new object[] { resources.GetString("CurveWidthComboBox.Items"), resources.GetString("CurveWidthComboBox.Items1"), resources.GetString("CurveWidthComboBox.Items2"), resources.GetString("CurveWidthComboBox.Items3"), resources.GetString("CurveWidthComboBox.Items4") });
+            CurveWidthComboBox.Name = "CurveWidthComboBox";
+            // 
+            // CurveDashStyleComboBox
+            // 
+            resources.ApplyResources(CurveDashStyleComboBox, "CurveDashStyleComboBox");
+            CurveDashStyleComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            CurveDashStyleComboBox.FormattingEnabled = true;
+            CurveDashStyleComboBox.Items.AddRange(new object[] { resources.GetString("CurveDashStyleComboBox.Items"), resources.GetString("CurveDashStyleComboBox.Items1") });
+            CurveDashStyleComboBox.Name = "CurveDashStyleComboBox";
+            // 
+            // label15
+            // 
+            resources.ApplyResources(label15, "label15");
+            label15.Name = "label15";
+            // 
+            // label14
+            // 
+            resources.ApplyResources(label14, "label14");
+            label14.Name = "label14";
+            // 
+            // label13
+            // 
+            resources.ApplyResources(label13, "label13");
+            label13.Name = "label13";
             // 
             // SettingsForm
             // 
             resources.ApplyResources(this, "$this");
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(groupBox9);
             Controls.Add(groupBox8);
             Controls.Add(groupBox7);
             Controls.Add(groupBox6);
@@ -553,6 +613,8 @@
             groupBox8.ResumeLayout(false);
             groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_timeOut).EndInit();
+            groupBox9.ResumeLayout(false);
+            groupBox9.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -616,5 +678,12 @@
         private Label label12;
         private Button button_Label_Color;
         private CheckBox checkBox_Log_BookmarkPlus;
+        private GroupBox groupBox9;
+        private Label label15;
+        private Label label14;
+        private Label label13;
+        private ComboBox CurveDashStyleComboBox;
+        private ComboBox CurveWidthComboBox;
+        private Button CurveColorButton;
     }
 }

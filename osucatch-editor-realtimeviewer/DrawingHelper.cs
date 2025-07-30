@@ -90,7 +90,16 @@ namespace osucatch_editor_realtimeviewer
         {
             ControlPointInfo = convertedBeatmap.ControlPointInfo;
             BarLines = convertedBeatmap.BarLines;
-            CatchHitObjects = BeatmapConverter.GetPalpableObjects(convertedBeatmap, LabelType);
+            if (app.Default.Use_Stable_Converter)
+            {
+                CatchHitObjects = Form1.stableBeatmapConverter.GetPalpableObjects(convertedBeatmap);
+                Form1.stableBeatmapConverter.CalHitObjectLabel(convertedBeatmap, CatchHitObjects, LabelType);
+            }
+            else
+            {
+                CatchHitObjects = Form1.lazerBeatmapConverter.GetPalpableObjects(convertedBeatmap);
+                Form1.lazerBeatmapConverter.CalHitObjectLabel(convertedBeatmap, CatchHitObjects, LabelType);
+            }
 
             float moddedAR = convertedBeatmap.Difficulty.ApproachRate;
             ApproachTime = (int)((moddedAR < 5) ? 1800 - moddedAR * 120 : 1200 - (moddedAR - 5) * 150);
@@ -364,8 +373,9 @@ namespace osucatch_editor_realtimeviewer
             CubicSpline spline = new CubicSpline(points);
             float tMin = points.Min(p => p.Y);
             float tMax = points.Max(p => p.Y);
-            int splitCount = (int)((tMax - tMin) / 5);
-            if (splitCount > 2000) splitCount = 2000;
+            int splitCount = (int)((tMax - tMin) / 20);
+            if (splitCount > 100) splitCount = 100;
+            List<Vector2> splinePoints = new List<Vector2>();
             for (int i = 0; i < splitCount; i++)
             {
                 float tVal = tMin + (tMax - tMin) * i / splitCount;
@@ -375,7 +385,11 @@ namespace osucatch_editor_realtimeviewer
                 double baseY = (ScreensContain <= 1) ? 408 : 240.0 * this.ScreensContain;
                 double deltaTime = tVal - CurrentTime;
                 Vector2 pos = new Vector2(64 + xVal, (float)(baseY - deltaTime / TimePerPixels));
-                Canvas.DrawSplinePoint(pos);
+                splinePoints.Add(pos);
+            }
+            for (int i = 1; i < splinePoints.Count; i++)
+            {
+                Canvas.DrawLine(splinePoints[i - 1], splinePoints[i], app.Default.Curve_Color, app.Default.Curve_Width, (LineType)(app.Default.Curve_LineStyle * 2));
             }
         }
 
