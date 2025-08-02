@@ -178,7 +178,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 StartTime = (int)slider.StartTime;
                 Position = new(slider.OriginalX, slider.Y);
-
+                
                 compute(beatmap, slider);
             }
 
@@ -549,7 +549,8 @@ namespace osucatch_editor_realtimeviewer
                 {
                     StartTime = juiceStream.StartTime,
                     X = juiceStream.OriginalX,
-                    ComboIndex = juiceStream.ComboIndex
+                    ComboIndex = juiceStream.ComboIndex,
+                    IsSelected = juiceStream.IsSelected
                 });
 
                 LegacySliderAdditionalData sliderData = new(beatmap, juiceStream);
@@ -573,7 +574,8 @@ namespace osucatch_editor_realtimeviewer
                             {
                                 StartTime = (int)j,
                                 X = sliderData.GetPositionByTime((int)j).X + random.Next(-20, 20),
-                                ComboIndex = juiceStream.ComboIndex
+                                ComboIndex = juiceStream.ComboIndex,
+                                IsSelected = juiceStream.IsSelected
                             };
                             palpableHitObjects.Add(tinyDroplet);
                         }
@@ -591,7 +593,8 @@ namespace osucatch_editor_realtimeviewer
                             {
                                 StartTime = time,
                                 X = repeatLocation % 2 == 1 ? juiceStream.OriginalX : sliderData.Position2.X,
-                                ComboIndex = juiceStream.ComboIndex
+                                ComboIndex = juiceStream.ComboIndex,
+                                IsSelected = juiceStream.IsSelected
                             });
                             fruitIndex++;
                         }
@@ -602,7 +605,8 @@ namespace osucatch_editor_realtimeviewer
                             {
                                 StartTime = time,
                                 X = sliderData.GetPositionByTime(time).X,
-                                ComboIndex = juiceStream.ComboIndex
+                                ComboIndex = juiceStream.ComboIndex,
+                                IsSelected = juiceStream.IsSelected
                             });
                         }
                     }
@@ -612,7 +616,8 @@ namespace osucatch_editor_realtimeviewer
                 {
                     StartTime = sliderData.EndTime,
                     X = sliderData.EndPosition.X,
-                    ComboIndex = juiceStream.ComboIndex
+                    ComboIndex = juiceStream.ComboIndex,
+                    IsSelected = juiceStream.IsSelected
                 });
 
                 return palpableHitObjects;
@@ -638,7 +643,8 @@ namespace osucatch_editor_realtimeviewer
                     {
                         StartTime = currentTime,
                         OriginalX = random.Next(0, 512),
-                        BananaIndex = count
+                        BananaIndex = count,
+                        IsSelected = bananaShower.IsSelected
                     });
                     random.Next();
                     random.Next();
