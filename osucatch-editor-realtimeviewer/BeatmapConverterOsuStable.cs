@@ -9,7 +9,6 @@ using Microsoft.VisualBasic.Devices;
 using OpenTK.Graphics.OpenGL;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
-using osu.Game.Beatmaps.Legacy;
 using osu.Game.Rulesets.Catch.Beatmaps;
 using osu.Game.Rulesets.Catch.Objects;
 using osu.Game.Rulesets.Catch.UI;
@@ -185,12 +184,12 @@ namespace osucatch_editor_realtimeviewer
 
             private double computeVelocity(
                 TimingControlPoint timingControlPoint,
-                double sliderVelocity,
+                double sliderVelocityAsBeatLength,
                 double difficultySliderTickRate,
                 double sliderComboPointDistance)
             {
-                float mult = (float)sliderVelocity;
-                double beatLength = timingControlPoint.BeatLength / mult;
+                float mult = (float)(-sliderVelocityAsBeatLength) / 100f;
+                double beatLength = timingControlPoint.BeatLength * mult;
                 return sliderComboPointDistance * difficultySliderTickRate * (1000f / beatLength);
             }
 
@@ -258,11 +257,10 @@ namespace osucatch_editor_realtimeviewer
             private void compute(IBeatmap beatmap, JuiceStream slider)
             {
                 double sliderComboPointDistance = (100 * beatmap.Difficulty.SliderMultiplier) / beatmap.Difficulty.SliderTickRate;
-                double sliderVelocity = ((LegacyControlPointInfo)beatmap.ControlPointInfo).DifficultyPointAt(slider.StartTime).SliderVelocity;
 
                 Velocity = computeVelocity(
                     beatmap.ControlPointInfo.TimingPointAt(slider.StartTime),
-                    sliderVelocity,
+                    slider.SliderVelocityAsBeatLength,
                     beatmap.Difficulty.SliderTickRate,
                     sliderComboPointDistance
                 );
@@ -398,7 +396,7 @@ namespace osucatch_editor_realtimeviewer
                     CurveLength += path[i].Length;
                 int expectedComboCount = 0;
                 double tickDistance = (beatmap.BeatmapInfo.BeatmapVersion < 8) ? sliderComboPointDistance :
-                    (sliderComboPointDistance * (float)sliderVelocity);
+                    (sliderComboPointDistance / ((float)(-slider.SliderVelocityAsBeatLength) / 100f));
 
                 if (CurveLength > 0)
                 {
