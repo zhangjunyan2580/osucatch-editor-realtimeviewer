@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Net.Quic;
 using System.Text;
 using System.Threading.Tasks;
 using Editor_Reader;
@@ -22,22 +23,91 @@ namespace osucatch_editor_realtimeviewer
 {
     public class BeatmapConverterOsuStable : BeatmapConverter
     {
-
-        public override List<PalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap)
+        public override List<PalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap, bool IsHardRock)
         {
             Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             List<PalpableCatchHitObject> palpableObjects = new List<PalpableCatchHitObject>();
             HitObjectManagerCatch manager = new();
 
+            float? lastPosition = null;
+            double lastStartTime = 0;
+            bool isFirstSame = true;
+
             foreach (var currentObject in beatmap.HitObjects)
             {
                 if (currentObject is Fruit fruitObject)
+                {
                     palpableObjects.Add(fruitObject);
 
-                else if (currentObject is JuiceStream)
+                    // add another random.next
+                    // TODO: find error when 0-diff fruits combo > 55, why?
+                    if (IsHardRock)
+                    {
+                        float offsetPosition = fruitObject.OriginalX;
+                        double startTime = fruitObject.StartTime;
+
+                        if (lastPosition == null || lastPosition == 0)
+                        {
+                            lastPosition = offsetPosition;
+                            lastStartTime = startTime;
+                            continue;
+                        }
+
+                        float positionDiff = offsetPosition - lastPosition.Value;
+
+                        int timeDiff = (int)(startTime - lastStartTime);
+
+                        if (timeDiff > 1000)
+                        {
+                            lastPosition = offsetPosition;
+                            lastStartTime = startTime;
+                            continue;
+                        }
+
+                        if (positionDiff == 0)
+                        {
+                            // why? is it right? it tested well
+                            if (isFirstSame)
+                            {
+                                manager.NextRandom();
+                                isFirstSame = false;
+                            }
+                            manager.NextRandom();
+                            continue;
+                        }
+
+                        // ReSharper disable once PossibleLossOfFraction
+                        
+                        if (Math.Abs(positionDiff) < timeDiff / 3)
+                        {
+                            if (positionDiff > 0)
+                            {
+                                // Clamp to the right bound
+                                if (offsetPosition + positionDiff < CatchPlayfield.WIDTH)
+                                    offsetPosition += positionDiff;
+                            }
+                            else
+                            {
+                                // Clamp to the left bound
+                                if (offsetPosition + positionDiff > 0)
+                                    offsetPosition += positionDiff;
+                            }
+                        }
+                        
+                        lastPosition = offsetPosition;
+                        lastStartTime = startTime;
+                    }
+                }
+                else if (currentObject is JuiceStream juiceStream)
                 {
-                    foreach (var juice in manager.ConvertSlider(beatmap, (JuiceStream)currentObject))
+                    // Todo: BUG!! Stable used the last control point as the final position of the path, but it should use the computed path instead.
+                    lastPosition = juiceStream.OriginalX + juiceStream.Path.ControlPoints[^1].Position.X;
+
+                    // Todo: BUG!! Stable attempted to use the end time of the stream, but referenced it too early in execution and used the start time instead.
+                    lastStartTime = juiceStream.StartTime;
+
+                    foreach (var juice in manager.ConvertSlider(beatmap, juiceStream))
                     {
                         if (juice is PalpableCatchHitObject palpableObject) {
                             juice.ApplyDefaults(beatmap.ControlPointInfo, beatmap.Difficulty);
@@ -541,6 +611,11 @@ namespace osucatch_editor_realtimeviewer
         internal class HitObjectManagerCatch
         {
             private LegacyRandom random = new(1337);
+
+            public void NextRandom()
+            {
+                random.Next();
+            }
 
             public List<PalpableCatchHitObject> ConvertSlider(IBeatmap beatmap, JuiceStream juiceStream)
             {

@@ -582,7 +582,7 @@ namespace osucatch_editor_realtimeviewer
                 else
                 {
                     Log.ConsoleLog("Try building drawing objects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
-                    drawingHelper.LoadBeatmap(convertedBeatmap);
+                    drawingHelper.LoadBeatmap(convertedBeatmap, mods);
 
                     Log.ConsoleLog("Build drawing objects successfully.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
                 }
