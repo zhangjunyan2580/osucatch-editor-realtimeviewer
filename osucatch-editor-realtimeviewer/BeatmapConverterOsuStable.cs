@@ -10,7 +10,6 @@ using Microsoft.VisualBasic.Devices;
 using OpenTK.Graphics.OpenGL;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
-using osu.Game.Beatmaps.Legacy;
 using osu.Game.Rulesets.Catch.Beatmaps;
 using osu.Game.Rulesets.Catch.Objects;
 using osu.Game.Rulesets.Catch.UI;
@@ -140,10 +139,10 @@ namespace osucatch_editor_realtimeviewer
                                               .Where(h => h is Fruit || (h is Droplet && h is not TinyDroplet))
                                               .ToArray();
 
-            double halfCatcherWidth = catcherWidth / 2;
+            float halfCatcherWidth = catcherWidth / 2;
 
             int lastDirection = 0;
-            double lastExcess = halfCatcherWidth;
+            float lastExcess = halfCatcherWidth;
 
             for (int i = 0; i < palpableObjects.Length - 1; i++)
             {
@@ -157,11 +156,11 @@ namespace osucatch_editor_realtimeviewer
                 int thisDirection = nextObject.EffectiveX > currentObject.EffectiveX ? 1 : -1;
 
                 // Int truncation added to match osu!stable.
-                double timeToNext = (int)nextObject.StartTime - (int)currentObject.StartTime - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
-                double distanceToNext = Math.Abs(nextObject.EffectiveX - currentObject.EffectiveX) - (lastDirection == thisDirection ? lastExcess : halfCatcherWidth);
-                float distanceToHyper = (float)(timeToNext * Catcher.BASE_DASH_SPEED - distanceToNext);
+                float timeToNext = (int)nextObject.StartTime - (int)currentObject.StartTime - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
+                float distanceToNext = Math.Abs(nextObject.EffectiveX - currentObject.EffectiveX) - (lastDirection == thisDirection ? lastExcess : halfCatcherWidth);
+                float distanceToHyper = timeToNext - distanceToNext;
 
-                if (distanceToHyper < 0)
+                if (timeToNext < distanceToNext)
                 {
                     currentObject.HyperDashTarget = nextObject;
                     lastExcess = halfCatcherWidth;
@@ -255,12 +254,12 @@ namespace osucatch_editor_realtimeviewer
 
             private double computeVelocity(
                 TimingControlPoint timingControlPoint,
-                double sliderVelocity,
+                double sliderVelocityAsBeatLength,
                 double difficultySliderTickRate,
                 double sliderComboPointDistance)
             {
-                float mult = (float)sliderVelocity;
-                double beatLength = timingControlPoint.BeatLength / mult;
+                float mult = (float)(-sliderVelocityAsBeatLength) / 100f;
+                double beatLength = timingControlPoint.BeatLength * mult;
                 return sliderComboPointDistance * difficultySliderTickRate * (1000f / beatLength);
             }
 
@@ -328,11 +327,10 @@ namespace osucatch_editor_realtimeviewer
             private void compute(IBeatmap beatmap, JuiceStream slider)
             {
                 double sliderComboPointDistance = (100 * beatmap.Difficulty.SliderMultiplier) / beatmap.Difficulty.SliderTickRate;
-                double sliderVelocity = ((LegacyControlPointInfo)beatmap.ControlPointInfo).DifficultyPointAt(slider.StartTime).SliderVelocity;
 
                 Velocity = computeVelocity(
                     beatmap.ControlPointInfo.TimingPointAt(slider.StartTime),
-                    sliderVelocity,
+                    slider.SliderVelocityAsBeatLength,
                     beatmap.Difficulty.SliderTickRate,
                     sliderComboPointDistance
                 );
@@ -468,7 +466,7 @@ namespace osucatch_editor_realtimeviewer
                     CurveLength += path[i].Length;
                 int expectedComboCount = 0;
                 double tickDistance = (beatmap.BeatmapInfo.BeatmapVersion < 8) ? sliderComboPointDistance :
-                    (sliderComboPointDistance * (float)sliderVelocity);
+                    (sliderComboPointDistance / ((float)(-slider.SliderVelocityAsBeatLength) / 100f));
 
                 if (CurveLength > 0)
                 {
