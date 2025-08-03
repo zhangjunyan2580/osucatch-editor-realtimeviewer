@@ -69,10 +69,10 @@ namespace osucatch_editor_realtimeviewer
                                               .Where(h => h is Fruit || (h is Droplet && h is not TinyDroplet))
                                               .ToArray();
 
-            double halfCatcherWidth = catcherWidth / 2;
+            float halfCatcherWidth = catcherWidth / 2;
 
             int lastDirection = 0;
-            double lastExcess = halfCatcherWidth;
+            float lastExcess = halfCatcherWidth;
 
             for (int i = 0; i < palpableObjects.Length - 1; i++)
             {
@@ -86,11 +86,11 @@ namespace osucatch_editor_realtimeviewer
                 int thisDirection = nextObject.EffectiveX > currentObject.EffectiveX ? 1 : -1;
 
                 // Int truncation added to match osu!stable.
-                double timeToNext = (int)nextObject.StartTime - (int)currentObject.StartTime - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
-                double distanceToNext = Math.Abs(nextObject.EffectiveX - currentObject.EffectiveX) - (lastDirection == thisDirection ? lastExcess : halfCatcherWidth);
-                float distanceToHyper = (float)(timeToNext * Catcher.BASE_DASH_SPEED - distanceToNext);
+                float timeToNext = (int)nextObject.StartTime - (int)currentObject.StartTime - 1000f / 60f / 4; // 1/4th of a frame of grace time, taken from osu-stable
+                float distanceToNext = Math.Abs(nextObject.EffectiveX - currentObject.EffectiveX) - (lastDirection == thisDirection ? lastExcess : halfCatcherWidth);
+                float distanceToHyper = timeToNext - distanceToNext;
 
-                if (distanceToHyper < 0)
+                if (timeToNext < distanceToNext)
                 {
                     currentObject.HyperDashTarget = nextObject;
                     lastExcess = halfCatcherWidth;

@@ -24,7 +24,6 @@ namespace osu.Game.Beatmaps.ControlPoints
 
         /// <summary>
         /// This field is added to ensure backward compability for osu!stable.
-        /// This field doesn't exist in current osu!lazer.
         /// </summary>
         private double sliderVelocityAsBeatLength = -100;
 
