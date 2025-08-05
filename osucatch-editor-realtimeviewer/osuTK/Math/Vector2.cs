@@ -70,7 +70,17 @@ namespace osuTK
         {
             get
             {
-                return (float)System.Math.Sqrt(X * X + Y * Y);
+                 return (float)System.Math.Sqrt(X * X + Y * Y);
+            }
+        }
+
+        public float LengthStableCompat
+        {
+            get
+            {
+                return (float)System.Math.Sqrt((double)X * X + (double)Y * Y);
+                // Yes the code shows the float to double conversion is after squared length calculation
+                // but it executes as converting position to double first. I don't know why.
             }
         }
 
@@ -294,7 +304,7 @@ namespace osuTK
             return result;
         }
 
-        public static Vector2 Normalize(Vector2 v)
+        public static Vector2 NormalizeStableCompat(Vector2 v)
         {
             float lengthSquared = v.X * v.X + v.Y * v.Y;
             float lengthInverted = 1f / (float)Math.Sqrt((double)lengthSquared);

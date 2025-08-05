@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Editor_Reader;
@@ -113,7 +114,7 @@ namespace osucatch_editor_realtimeviewer
 
             internal float Length
             {
-                get { return (End - Start).Length; }
+                get { return (End - Start).LengthStableCompat; }
             }
 
             internal Segment(Vector2 Start, Vector2 End)
@@ -182,16 +183,78 @@ namespace osucatch_editor_realtimeviewer
                 compute(beatmap, slider);
             }
 
-            private double computeVelocity(
-                TimingControlPoint timingControlPoint,
+            private static double computeVelocity(
+                double timingBeatLength,
                 double sliderVelocityAsBeatLength,
                 double difficultySliderTickRate,
                 double sliderComboPointDistance)
             {
-                float mult = (float)(-sliderVelocityAsBeatLength) / 100f;
-                double beatLength = timingControlPoint.BeatLength * mult;
-                return sliderComboPointDistance * difficultySliderTickRate * (1000f / beatLength);
+                // The following comments explain the direct computation done in stable:
+
+                // First:
+                // Beatmap::BeatLengthAt+11D             call dword ptr [13487B4C] ; ControlPoint::get_BpmMultiplier
+                // 
+                //                                       ...
+                // ControlPoint::get_BpmMultiplier+26    call OsuMathHelper::Clamp
+                //                                +2B    fdiv dword ptr [0B863A5C] ; 100.00
+                //                                +31    ret
+                //
+                // Beatmap::BeatLengthAt+123             fstp qword ptr [ebp-20]   ; mult
+                //                      +126             fld qword ptr [ebp-20]
+
+                // So this first converts sv beat length to float, then again converts to double and do double division.
+
+                // This is the original code but we just try the correct version
+                // float mult = (float)(-(float)(sliderVelocityAsBeatLength) / 100f);
+                double mult = (double)((float)(-sliderVelocityAsBeatLength)) / 100.0;
+
+                // Second:
+                // Beatmap::BeatLengthAt+126                fld qword ptr [ebp-20] ; st(0): mult
+                //                                          ...
+                // Beatmap::BeatLengthAt+159                fld qword ptr [edx+04] ; st(0): timing point beat length, st(1): mult
+                //                      +15C                fmulp st(1), st(0)     ; calculates beat length and keeps it in st(0)
+                //                                                                 ; st(0): beat length
+                //                                          ...
+                // Beatmap::BeatLengthAt+165                ret 0008
+                //                                          ...
+                // HitObjectManager::SliderVelocityAt+33    fld qword ptr [esi+08] ; st(0): combo distance, st(1): beat length
+                //                                          ...
+                //                                   +3E    fstp qword ptr [esp+08] ; st(0): beat length
+                //                                   +42    fstp qword ptr [esp]
+
+                // So beatLength is calculated by double multiplication.
+
+                double beatLength = timingBeatLength * mult;
+
+                // Third:
+                // HitObjectManager::SliderVelocityAt+45    call clr.dll+33D990           ; JIT_GetFieldDouble
+                //                                                                        ; st(0): slider tick rate
+                //                                   +4A    fld qword ptr [esp]           ; st(0): beat length, st(1): slider tick rate
+                //                                   +4D    fld qword ptr [esp+08]        ; st(0): combo distance, st(1): beat length, st(2): slider tick rate
+                //                                   +51    fmulp st(2), st(0)            ; st(0): beat length, st(1): combo distance * slider tick rate
+                //                                   +53    fdivr dword ptr [0B863894]    ; 1000.0
+                //                                                                        ; st(0): 1000.0 / beat length, st(1): combo distance * slider tick rate
+                //                                   +59    fmulp st(1), st(0)            ; st(0): velocity
+                //                                          ...
+                // HitObjectManager::SliderVelocityAt+5F    ret
+                // 
+                // SliderOsu::UpdateCalculations+120        fstp qword ptr [eax+0000009C]
+
+                // The FPU uses x87 80-bit extended precision format (long double in many implementions of C/C++).
+                // All the intermediate values are handled by this.
+                // In C# we don't have access to this format so we can either:
+                // 1. Hope the JIT compiler to give the same computation. Sadly it turns out that it's not the case;
+                // 2. Build a library that has this process implemented in C/C++;
+                // 3. Simulate FPU behavior by software.
+                return (sliderComboPointDistance * difficultySliderTickRate) * (1000.0 / beatLength);
             }
+
+            [DllImport("StableCompatLib.dll", EntryPoint = "computeVelocity")]
+            private static extern double computeVelocityStableCompat(
+                double timingBeatLength,
+                double sliderVelocityAsBeatLength,
+                double difficultySliderTickRate,
+                double sliderComboPointDistance);
 
             private List<Vector2> rebuildCurvePoints(Vector2 offset, SliderPath path)
             {
@@ -258,8 +321,9 @@ namespace osucatch_editor_realtimeviewer
             {
                 double sliderComboPointDistance = (100 * beatmap.Difficulty.SliderMultiplier) / beatmap.Difficulty.SliderTickRate;
 
-                Velocity = computeVelocity(
-                    beatmap.ControlPointInfo.TimingPointAt(slider.StartTime),
+                //Velocity = computeVelocity(
+                Velocity = computeVelocityStableCompat(
+                    beatmap.ControlPointInfo.TimingPointAt(slider.StartTime).BeatLength,
                     slider.SliderVelocityAsBeatLength,
                     beatmap.Difficulty.SliderTickRate,
                     sliderComboPointDistance
@@ -395,8 +459,12 @@ namespace osucatch_editor_realtimeviewer
                 for (int i = 0; i < path.Count; i++)
                     CurveLength += path[i].Length;
                 int expectedComboCount = 0;
+
+                // Slider velocity multiplier is identical to velocity calculation
+                // double tickDistance = (beatmap.BeatmapInfo.BeatmapVersion < 8) ? sliderComboPointDistance :
+                //     (sliderComboPointDistance / ((float)(-slider.SliderVelocityAsBeatLength) / 100f));
                 double tickDistance = (beatmap.BeatmapInfo.BeatmapVersion < 8) ? sliderComboPointDistance :
-                    (sliderComboPointDistance / ((float)(-slider.SliderVelocityAsBeatLength) / 100f));
+                    (sliderComboPointDistance / ((double)((float)(-slider.SliderVelocityAsBeatLength)) / 100.0));
 
                 if (CurveLength > 0)
                 {
@@ -418,7 +486,7 @@ namespace osucatch_editor_realtimeviewer
                         {
                             if (lastSegment.End != lastSegment.Start)
                             {
-                                lastSegment.End = lastSegment.Start + Vector2.Normalize(lastSegment.End - lastSegment.Start) * (lastSegment.Length - (float)cutLength);
+                                lastSegment.End = lastSegment.Start + Vector2.NormalizeStableCompat(lastSegment.End - lastSegment.Start) * (lastSegment.Length - (float)cutLength);
                             }
                             break;
                         }
@@ -488,6 +556,10 @@ namespace osucatch_editor_realtimeviewer
                                 p2 = l.End;
                             }
 
+                            // It shows multiply -> float to double -> division in code,
+                            // but executes as float to double -> multiply -> division.
+
+                            // double duration = 1000.0 * (double)distance / Velocity;
                             double duration = 1000F * distance / Velocity;
 
                             currentTime += duration;
