@@ -135,7 +135,7 @@ namespace osucatch_editor_realtimeviewer
 
         private static string doubleToString(double value)
         {
-            string initial = value.ToString("R", CultureInfo.InvariantCulture);
+            string initial = value.ToString("G9", CultureInfo.InvariantCulture);
             if (!double.IsNaN(value) && !double.IsInfinity(value) && initial.IndexOf('.') == -1 && initial.IndexOf('E') == -1 && initial.IndexOf('e') == -1)
             {
                 initial += ".0";
@@ -145,7 +145,7 @@ namespace osucatch_editor_realtimeviewer
 
         private static string floatToString(float value)
         {
-            string initial = value.ToString("R", CultureInfo.InvariantCulture); ;
+            string initial = value.ToString("G9", CultureInfo.InvariantCulture); ;
             if (!float.IsNaN(value) && !float.IsInfinity(value) && initial.IndexOf('.') == -1 && initial.IndexOf('E') == -1 && initial.IndexOf('e') == -1)
             {
                 initial += ".0";
