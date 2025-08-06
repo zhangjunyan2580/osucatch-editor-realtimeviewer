@@ -1241,6 +1241,17 @@ namespace osucatch_editor_realtimeviewer
             lazerConverterToolStripMenuItem.Checked = false;
             stableConverterToolStripMenuItem.Checked = true;
         }
+
+        private void generateConversionMappingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lastConvertedBeatmap != null)
+            {
+                string conversionMapping = ((BeatmapConverterOsuStable)stableBeatmapConverter).BuildConversionMapping(lastConvertedBeatmap);
+                StreamWriter writer = new("expected-conversion.json");
+                writer.Write(conversionMapping);
+                writer.Close();
+            }
+        }
     }
 
 

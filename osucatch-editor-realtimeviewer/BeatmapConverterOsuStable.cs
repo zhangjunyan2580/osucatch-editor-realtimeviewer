@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -17,6 +18,7 @@ using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Utils;
 using osuTK;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -33,13 +35,15 @@ namespace osucatch_editor_realtimeviewer
             foreach (var currentObject in beatmap.HitObjects)
             {
                 if (currentObject is Fruit fruitObject)
+                {
                     palpableObjects.Add(fruitObject);
-
+                }
                 else if (currentObject is JuiceStream)
                 {
                     foreach (var juice in manager.ConvertSlider(beatmap, (JuiceStream)currentObject))
                     {
-                        if (juice is PalpableCatchHitObject palpableObject) {
+                        if (juice is PalpableCatchHitObject palpableObject)
+                        {
                             juice.ApplyDefaults(beatmap.ControlPointInfo, beatmap.Difficulty);
                             palpableObjects.Add(palpableObject);
                         }
@@ -56,12 +60,97 @@ namespace osucatch_editor_realtimeviewer
             }
 
             palpableObjects.Sort((h1, h2) => h1.StartTime.CompareTo(h2.StartTime));
-            
+
             // The precise value of catcherWidth in stable depends on window resolution due to floating-point errors.
-            // Here we just use a simplified formula so that catcherWidth only depends on beatmap CircleSize. 
+            // Here we just use a simplified formula so catcherWidth only depends on beatmap CircleSize. 
             initialiseHyperDash((float)(106.75f * (1.7f - 0.14f * beatmap.Difficulty.CircleSize)), palpableObjects);
 
             return palpableObjects;
+        }
+
+        public string BuildConversionMapping(IBeatmap beatmap)
+        {
+            Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
+
+            List<(osu.Game.Rulesets.Objects.HitObject original, List<PalpableCatchHitObject> converted)> palpableObjects
+                = new List<(osu.Game.Rulesets.Objects.HitObject original, List<PalpableCatchHitObject> converted)>();
+            HitObjectManagerCatch manager = new();
+
+            foreach (var currentObject in beatmap.HitObjects)
+            {
+                List<PalpableCatchHitObject> currentObjectConvert = new List<PalpableCatchHitObject>();
+                if (currentObject is Fruit fruitObject)
+                {
+                    currentObjectConvert = [fruitObject];
+                }
+                else if (currentObject is JuiceStream)
+                {
+                    currentObjectConvert = manager.ConvertSlider(beatmap, (JuiceStream)currentObject);
+                }
+                else if (currentObject is BananaShower)
+                {
+                    currentObjectConvert = manager.ConvertSpinner(beatmap, (BananaShower)currentObject);
+                }
+                palpableObjects.Add(new(currentObject, currentObjectConvert));
+            }
+
+            palpableObjects.Sort((h1, h2) => h1.original.StartTime.CompareTo(h2.original.StartTime));
+
+            List<PalpableCatchHitObject> plainPalpableObjects = new List<PalpableCatchHitObject>();
+            foreach (var objectConvert in palpableObjects)
+            {
+                foreach (var converted in objectConvert.converted)
+                {
+                    plainPalpableObjects.Add(converted);
+                }
+            }
+            initialiseHyperDash((float)(106.75f * (1.7f - 0.14f * beatmap.Difficulty.CircleSize)), plainPalpableObjects);
+
+            StringBuilder conversionMapping = new StringBuilder();
+            conversionMapping.AppendLine("{");
+            conversionMapping.AppendLine("""    "Mappings": [""");
+            conversionMapping.AppendJoin(",\n", palpableObjects.Select(objectConvert =>
+            {
+                string subObjectString = string.Join(",\n", objectConvert.converted.Select(hitObject => $$"""
+                                {
+                                    "StartTime": {{doubleToString(hitObject.StartTime)}},
+                                    "Position": {{floatToString(hitObject.EffectiveX)}},
+                                    "#=zvnXjJz7N45MN": {{(hitObject.HyperDash ? "true" : "false")}}
+                                }
+                """));
+                return $$"""
+                        {
+                            "StartTime": {{doubleToString(objectConvert.original.StartTime)}},
+                            "Objects": [
+                {{subObjectString}}
+                            ]
+                        }
+                """;
+            }));
+            conversionMapping.AppendLine();
+            conversionMapping.AppendLine("    ]");
+            conversionMapping.AppendLine("}");
+            return conversionMapping.ToString();
+        }
+
+        private static string doubleToString(double value)
+        {
+            string initial = value.ToString("R", CultureInfo.InvariantCulture);
+            if (!double.IsNaN(value) && !double.IsInfinity(value) && initial.IndexOf('.') == -1 && initial.IndexOf('E') == -1 && initial.IndexOf('e') == -1)
+            {
+                initial += ".0";
+            }
+            return initial;
+        }
+
+        private static string floatToString(float value)
+        {
+            string initial = value.ToString("R", CultureInfo.InvariantCulture); ;
+            if (!float.IsNaN(value) && !float.IsInfinity(value) && initial.IndexOf('.') == -1 && initial.IndexOf('E') == -1 && initial.IndexOf('e') == -1)
+            {
+                initial += ".0";
+            }
+            return initial;
         }
 
         private static void initialiseHyperDash(float catcherWidth, List<PalpableCatchHitObject> hitObjects)
@@ -179,7 +268,7 @@ namespace osucatch_editor_realtimeviewer
             {
                 StartTime = (int)slider.StartTime;
                 Position = new(slider.OriginalX, slider.Y);
-                
+
                 compute(beatmap, slider);
             }
 
@@ -347,7 +436,7 @@ namespace osucatch_editor_realtimeviewer
 
                 if (time < StartTime || time > EndTime) return Position;
 
-                float pos = (time - StartTime) / ((float) (EndTime - StartTime) / SpanCount);
+                float pos = (time - StartTime) / ((float)(EndTime - StartTime) / SpanCount);
 
                 if (pos % 2 > 1)
                     pos = 1 - (pos % 1);
@@ -379,7 +468,7 @@ namespace osucatch_editor_realtimeviewer
                 List<Vector2> curvePoints = rebuildCurvePoints(new Vector2(slider.OriginalX, slider.Y), pathData);
 
                 const int subSegmentCount = 50;
-                
+
                 switch (pathType.Type)
                 {
                     case SplineType.Catmull:
@@ -571,7 +660,7 @@ namespace osucatch_editor_realtimeviewer
                     {
                         double distanceRemain = CumulativeLengths[CumulativeLengths.Count - 1];
                         bool skipTick = false;
-                        int reverseStartTime = (int) currentTime;
+                        int reverseStartTime = (int)currentTime;
 
                         double minTickDistanceFromEnd = 0.01 * Velocity;
 
@@ -739,8 +828,8 @@ namespace osucatch_editor_realtimeviewer
             public List<PalpableCatchHitObject> ConvertSpinner(IBeatmap beatmap, BananaShower bananaShower)
             {
                 List<PalpableCatchHitObject> palpableHitObjects = new List<PalpableCatchHitObject>();
-                
-                float interval = (int) bananaShower.EndTime - (int) bananaShower.StartTime;
+
+                float interval = (int)bananaShower.EndTime - (int)bananaShower.StartTime;
                 while (interval > 100)
                     interval /= 2;
 
@@ -750,7 +839,7 @@ namespace osucatch_editor_realtimeviewer
                 }
 
                 int count = 0;
-                for (float currentTime = (int) bananaShower.StartTime; currentTime <= (int) bananaShower.EndTime; currentTime += interval)
+                for (float currentTime = (int)bananaShower.StartTime; currentTime <= (int)bananaShower.EndTime; currentTime += interval)
                 {
                     palpableHitObjects.Add(new Banana
                     {
