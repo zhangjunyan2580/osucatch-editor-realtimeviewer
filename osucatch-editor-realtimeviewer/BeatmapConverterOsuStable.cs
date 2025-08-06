@@ -689,8 +689,8 @@ namespace osucatch_editor_realtimeviewer
                             // It shows multiply -> float to double -> division in code,
                             // but executes as float to double -> multiply -> division.
 
-                            // double duration = 1000.0 * (double)distance / Velocity;
-                            double duration = 1000F * distance / Velocity;
+                            // double duration = 1000F * distance / Velocity;
+                            double duration = 1000.0 * (double)distance / Velocity;
 
                             currentTime += duration;
                             scoringDistance += distance;
@@ -843,7 +843,7 @@ namespace osucatch_editor_realtimeviewer
                 {
                     palpableHitObjects.Add(new Banana
                     {
-                        StartTime = currentTime,
+                        StartTime = (int)currentTime,
                         OriginalX = random.Next(0, 512),
                         BananaIndex = count,
                         IsSelected = bananaShower.IsSelected
