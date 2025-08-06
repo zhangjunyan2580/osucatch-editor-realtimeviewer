@@ -246,7 +246,38 @@ namespace osucatch_editor_realtimeviewer
                 // 1. Hope the JIT compiler to give the same computation. Sadly it turns out that it's not the case;
                 // 2. Build a library that has this process implemented in C/C++;
                 // 3. Simulate FPU behavior by software.
+
+                // Same solution for all compat methods below.
                 return (sliderComboPointDistance * difficultySliderTickRate) * (1000.0 / beatLength);
+            }
+
+            private static Vector2 Normalize(Vector2 v)
+            {
+                // fld dword ptr [ebp+8]
+                // fmul st(0), st(0)
+                // fld dword ptr [ebp+0C]
+                // fmul st(0), st(0)
+                // faddp
+                // fstp qword ptr [ebp-0C]
+                // fld qword ptr [ebp-0C]
+                // fsqrt
+                // fstp dword ptr [ebp-4]
+                // fld dword ptr [ebp-4]
+                // fld1
+                // fdivrp
+                // fld dword ptr [ebp+8]
+                // fmul st(0), st(1)
+                // fld dword ptr [ebp+0C]
+                // fmulp st(2), st(0)
+                // fstp dword ptr [ecx]
+                // fstp dword ptr [ecx+4]
+
+                float lengthSquared = v.X * v.X + v.Y * v.Y;
+                float lengthInverted = 1f / (float)Math.Sqrt(lengthSquared);
+                Vector2 result;
+                result.X = v.X * lengthInverted;
+                result.Y = v.Y * lengthInverted;
+                return result;
             }
 
             [DllImport("StableCompatLib.dll", EntryPoint = "computeVelocity")]
@@ -255,6 +286,16 @@ namespace osucatch_editor_realtimeviewer
                 double sliderVelocityAsBeatLength,
                 double difficultySliderTickRate,
                 double sliderComboPointDistance);
+
+            [DllImport("StableCompatLib.dll", EntryPoint = "normalize")]
+            private static extern void NormalizeStableCompat0(float x, float y, out float rx, out float ry);
+
+            private static Vector2 NormalizeStableCompat(Vector2 v)
+            {
+                Vector2 result;
+                NormalizeStableCompat0(v.X, v.Y, out result.X, out result.Y);
+                return result;
+            }
 
             private List<Vector2> rebuildCurvePoints(Vector2 offset, SliderPath path)
             {
@@ -486,7 +527,7 @@ namespace osucatch_editor_realtimeviewer
                         {
                             if (lastSegment.End != lastSegment.Start)
                             {
-                                lastSegment.End = lastSegment.Start + Vector2.NormalizeStableCompat(lastSegment.End - lastSegment.Start) * (lastSegment.Length - (float)cutLength);
+                                lastSegment.End = lastSegment.Start + NormalizeStableCompat(lastSegment.End - lastSegment.Start) * (lastSegment.Length - (float)cutLength);
                             }
                             break;
                         }

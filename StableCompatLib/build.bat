@@ -1,2 +1,2 @@
 g++ -c StableCompatLib.cpp
-g++ -shared -o StableCompatLib.dll StableCompatLib.o
+g++ -shared -lm -o StableCompatLib.dll StableCompatLib.o
