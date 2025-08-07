@@ -59,7 +59,7 @@ extern "C" {
         float ax, float ay, float bx, float by, float cx, float cy,
         float *centerx, float *centery, float *radius, double *startAngle, double *endAngle)
     {
-        constexpr double _2PI = 6.283185482025146484375;
+        constexpr double _2PI = 0x1.921fb6p2;
 
         LD p1 = (LD) ax * ((LD) by - (LD) cy);
         LD p2 = (LD) bx * ((LD) cy - (LD) ay);
@@ -100,6 +100,12 @@ extern "C" {
     {
         *x = centerX + (float) ((long double) radius * cosl(t));
         *y = centerY + (float) ((long double) radius * sinl(t));
+    }
+
+    __declspec(dllexport) int __stdcall randomNextCalc(int value, int lowerBound, int upperBound)
+    {
+        constexpr float ratio = 0x1p-31f;
+        return (int) ((LD) value * (LD) ratio * (LD)(upperBound - lowerBound)) + lowerBound;
     }
 
 }

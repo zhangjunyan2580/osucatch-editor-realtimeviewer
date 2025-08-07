@@ -341,6 +341,13 @@ namespace osucatch_editor_realtimeviewer
                 return (sliderComboPointDistance * difficultySliderTickRate) * (1000.0 / beatLength);
             }
 
+            [DllImport("StableCompatLib.dll", EntryPoint = "computeVelocity")]
+            private static extern double computeVelocityStableCompat(
+                double timingBeatLength,
+                double sliderVelocityAsBeatLength,
+                double difficultySliderTickRate,
+                double sliderComboPointDistance);
+
             private static Vector2 Normalize(Vector2 v)
             {
                 // fld dword ptr [ebp+8]
@@ -369,13 +376,6 @@ namespace osucatch_editor_realtimeviewer
                 result.Y = v.Y * lengthInverted;
                 return result;
             }
-
-            [DllImport("StableCompatLib.dll", EntryPoint = "computeVelocity")]
-            private static extern double computeVelocityStableCompat(
-                double timingBeatLength,
-                double sliderVelocityAsBeatLength,
-                double difficultySliderTickRate,
-                double sliderComboPointDistance);
 
             [DllImport("StableCompatLib.dll", EntryPoint = "normalize")]
             private static extern void NormalizeStableCompat0(float x, float y, out float rx, out float ry);
@@ -758,6 +758,11 @@ namespace osucatch_editor_realtimeviewer
         {
             private LegacyRandom random = new(1337);
 
+            [DllImport("StableCompatLib.dll", EntryPoint = "randomNextCalc")]
+            private static extern int RandomNextStableCompat0(int value, int lowerBound, int upperBound);
+
+            private int RandomNextStableCompat(int lowerBound, int upperBound) => RandomNextStableCompat0(random.Next(), lowerBound, upperBound);
+
             public List<PalpableCatchHitObject> ConvertSlider(IBeatmap beatmap, JuiceStream juiceStream)
             {
 
@@ -791,7 +796,7 @@ namespace osucatch_editor_realtimeviewer
                             TinyDroplet tinyDroplet = new TinyDroplet
                             {
                                 StartTime = (int)j,
-                                X = sliderData.GetPositionByTime((int)j).X + random.Next(-20, 20),
+                                X = sliderData.GetPositionByTime((int)j).X + RandomNextStableCompat(-20, 20),
                                 ComboIndex = juiceStream.ComboIndex,
                                 IsSelected = juiceStream.IsSelected
                             };
@@ -860,7 +865,7 @@ namespace osucatch_editor_realtimeviewer
                     palpableHitObjects.Add(new Banana
                     {
                         StartTime = (int)currentTime,
-                        OriginalX = random.Next(0, 512),
+                        OriginalX = RandomNextStableCompat(0, 512),
                         BananaIndex = count,
                         IsSelected = bananaShower.IsSelected
                     });
