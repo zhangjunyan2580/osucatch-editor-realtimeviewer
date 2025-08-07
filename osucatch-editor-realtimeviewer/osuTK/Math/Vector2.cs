@@ -79,8 +79,6 @@ namespace osuTK
             get
             {
                 return (float)System.Math.Sqrt((double)X * X + (double)Y * Y);
-                // Yes the code shows the float to double conversion is after squared length calculation
-                // but it executes as converting position to double first. I don't know why.
             }
         }
 
