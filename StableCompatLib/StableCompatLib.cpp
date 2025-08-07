@@ -108,6 +108,21 @@ extern "C" {
         return (int) ((LD) value * (LD) ratio * (LD)(upperBound - lowerBound)) + lowerBound;
     }
 
+    __declspec(dllexport) int __stdcall timeAtLength(float length, int startTime, double velocity)
+    {
+        return (int) ((LD) startTime + (LD) length / (LD) velocity * 1000);
+    }
+
+    __declspec(dllexport) float __stdcall progress(double start, double end, float current)
+    {
+        return (float) (((LD) current - (LD) start) / ((LD) end - (LD) start));
+    }
+
+    __declspec(dllexport) double continuousDivision(int a, int b, int c)
+    {
+        return (double) (LD(a) / (LD(b) / LD(c)));
+    }
+
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
