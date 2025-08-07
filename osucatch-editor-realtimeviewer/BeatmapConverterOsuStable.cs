@@ -164,22 +164,22 @@ namespace osucatch_editor_realtimeviewer
 
         private static string doubleToString(double value)
         {
-            string initial = value.ToString("G9", CultureInfo.InvariantCulture);
-            if (!double.IsNaN(value) && !double.IsInfinity(value) && initial.IndexOf('.') == -1 && initial.IndexOf('E') == -1 && initial.IndexOf('e') == -1)
+            string current = value.ToString("G17", CultureInfo.InvariantCulture);
+            if (!double.IsNaN(value) && !double.IsInfinity(value) && current.IndexOf('.') == -1 && current.IndexOf('E') == -1 && current.IndexOf('e') == -1)
             {
-                initial += ".0";
+                current += ".0";
             }
-            return initial;
+            return current;
         }
 
         private static string floatToString(float value)
         {
-            string initial = value.ToString("G9", CultureInfo.InvariantCulture); ;
-            if (!float.IsNaN(value) && !float.IsInfinity(value) && initial.IndexOf('.') == -1 && initial.IndexOf('E') == -1 && initial.IndexOf('e') == -1)
+            string current = value.ToString("G9", CultureInfo.InvariantCulture); ;
+            if (!float.IsNaN(value) && !float.IsInfinity(value) && current.IndexOf('.') == -1 && current.IndexOf('E') == -1 && current.IndexOf('e') == -1)
             {
-                initial += ".0";
+                current += ".0";
             }
-            return initial;
+            return current;
         }
 
         private static void initialiseHyperDash(float catcherWidth, List<PalpableCatchHitObject> hitObjects)
