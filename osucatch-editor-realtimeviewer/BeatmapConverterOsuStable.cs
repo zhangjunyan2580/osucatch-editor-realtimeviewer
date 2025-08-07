@@ -19,6 +19,7 @@ using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Utils;
 using osuTK;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 namespace osucatch_editor_realtimeviewer
 {
@@ -386,6 +387,9 @@ namespace osucatch_editor_realtimeviewer
                 return result;
             }
 
+            [DllImport("StableCompatLib.dll", EntryPoint = "linearInterpolation")]
+            private static extern double LinearInterpolation(double x, double y, double t);
+
             private List<Vector2> rebuildCurvePoints(Vector2 offset, SliderPath path)
             {
                 List<Vector2> curvePoints = new();
@@ -552,7 +556,7 @@ namespace osucatch_editor_realtimeviewer
                         float radius;
                         double startAngle, endAngle;
 
-                        LegacyMathHelper.CircleThroughPoints(p1, p2, p3, out center, out radius, out startAngle, out endAngle);
+                        LegacyMathHelper.CircleThroughPointsStableCompat(p1, p2, p3, out center, out radius, out startAngle, out endAngle);
 
                         CurveLength = Math.Abs((endAngle - startAngle) * radius);
                         int segments = (int)(CurveLength * 0.125f);
@@ -562,9 +566,21 @@ namespace osucatch_editor_realtimeviewer
                         for (int i = 1; i < segments; i++)
                         {
                             double progress = (double)i / (double)segments;
-                            double t = endAngle * progress + startAngle * (1 - progress);
 
-                            Vector2 newPoint = LegacyMathHelper.CirclePoint(center, radius, t);
+                            // fld qword ptr [ebp-0D4h]
+                            // fmul qword ptr [ebp-178h]
+                            // fld qword ptr [ebp-0CCh]
+                            // fld qword ptr [ebp-178h]
+                            // fld1
+                            // fsubrp
+                            // fmulp
+                            // faddp
+                            // fstp qword ptr [ebp-1C0h]
+
+                            // double t = endAngle * progress + startAngle * (1 - progress);
+                            double t = LinearInterpolation(endAngle, startAngle, progress);
+
+                            Vector2 newPoint = LegacyMathHelper.CirclePointStableCompat(center, radius, t);
                             path.Add(new Segment(lastPoint, newPoint));
 
                             lastPoint = newPoint;

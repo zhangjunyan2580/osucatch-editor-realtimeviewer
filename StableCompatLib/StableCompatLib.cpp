@@ -1,5 +1,8 @@
 #include <windows.h>
 #include <math.h>
+#include <winnt.h>
+
+typedef long double LD;
 
 extern "C" {
     __declspec(dllexport) double __stdcall computeVelocity(
@@ -11,18 +14,92 @@ extern "C" {
     {
         double mult = (double) ((float) (-sliderVelocityAsBeatLength)) / 100.0;
         double beatLength = timingBeatLength * mult;
-        long double t1 = (long double) sliderComboPointDistance * (long double) difficultySliderTickRate;
-        long double t2 = (long double) 1000 / (long double) beatLength;
+        LD t1 = (LD) sliderComboPointDistance * (LD) difficultySliderTickRate;
+        LD t2 = (LD) 1000 / (LD) beatLength;
         return (double) (t1 * t2);
     }
 
     __declspec(dllexport) void __stdcall normalize(float x, float y, float *rx, float *ry)
     {
-        double lengthSquared = (double) ((long double) x * x + (long double) y * y);
+        double lengthSquared = (double) ((LD) x * x + (LD) y * y);
         float length = (float) sqrt(lengthSquared);
-        long double mult = 1 / (long double) length;
+        LD mult = 1 / (LD) length;
         *rx = x * mult;
         *ry = y * mult;
+    }
+
+    __declspec(dllexport) double __stdcall linearInterpolation(double x, double y, double t)
+    {
+        LD p1 = (LD) x * (LD) t;
+        LD p2 = (LD) y * (1 - (LD) t);
+        return (double) (p1 + p2);
+    }
+
+    LD __stdcall tempLengthSquared(float x, float y)
+    {
+        return (LD) x * x + (LD) y * y;
+    }
+
+    __declspec(dllexport) float distance(float ax, float ay, float bx, float by) {
+        LD p1 = (LD) ax - (LD) bx;
+        LD p2 = (LD) ay - (LD) by;
+        double lengthSquared = (double) (p1 * p1 + p2 * p2);
+        return (float) sqrt(lengthSquared);
+    }
+    
+    LD __stdcall tempAtan2(double y, double x) {
+        return isinf(x) && isinf(y) ? (LD) y / (LD) x : atan2l(y, x);
+    }
+
+    LD __stdcall tempCircleTAt(float x, float y, float centerx, float centery) {
+        return tempAtan2(y - centery, x - centerx);
+    }
+
+    __declspec(dllexport) void __stdcall circleThroughPoints(
+        float ax, float ay, float bx, float by, float cx, float cy,
+        float *centerx, float *centery, float *radius, double *startAngle, double *endAngle)
+    {
+        constexpr double _2PI = 6.283185482025146484375;
+
+        LD p1 = (LD) ax * ((LD) by - (LD) cy);
+        LD p2 = (LD) bx * ((LD) cy - (LD) ay);
+        LD p3 = (LD) cx * ((LD) ay - (LD) by);
+        float D = (float) (2 * (p1 + p2 + p3));
+
+        float AMagSq = (float) tempLengthSquared(ax, ay);
+        float BMagSq = (float) tempLengthSquared(bx, by);
+        LD CMagSq = tempLengthSquared(cx, cy);
+
+        LD p4 = (LD) AMagSq * ((LD) by - (LD) cy);
+        LD p5 = (LD) BMagSq * ((LD) cy - (LD) ay);
+        LD p6 = (LD) CMagSq * ((LD) ay - (LD) by);
+        *centerx = (float) ((p4 + p5 + p6) / (LD) D);
+
+        LD p7 = (LD) AMagSq * ((LD) cx - (LD) bx);
+        LD p8 = (LD) BMagSq * ((LD) ax - (LD) cx);
+        LD p9 = (LD) CMagSq * ((LD) bx - (LD) ax);
+        *centery = (float) ((p7 + p8 + p9) / (LD) D);
+
+        *radius = distance(*centerx, *centery, ax, ay);
+
+        double vStartAngle = tempCircleTAt(ax, ay, *centerx, *centery);
+        double midAngle = tempCircleTAt(bx, by, *centerx, *centery);
+        double vEndAngle = tempCircleTAt(cx, cy, *centerx, *centery);
+
+        LD lMidAngle = (LD) midAngle;
+        while (lMidAngle < vStartAngle) lMidAngle += _2PI;
+        while (vEndAngle < vStartAngle) vEndAngle += _2PI;
+        if (lMidAngle > vEndAngle) vEndAngle -= _2PI;
+        *startAngle = vStartAngle;
+        *endAngle = vEndAngle;
+    }
+
+    __declspec(dllexport) void __stdcall circlePoint(
+        float centerX, float centerY, float radius, double t,
+        float *x, float *y)
+    {
+        *x = centerX + (float) ((long double) radius * cosl(t));
+        *y = centerY + (float) ((long double) radius * sinl(t));
     }
 
 }

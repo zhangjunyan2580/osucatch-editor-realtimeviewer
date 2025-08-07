@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using osuTK;
@@ -156,6 +157,17 @@ namespace osucatch_editor_realtimeviewer
             return new Vector2((float)(Math.Cos(t) * radius), (float)(Math.Sin(t) * radius)) + center;
         }
 
+        [DllImport("StableCompatLib.dll", EntryPoint = "circlePoint")]
+        internal static extern void CirclePointStableCompat0(
+            float centerX, float centerY, float radius, double t,
+            out float x, out float y);
+
+        internal static Vector2 CirclePointStableCompat(Vector2 center, float radius, double t)
+        {
+            CirclePointStableCompat0(center.X, center.Y, radius, t, out float x, out float y);
+            return new(x, y);
+        }
+
         internal static void CircleThroughPoints(Vector2 a, Vector2 b, Vector2 c,
             out Vector2 center, out float radius, out double startAngle, out double endAngle)
         {
@@ -178,6 +190,18 @@ namespace osucatch_editor_realtimeviewer
             {
                 endAngle -= 2 * Pi;
             }
+        }
+
+        [DllImport("StableCompatLib.dll", EntryPoint = "circleThroughPoints")]
+        internal extern static void CircleThroughPointsStableCompat0(
+            float ax, float ay, float bx, float by, float cx, float cy,
+            out float centerx, out float centery, out float radius, out double startAngle, out double endAngle);
+
+        internal static void CircleThroughPointsStableCompat(Vector2 a, Vector2 b, Vector2 c,
+            out Vector2 center, out float radius, out double startAngle, out double endAngle)
+        {
+            CircleThroughPointsStableCompat0(a.X, a.Y, b.X, b.Y, c.X, c.Y, out float centerX, out float centerY, out radius, out startAngle, out endAngle);
+            center = new(centerX, centerY);
         }
 
     }
