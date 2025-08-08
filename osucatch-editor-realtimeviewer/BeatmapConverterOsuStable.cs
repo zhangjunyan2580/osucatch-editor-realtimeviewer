@@ -1,5 +1,9 @@
-﻿using System;
+using System;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Net.Quic;
 using System.Text;
 using Editor_Reader;
 using OpenTK.Graphics.OpenGL;
@@ -20,6 +24,10 @@ namespace osucatch_editor_realtimeviewer
         {
             Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
             HitObjectManagerCatch manager = new(beatmap, mods);
+
+            float? lastPosition = null;
+            double lastStartTime = 0;
+            bool isFirstSame = true;
 
             foreach (var currentObject in beatmap.HitObjects)
             {
