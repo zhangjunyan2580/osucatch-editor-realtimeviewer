@@ -132,11 +132,8 @@ namespace osucatch_editor_realtimeviewer
             [DllImport("StableCompatLib.dll", EntryPoint = "timeAtLength")]
             private static extern int GetTimeByLength0(float length, int startTime, double velocity);
 
-            public int GetTimeByLength(float length)
-            {
-                // return (int)(StartTime + (length / Velocity) * 1000);
-                return GetTimeByLength0(length, StartTime, Velocity);
-            }
+            // return (int)(StartTime + (length / Velocity) * 1000);
+            public int GetTimeByLength(float length) => GetTimeByLength0(length, StartTime, Velocity);
 
             // Returns (current - start) / (end - start).
             [DllImport("StableCompatLib.dll", EntryPoint = "progress")]
@@ -145,6 +142,11 @@ namespace osucatch_editor_realtimeviewer
             // Returns a / (b / c).
             [DllImport("StableCompatLib.dll", EntryPoint = "continuousDivision")]
             private static extern double ContinuousDivision(int a, int b, int c);
+
+            [DllImport("StableCompatLib.dll", EntryPoint = "distance")]
+            private static extern float Distance0(float ax, float ay, float bx, float by);
+
+            private static float Distance(Vector2 a, Vector2 b) => Distance0(a.X, a.Y, b.X, b.Y);
 
             public Vector2 GetPositionByLength(float length)
             {
@@ -357,7 +359,7 @@ namespace osucatch_editor_realtimeviewer
                     while (path.Count > 0)
                     {
                         Segment lastSegment = path[path.Count - 1];
-                        float lastSegmentLength = Vector2.Distance(lastSegment.Start, lastSegment.End);
+                        float lastSegmentLength = Distance(lastSegment.Start, lastSegment.End);
 
                         if (lastSegmentLength > cutLength + LENGTH_EPS)
                         {
