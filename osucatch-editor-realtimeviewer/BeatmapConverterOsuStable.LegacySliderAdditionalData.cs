@@ -289,7 +289,7 @@ namespace osucatch_editor_realtimeviewer
                         Vector2 p2 = curvePoints[1];
                         Vector2 p3 = curvePoints[2];
 
-                        if (LegacyMathHelper.IsStraightLine(p1, p2, p3))
+                        if (LegacyMathHelper.IsStraightLineStableCompat(p1, p2, p3))
                         {
                             goto case SplineType.Linear;
                         }
@@ -308,16 +308,6 @@ namespace osucatch_editor_realtimeviewer
                         for (int i = 1; i < segments; i++)
                         {
                             double progress = (double)i / (double)segments;
-
-                            // fld qword ptr [ebp-0D4h]
-                            // fmul qword ptr [ebp-178h]
-                            // fld qword ptr [ebp-0CCh]
-                            // fld qword ptr [ebp-178h]
-                            // fld1
-                            // fsubrp
-                            // fmulp
-                            // faddp
-                            // fstp qword ptr [ebp-1C0h]
 
                             // double t = endAngle * progress + startAngle * (1 - progress);
                             double t = LinearInterpolation(endAngle, startAngle, progress);
@@ -348,7 +338,6 @@ namespace osucatch_editor_realtimeviewer
                     CurveLength += path[i].Length;
                 int expectedComboCount = 0;
 
-                // Slider velocity multiplier is identical to velocity calculation
                 // double tickDistance = (beatmap.BeatmapInfo.BeatmapVersion < 8) ? sliderComboPointDistance :
                 //     (sliderComboPointDistance / ((float)(-slider.SliderVelocityAsBeatLength) / 100f));
                 double tickDistance = (beatmap.BeatmapInfo.BeatmapVersion < 8) ? sliderComboPointDistance :

@@ -30,15 +30,32 @@ namespace osucatch_editor_realtimeviewer
                 subdivisionBuffer2 = new Vector2[count * 2 - 1];
             }
 
+            [DllImport("StableCompatLib.dll", EntryPoint = "flatJudge")]
+            private static extern int FlatJudge0(float ax, float ay, float bx, float by, float cx, float cy);
+
+            private static bool FlatJudge(Vector2 a, Vector2 b, Vector2 c)
+                => FlatJudge0(a.X, a.Y, b.X, b.Y, c.X, c.Y) != 0;
+
             private static bool IsFlatEnough(Vector2[] controlPoints)
             {
                 for (int i = 1; i < controlPoints.Length - 1; i++)
-                    if ((controlPoints[i - 1] - 2 * controlPoints[i] + controlPoints[i + 1]).LengthSquared > TOLERANCE_SQ)
+                    // if ((controlPoints[i - 1] - 2 * controlPoints[i] + controlPoints[i + 1]).LengthSquared > TOLERANCE_SQ)
+                    if (FlatJudge(controlPoints[i - 1], controlPoints[i], controlPoints[i + 1]))
                         return false;
 
                 return true;
             }
-            
+
+            [DllImport("StableCompatLib.dll", EntryPoint = "midpoint")]
+            private static extern void Midpoint0(float ax, float ay, float bx, float by,
+                out float x, out float y);
+
+            private static Vector2 Midpoint(Vector2 a, Vector2 b)
+            {
+                Midpoint0(a.X, a.Y, b.X, b.Y, out float x, out float y);
+                return new(x, y);
+            }
+
             private void Subdivide(Vector2[] controlPoints, Vector2[] l, Vector2[] r)
             {
                 Vector2[] midpoints = subdivisionBuffer1;
@@ -52,8 +69,20 @@ namespace osucatch_editor_realtimeviewer
                     r[count - i - 1] = midpoints[count - i - 1];
 
                     for (int j = 0; j < count - i - 1; j++)
-                        midpoints[j] = (midpoints[j] + midpoints[j + 1]) / 2;
+                        // midpoints[j] = (midpoints[j] + midpoints[j + 1]) / 2;
+                        midpoints[j] = Midpoint(midpoints[j], midpoints[j + 1]);
                 }
+            }
+
+            [DllImport("StableCompatLib.dll", EntryPoint = "bezierApproximate")]
+            private static extern void BezierApproximate0(
+                float ax, float ay, float bx, float by, float cx, float cy,
+                out float x, out float y);
+            
+            private static Vector2 BezierApproximate(Vector2 a, Vector2 b, Vector2 c)
+            {
+                BezierApproximate0(a.X, a.Y, b.X, b.Y, c.X, c.Y, out float x, out float y);
+                return new(x, y);
             }
 
             private void Approximate(Vector2[] controlPoints, List<Vector2> output)
@@ -70,7 +99,8 @@ namespace osucatch_editor_realtimeviewer
                 for (int i = 1; i < count - 1; ++i)
                 {
                     int index = 2 * i;
-                    Vector2 p = 0.25f * (l[index - 1] + 2 * l[index] + l[index + 1]);
+                    // Vector2 p = 0.25f * (l[index - 1] + 2 * l[index] + l[index + 1]);
+                    Vector2 p = BezierApproximate(l[index - 1], l[index], l[index + 1]);
                     output.Add(p);
                 }
             }
@@ -89,7 +119,7 @@ namespace osucatch_editor_realtimeviewer
 
                 Vector2[] leftChild = subdivisionBuffer2;
 
-                while (toFlatten.Count > 0)
+                while (toFlatten.Count > 0 && output.Count < 100000)
                 {
                     Vector2[] parent = toFlatten.Pop();
                     if (IsFlatEnough(parent))
@@ -143,6 +173,14 @@ namespace osucatch_editor_realtimeviewer
         }
 
         internal static bool IsStraightLine(Vector2 a, Vector2 b, Vector2 c)
+        {
+            return (b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y) == 0.0f;
+        }
+
+        [DllImport("StableCompatLib.dll", EntryPoint = "isStraightLine")]
+        internal static extern bool IsStraightLineStableCompat0(float ax, float ay, float bx, float by, float cx, float cy);
+
+        internal static bool IsStraightLineStableCompat(Vector2 a, Vector2 b, Vector2 c)
         {
             return (b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y) == 0.0f;
         }

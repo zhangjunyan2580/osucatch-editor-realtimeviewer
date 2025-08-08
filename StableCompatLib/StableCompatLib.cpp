@@ -40,6 +40,17 @@ extern "C" {
         return (LD) x * x + (LD) y * y;
     }
 
+    __declspec(dllexport) float __stdcall length(float x, float y)
+    {
+        return (float) sqrt((double) ((LD) x * x + (LD) y * y));
+    }
+
+    __declspec(dllexport) bool isStraightLine(float ax, float ay, float bx, float by, float cx, float cy) {
+        LD p1 = ((LD) bx - (LD) ax) * ((LD) cy - (LD) ay);
+        LD p2 = ((LD) cx - (LD) ax) * ((LD) by - (LD) ay);
+        return p1 - p2 == 0;
+    }
+
     __declspec(dllexport) float distance(float ax, float ay, float bx, float by) {
         LD p1 = (LD) ax - (LD) bx;
         LD p2 = (LD) ay - (LD) by;
@@ -118,9 +129,30 @@ extern "C" {
         return (float) (((LD) current - (LD) start) / ((LD) end - (LD) start));
     }
 
-    __declspec(dllexport) double continuousDivision(int a, int b, int c)
+    __declspec(dllexport) double __stdcall continuousDivision(int a, int b, int c)
     {
         return (double) (LD(a) / (LD(b) / LD(c)));
+    }
+
+    __declspec(dllexport) void __stdcall bezierApproximate(
+        float ax, float ay, float bx, float by, float cx, float cy,
+        float *x, float *y)
+    {
+        *x = (float) (0.25f * ((LD) ax + 2.f * (LD) bx + (LD) cx));
+        *y = (float) (0.25f * ((LD) ay + 2.f * (LD) by + (LD) cy));
+    }
+
+    __declspec(dllexport) int __stdcall flatJudge(float ax, float ay, float bx, float by, float cx, float cy)
+    {
+        float x = (float) ((LD) ax - 2.f * (LD) bx + (LD) cx);
+        float y = (float) ((LD) ay - 2.f * (LD) by + (LD) cy);
+        return tempLengthSquared(x, y) > 0.25l;
+    }
+
+    __declspec(dllexport) void __stdcall midpoint(float ax, float ay, float bx, float by, float *x, float *y)
+    {
+        *x = (float) (0.5f * ((LD) ax + (LD) bx));
+        *y = (float) (0.5f * ((LD) ay + (LD) by));
     }
 
 }
@@ -128,3 +160,11 @@ extern "C" {
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     return TRUE;
 }
+
+// #include <stdio.h>
+
+// int main() {
+//     float ax = 492, ay = 335, bx = 492.004517f, by = 334.99646f, cx = 492.009033f, cy = 334.99292f;
+//     printf("%d", (int) flatJudge(ax, ay, bx, by, cx, cy));
+//     return 0;
+// }

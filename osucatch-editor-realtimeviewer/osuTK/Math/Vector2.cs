@@ -74,14 +74,6 @@ namespace osuTK
             }
         }
 
-        public float LengthStableCompat
-        {
-            get
-            {
-                return (float)System.Math.Sqrt((double)X * X + (double)Y * Y);
-            }
-        }
-
         /// <summary>
         /// Gets the square of the vector length (magnitude).
         /// </summary>
