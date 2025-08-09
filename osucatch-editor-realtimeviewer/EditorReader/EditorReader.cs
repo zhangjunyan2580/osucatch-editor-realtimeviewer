@@ -66,6 +66,8 @@ public class EditorReader
 
     public double SliderTickRate;
 
+    public int BeatmapVersion;
+
     public int PreviewTime;
 
     public float StackLeniency;
@@ -381,6 +383,7 @@ public class EditorReader
         OverallDifficulty = BitConverter.ToSingle(buffer, 56);
         ContainingFolder = ReadString(ToIntPtr(buffer, 120));
         Filename = ReadString(ToIntPtr(buffer, 144));
+        BeatmapVersion = BitConverter.ToInt32(buffer, 216);
         PreviewTime = BitConverter.ToInt32(buffer, 288);
         StackLeniency = BitConverter.ToSingle(buffer, 296);
         TimelineZoom = BitConverter.ToSingle(buffer, 304);

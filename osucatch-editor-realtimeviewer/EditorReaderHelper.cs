@@ -237,6 +237,7 @@ namespace osucatch_editor_realtimeviewer
         public float ApproachRate;
         public double SliderMultiplier;
         public double SliderTickRate;
+        public int BeatmapVersion;
         public int[] Bookmarks;
         public List<string> ControlPointLines;
         public List<ReaderHitObjectWithSelect> HitObjectLines;
@@ -284,6 +285,7 @@ namespace osucatch_editor_realtimeviewer
             ApproachRate = reader.ApproachRate;
             SliderMultiplier = reader.SliderMultiplier;
             SliderTickRate = reader.SliderTickRate;
+            BeatmapVersion = reader.BeatmapVersion;
             Bookmarks = reader.bookmarks;
             ControlPointLines = reader.controlPoints.Select((cp) => cp.ToString()).ToList();
             HitObjectLines = reader.hitObjects.Select((ho) => new ReaderHitObjectWithSelect(ho.ToString(), ho.IsSelected)).ToList();
@@ -341,6 +343,7 @@ namespace osucatch_editor_realtimeviewer
             ApproachRate = reader.ApproachRate;
             SliderMultiplier = reader.SliderMultiplier;
             SliderTickRate = reader.SliderTickRate;
+            BeatmapVersion = reader.BeatmapVersion;
             Bookmarks = reader.bookmarks;
             ControlPointLines = reader.controlPoints.Select((cp) => cp.ToString()).ToList();
             HitObjectLines = NearbyHitObjects.Select((ho) => new ReaderHitObjectWithSelect(ho.ToString(), ho.IsSelected)).ToList();

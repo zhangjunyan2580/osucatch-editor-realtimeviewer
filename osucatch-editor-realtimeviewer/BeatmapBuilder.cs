@@ -135,11 +135,26 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
+        private static int GetBeatmapVersionFromBeatmapFilepath(string orgpath)
+        {
+            using (StreamReader file = File.OpenText(orgpath))
+            {
+                string? line;
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (line.StartsWith("osu file format v"))
+                        return int.Parse(line.Substring(17));
+                }
+                return 14;
+            }
+        }
+
         public static Beatmap? BuildNewBeatmapWithFilePath(BeatmapInfoCollection thisReaderData, string beatmappath, out List<string>? colourLines)
         {
             try
             {
                 colourLines = GetColourLinesFromBeatmapFilepath(beatmappath);
+                thisReaderData.BeatmapVersion = GetBeatmapVersionFromBeatmapFilepath(beatmappath);
             }
             catch (Exception ex)
             {
@@ -159,7 +174,8 @@ namespace osucatch_editor_realtimeviewer
             try
             {
                 Log.ConsoleLog("Building beatmap.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
-                var beatmap = beatmapDecoder.Decode(thisReaderData, colourLines);
+                // var beatmap = beatmapDecoder.Decode(thisReaderData, colourLines);
+                var beatmap = new LegacyBeatmapDecoder(thisReaderData.BeatmapVersion).Decode(thisReaderData, colourLines);
                 return beatmap;
             }
             catch (Exception ex)
