@@ -123,14 +123,14 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="Canvas.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 55</value>
+    <value>0, 30</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Canvas.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>8, 9, 8, 9</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="Canvas.Size" type="System.Drawing.Size, System.Drawing">
-    <value>512, 1050</value>
+    <value>256, 576</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Canvas.TabIndex" type="System.Int32, mscorlib">
@@ -152,19 +152,19 @@
     <value>146, 17</value>
   </metadata>
   <data name="lazerConverterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>218, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="lazerConverterToolStripMenuItem.Text" xml:space="preserve">
     <value>Lazer</value>
   </data>
   <data name="stableConverterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>218, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="stableConverterToolStripMenuItem.Text" xml:space="preserve">
     <value>Stable</value>
   </data>
   <data name="converterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="converterToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Use Converter</value>
@@ -173,7 +173,7 @@
     <value>Ctrl+Q</value>
   </data>
   <data name="hRToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>331, 44</value>
+    <value>171, 22</value>
   </data>
   <data name="hRToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;HR</value>
@@ -182,7 +182,7 @@
     <value>Ctrl+E</value>
   </data>
   <data name="eZToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>331, 44</value>
+    <value>171, 22</value>
   </data>
   <data name="eZToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;EZ</value>
@@ -191,19 +191,19 @@
     <value>Ctrl+W</value>
   </data>
   <data name="noneToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>331, 44</value>
+    <value>171, 22</value>
   </data>
   <data name="noneToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;NoMod</value>
   </data>
   <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="modToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Mod</value>
   </data>
   <data name="cubicFittingCurveToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="cubicFittingCurveToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Cubic Fitting Curve</value>
@@ -212,7 +212,7 @@
     <value>Ctrl+Space</value>
   </data>
   <data name="hideToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>757, 44</value>
+    <value>386, 22</value>
   </data>
   <data name="hideToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Hide</value>
@@ -221,7 +221,7 @@
     <value>Ctrl+1</value>
   </data>
   <data name="sameWithEditorToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>757, 44</value>
+    <value>386, 22</value>
   </data>
   <data name="sameWithEditorToolStripMenuItem.Text" xml:space="preserve">
     <value>Distance to Next: &amp;Same With Editor</value>
@@ -230,7 +230,7 @@
     <value>Ctrl+2</value>
   </data>
   <data name="noSliderVelocityMultiplierToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>757, 44</value>
+    <value>386, 22</value>
   </data>
   <data name="noSliderVelocityMultiplierToolStripMenuItem.Text" xml:space="preserve">
     <value>Distance to Next: &amp;No Slider Velocity Multiplier</value>
@@ -239,7 +239,7 @@
     <value>Ctrl+3</value>
   </data>
   <data name="compareWithWalkSpeedToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>757, 44</value>
+    <value>386, 22</value>
   </data>
   <data name="compareWithWalkSpeedToolStripMenuItem.Text" xml:space="preserve">
     <value>Distance to Next: &amp;Compare With Walk Speed</value>
@@ -248,7 +248,7 @@
     <value>Ctrl+4</value>
   </data>
   <data name="difficultyStarsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>757, 44</value>
+    <value>386, 22</value>
   </data>
   <data name="difficultyStarsToolStripMenuItem.Text" xml:space="preserve">
     <value>Difficulty to Last: &amp;Difficulty Stars</value>
@@ -257,115 +257,115 @@
     <value>Ctrl+5</value>
   </data>
   <data name="fruitCountInComboToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>757, 44</value>
+    <value>386, 22</value>
   </data>
   <data name="fruitCountInComboToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Fruit Count in Combo</value>
   </data>
   <data name="hitobjectLabelToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="hitobjectLabelToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Fruits Label</value>
   </data>
   <data name="Screens1ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens1ToolStripMenuItem.Text" xml:space="preserve">
     <value>1 (Preview)</value>
   </data>
   <data name="Screens2ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens2ToolStripMenuItem.Text" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="Screens3ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens3ToolStripMenuItem.Text" xml:space="preserve">
     <value>3</value>
   </data>
   <data name="Screens4ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens4ToolStripMenuItem.Text" xml:space="preserve">
     <value>4</value>
   </data>
   <data name="Screens5ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens5ToolStripMenuItem.Text" xml:space="preserve">
     <value>5</value>
   </data>
   <data name="Screens6ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens6ToolStripMenuItem.Text" xml:space="preserve">
     <value>6</value>
   </data>
   <data name="Screens7ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens7ToolStripMenuItem.Text" xml:space="preserve">
     <value>7</value>
   </data>
   <data name="Screens8ToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>274, 44</value>
+    <value>139, 22</value>
   </data>
   <data name="Screens8ToolStripMenuItem.Text" xml:space="preserve">
     <value>8</value>
   </data>
   <data name="screenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="screenToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Range of Vision</value>
   </data>
   <data name="bookmarkSettingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSettingsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Bookmark Settings</value>
   </data>
   <data name="toolStripSeparator7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>481, 6</value>
+    <value>247, 6</value>
   </data>
   <data name="loadOnlyBookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="loadOnlyBookmarkToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Load Bookmarks</value>
   </data>
   <data name="loadFullBookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="loadFullBookmarkToolStripMenuItem.Text" xml:space="preserve">
     <value>L&amp;oad Bookmarks &amp;&amp; LineStyles</value>
   </data>
   <data name="saveBookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="saveBookmarkToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Save Bookmarks</value>
   </data>
   <data name="toolStripSeparator6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>481, 6</value>
+    <value>247, 6</value>
   </data>
   <data name="ClearBookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="ClearBookmarkToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Remove All Bookmarks</value>
   </data>
   <data name="toolStripSeparator8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>481, 6</value>
+    <value>247, 6</value>
   </data>
   <data name="bookmarkSetStripMenuItem_1.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Alt+1</value>
   </data>
   <data name="bookmarkSetStripMenuItem_1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_1.Text" xml:space="preserve">
     <value>Set/Del Type 1</value>
@@ -374,7 +374,7 @@
     <value>Alt+2</value>
   </data>
   <data name="bookmarkSetStripMenuItem_2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_2.Text" xml:space="preserve">
     <value>Set/Del Type 2</value>
@@ -383,7 +383,7 @@
     <value>Alt+3</value>
   </data>
   <data name="bookmarkSetStripMenuItem_3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_3.Text" xml:space="preserve">
     <value>Set/Del Type 3</value>
@@ -392,7 +392,7 @@
     <value>Alt+4</value>
   </data>
   <data name="bookmarkSetStripMenuItem_4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_4.Text" xml:space="preserve">
     <value>Set/Del Type 4</value>
@@ -401,7 +401,7 @@
     <value>Alt+5</value>
   </data>
   <data name="bookmarkSetStripMenuItem_5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_5.Text" xml:space="preserve">
     <value>Set/Del Type 5</value>
@@ -410,7 +410,7 @@
     <value>Alt+6</value>
   </data>
   <data name="bookmarkSetStripMenuItem_6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_6.Text" xml:space="preserve">
     <value>Set/Del Type 6</value>
@@ -419,7 +419,7 @@
     <value>Alt+7</value>
   </data>
   <data name="bookmarkSetStripMenuItem_7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_7.Text" xml:space="preserve">
     <value>Set/Del Type 7</value>
@@ -428,136 +428,133 @@
     <value>Alt+8</value>
   </data>
   <data name="bookmarkSetStripMenuItem_8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>484, 44</value>
+    <value>250, 22</value>
   </data>
   <data name="bookmarkSetStripMenuItem_8.Text" xml:space="preserve">
     <value>Set/Del Type 8</value>
   </data>
   <data name="bookmarkToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="bookmarkToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;BookmarkPlus</value>
   </data>
   <data name="generateConversionMappingToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="generateConversionMappingToolStripMenuItem.Text" xml:space="preserve">
     <value>Generate Stable Conversion Mappings</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>584, 6</value>
+    <value>298, 6</value>
   </data>
   <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>587, 44</value>
+    <value>301, 22</value>
   </data>
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Exit</value>
   </data>
   <data name="viewerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>112, 38</value>
+    <value>59, 21</value>
   </data>
   <data name="viewerToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Viewer</value>
   </data>
   <data name="openSettingsFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>333, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="openSettingsFileToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Open Settings</value>
   </data>
   <data name="defaultLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>259, 44</value>
+    <value>132, 22</value>
   </data>
   <data name="defaultLanguageToolStripMenuItem.Text" xml:space="preserve">
     <value>Default</value>
   </data>
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>256, 6</value>
+    <value>129, 6</value>
   </data>
   <data name="englishLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>259, 44</value>
+    <value>132, 22</value>
   </data>
   <data name="englishLanguageToolStripMenuItem.Text" xml:space="preserve">
     <value>English</value>
   </data>
   <data name="zhHansLanguageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>259, 44</value>
+    <value>132, 22</value>
   </data>
   <data name="zhHansLanguageToolStripMenuItem.Text" xml:space="preserve">
     <value>中文(简体)</value>
   </data>
   <data name="languageToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>333, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="languageToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Language</value>
   </data>
   <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>330, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="TopWhenEditorFocusToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>333, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="TopWhenEditorFocusToolStripMenuItem.Text" xml:space="preserve">
     <value>Auto &amp;Topmost</value>
   </data>
   <data name="toolStripSeparator5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>330, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="backupToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>333, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="backupToolStripMenuItem.Text" xml:space="preserve">
     <value>Make a &amp;Backup</value>
   </data>
   <data name="toolStripSeparator4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>330, 6</value>
+    <value>177, 6</value>
   </data>
   <data name="forceResetStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>F5</value>
   </data>
   <data name="forceResetStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>333, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="forceResetStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Reset</value>
   </data>
   <data name="restartProgramStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>333, 44</value>
+    <value>180, 22</value>
   </data>
   <data name="restartProgramStripMenuItem.Text" xml:space="preserve">
     <value>Restart &amp;Program</value>
   </data>
   <data name="settingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>127, 38</value>
+    <value>66, 21</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Settings</value>
   </data>
   <data name="githubToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>225, 44</value>
+    <value>114, 22</value>
   </data>
   <data name="githubToolStripMenuItem1.Text" xml:space="preserve">
     <value>&amp;Github</value>
   </data>
   <data name="githubToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>105, 38</value>
+    <value>55, 21</value>
   </data>
   <data name="githubToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;About</value>
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>20, 38</value>
+    <value>12, 21</value>
   </data>
   <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="menuStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>12, 4, 0, 4</value>
-  </data>
   <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>512, 46</value>
+    <value>256, 25</value>
   </data>
   <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>34</value>
@@ -581,19 +578,16 @@
     <value>267, 17</value>
   </metadata>
   <data name="StateToolStripStatusLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 31</value>
+    <value>29, 17</value>
   </data>
   <data name="StateToolStripStatusLabel.Text" xml:space="preserve">
     <value>stat</value>
   </data>
   <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 1064</value>
-  </data>
-  <data name="statusStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>2, 0, 28, 0</value>
+    <value>0, 560</value>
   </data>
   <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>512, 41</value>
+    <value>256, 22</value>
   </data>
   <data name="statusStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>35</value>
@@ -617,13 +611,10 @@
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>14, 31</value>
+    <value>7, 17</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>512, 1105</value>
-  </data>
-  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 5, 6, 5</value>
+    <value>256, 582</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>OsuCatch Editor Realtime Viewer</value>
