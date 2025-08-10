@@ -66,10 +66,4 @@
     <Folder Include="Osu.Game\" />
   </ItemGroup>
 
-  <Target Name="CopyStableCompatLib" AfterTargets="Build">
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\StableCompatLib\StableCompatLib.dll"
-          DestinationFolder="$(OutDir)"
-          SkipUnchangedFiles="true" />
-  </Target>
-
 </Project>
