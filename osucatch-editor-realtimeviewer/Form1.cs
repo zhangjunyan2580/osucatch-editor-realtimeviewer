@@ -361,7 +361,7 @@ namespace osucatch_editor_realtimeviewer
             Beatmap? beatmap = null;
             if (differenceType == DifferenceType.DifferentFile)
             {
-                // fetch colors because editor reader doesn't fetch it.
+                // fetch colors and beatmap version because editor reader doesn't fetch it.
                 try
                 {
                     beatmap = BeatmapBuilder.BuildNewBeatmapWithFilePath(thisReader, filepath, out lastColourLines);
@@ -375,8 +375,11 @@ namespace osucatch_editor_realtimeviewer
             }
             else if (differenceType == DifferenceType.DifferentObjects)
             {
+                // when osu! finished loading beatmap, beatmap version will automatically be updated to v14
+                // so if you edit the map, we can assume it uses v14 format
                 try
                 {
+                    thisReader.BeatmapVersion = 14;
                     beatmap = BeatmapBuilder.BuildNewBeatmapWithColorString(thisReader, lastColourLines);
                 }
                 catch (Exception ex)
@@ -1253,6 +1256,21 @@ namespace osucatch_editor_realtimeviewer
                 writer.Close();
             }
         }
+
+        public void GenerateConversionMapping(string path, int mods)
+        {
+            Beatmap? beatmap = BeatmapBuilder.BuildNewBeatmapFromBeatmapFile(path);
+            if (beatmap == null)
+            {
+                return;
+            }
+            IBeatmap convertedBeatmap = stableBeatmapConverter.GetConvertedBeatmap(beatmap, mods);
+            string conversionMapping = ((BeatmapConverterOsuStable)stableBeatmapConverter).BuildConversionMapping(convertedBeatmap, mods);
+            StreamWriter writer = new(Path.GetFileNameWithoutExtension(path) + ".json");
+            writer.Write(conversionMapping);
+            writer.Close();
+        }
+
     }
 
 

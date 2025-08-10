@@ -242,6 +242,28 @@ namespace osucatch_editor_realtimeviewer
         public List<string> ControlPointLines;
         public List<ReaderHitObjectWithSelect> HitObjectLines;
 
+        public BeatmapInfoCollection()
+        {
+            ContainingFolder = "";
+            Filename = "";
+            Bookmarks = [];
+            ControlPointLines = new();
+            HitObjectLines = new();
+            IsFull = false;
+            NumControlPoints = 0;
+            NumObjects = 0;
+            EditorTime = 0;
+            PreviewTime = 0;
+            StackLeniency = 0.7f;
+            HPDrainRate = 5f;
+            CircleSize = 5f;
+            OverallDifficulty = 5f;
+            ApproachRate = 5f;
+            SliderMultiplier = 1.4;
+            SliderTickRate = 1.0;
+            BeatmapVersion = 14;
+        }
+
         /// <summary>
         /// Check Editor Reader's data and make a copy of its current data.
         /// </summary>

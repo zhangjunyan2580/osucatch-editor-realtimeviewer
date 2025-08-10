@@ -160,11 +160,3 @@ extern "C" {
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     return TRUE;
 }
-
-// #include <stdio.h>
-
-// int main() {
-//     float ax = 492, ay = 335, bx = 492.004517f, by = 334.99646f, cx = 492.009033f, cy = 334.99292f;
-//     printf("%d", (int) flatJudge(ax, ay, bx, by, cx, cy));
-//     return 0;
-// }
