@@ -130,12 +130,6 @@
   <data name="converterToolStripMenuItem.Text" xml:space="preserve">
     <value>谱面解析 (&amp;U)</value>
   </data>
-  <data name="lazerConverterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
-  <data name="stableConverterToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
   <data name="modToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>180, 22</value>
   </data>
@@ -354,6 +348,12 @@
   </data>
   <data name="bookmarkSetStripMenuItem_8.Text" xml:space="preserve">
     <value>设置/删除 书签 8</value>
+  </data>
+  <data name="generateConversionMappingToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="generateConversionMappingToolStripMenuItem.Text" xml:space="preserve">
+    <value>生成转换映射文件</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
     <value>177, 6</value>

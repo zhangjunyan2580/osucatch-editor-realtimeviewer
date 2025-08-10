@@ -180,7 +180,7 @@ namespace osu.Game.Beatmaps.Formats
             {
                 GenerateTicks = !double.IsNaN(beatLength),
                 SliderVelocity = speedMultiplier,
-                SliderVelocityAsBeatLength = beatLength
+                SliderVelocityAsBeatLength = beatLength < 0 ? beatLength : -100
             }, timingChange);
 
             var effectPoint = new EffectControlPoint
