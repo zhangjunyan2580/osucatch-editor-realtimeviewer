@@ -23,7 +23,7 @@ namespace osucatch_editor_realtimeviewer
         public override List<PalpableCatchHitObject> GetPalpableObjects(IBeatmap beatmap, int mods)
         {
             Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
-            HitObjectManagerCatch manager = new(beatmap, mods);
+            HitObjectManagerCatch manager = new(beatmap, mods, false);
 
             float? lastPosition = null;
             double lastStartTime = 0;
@@ -53,7 +53,7 @@ namespace osucatch_editor_realtimeviewer
             Log.ConsoleLog("Building hitobjects.", Log.LogType.BeatmapConverter, Log.LogLevel.Debug);
 
             List<(osu.Game.Rulesets.Objects.HitObject original, List<PalpableCatchHitObject> converted)> palpableObjects = new();
-            HitObjectManagerCatch manager = new(beatmap, mods);
+            HitObjectManagerCatch manager = new(beatmap, mods, true);
 
             foreach (var currentObject in beatmap.HitObjects)
             {

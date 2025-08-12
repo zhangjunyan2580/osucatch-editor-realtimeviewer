@@ -165,7 +165,8 @@ namespace osucatch_editor_realtimeviewer
 
                 for (int level = 0; level < count; level++)
                     for (int i = 0; i < count - level - 1; i++)
-                        Vector2.Lerp(ref working[i], ref working[i + 1], (float)iteration / points, out working[i]);
+                        // Vector2.Lerp(ref working[i], ref working[i + 1], (float)iteration / points, out working[i]);
+                        LerpStableCompat(working[i], working[i + 1], (float)iteration / points, out working[i]);
                 output.Add(working[0]);
             }
 
@@ -178,12 +179,10 @@ namespace osucatch_editor_realtimeviewer
         }
 
         [DllImport("StableCompatLib.dll", EntryPoint = "isStraightLine")]
-        internal static extern bool IsStraightLineStableCompat0(float ax, float ay, float bx, float by, float cx, float cy);
+        internal static extern int IsStraightLineStableCompat0(float ax, float ay, float bx, float by, float cx, float cy);
 
-        internal static bool IsStraightLineStableCompat(Vector2 a, Vector2 b, Vector2 c)
-        {
-            return (b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y) == 0.0f;
-        }
+        internal static bool IsStraightLineStableCompat(Vector2 a, Vector2 b, Vector2 c) =>
+            IsStraightLineStableCompat0(a.X, a.Y, b.X, b.Y, c.X, c.Y) != 0;
 
         internal static double CircleTAt(Vector2 p, Vector2 center)
         {
@@ -242,5 +241,24 @@ namespace osucatch_editor_realtimeviewer
             center = new(centerX, centerY);
         }
 
+        [DllImport("StableCompatLib.dll", EntryPoint = "lerp")]
+        public static extern void LerpStableCompat0(
+            float ax, float ay, float bx, float by, float t,
+            out float x, out float y);
+
+        public static void LerpStableCompat(Vector2 p1, Vector2 p2, float x, out Vector2 result)
+            => LerpStableCompat0(p1.X, p1.Y, p2.X, p2.Y, x, out result.X, out result.Y);
+
+        [DllImport("StableCompatLib.dll", EntryPoint = "catmullRom")]
+        public static extern Vector2 CatmullRomStableCompat0(
+            float x1, float y1, float x2, float y2,
+            float x3, float y3, float x4, float y4, float t,
+            out float x, out float y);
+
+        public static Vector2 CatmullRomStableCompat(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t)
+        {
+            CatmullRomStableCompat0(p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y, p4.X, p4.Y, t, out float x, out float y);
+            return new(x, y);
+        }
     }
 }

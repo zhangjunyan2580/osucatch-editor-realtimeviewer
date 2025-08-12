@@ -135,11 +135,26 @@ namespace osucatch_editor_realtimeviewer
             }
         }
 
+        private static int GetBeatmapVersionFromBeatmapFilepath(string orgpath)
+        {
+            using (StreamReader file = File.OpenText(orgpath))
+            {
+                string? line;
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (line.StartsWith("osu file format v"))
+                        return int.Parse(line.Substring(17));
+                }
+                return 14;
+            }
+        }
+
         public static Beatmap? BuildNewBeatmapWithFilePath(BeatmapInfoCollection thisReaderData, string beatmappath, out List<string>? colourLines)
         {
             try
             {
                 colourLines = GetColourLinesFromBeatmapFilepath(beatmappath);
+                thisReaderData.BeatmapVersion = GetBeatmapVersionFromBeatmapFilepath(beatmappath);
             }
             catch (Exception ex)
             {
@@ -159,8 +174,112 @@ namespace osucatch_editor_realtimeviewer
             try
             {
                 Log.ConsoleLog("Building beatmap.", Log.LogType.BeatmapBuilder, Log.LogLevel.Debug);
-                var beatmap = beatmapDecoder.Decode(thisReaderData, colourLines);
+                // var beatmap = beatmapDecoder.Decode(thisReaderData, colourLines);
+                var beatmap = new LegacyBeatmapDecoder(thisReaderData.BeatmapVersion).Decode(thisReaderData, colourLines);
                 return beatmap;
+            }
+            catch (Exception ex)
+            {
+                Log.ConsoleLog("Building beatmap failed.\r\n" + ex, Log.LogType.BeatmapBuilder, Log.LogLevel.Error);
+                return null;
+            }
+        }
+
+        public static Beatmap? BuildNewBeatmapFromBeatmapFile(string path)
+        {
+            try
+            {
+                StreamReader reader = new StreamReader(path);
+                string? line;
+                bool currentTiming = false;
+                bool currentHitObject = false;
+                BeatmapInfoCollection info = new();
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.Length == 0)
+                    {
+                        continue;
+                    }
+                    if (line.StartsWith("osu file format v"))
+                    {
+                        info.BeatmapVersion = int.Parse(line.Substring(17));
+                        continue;
+                    }
+                    if (line == "[TimingPoints]")
+                    {
+                        currentTiming = true;
+                        currentHitObject = false;
+                        continue;
+                    }
+                    if (line == "[HitObjects]")
+                    {
+                        currentTiming = false;
+                        currentHitObject = true;
+                        continue;
+                    }
+                    if (line.StartsWith('[') && line.EndsWith(']'))
+                    {
+                        currentTiming = false;
+                        currentHitObject = false;
+                        continue;
+                    }
+
+                    if (currentTiming)
+                    {
+                        info.ControlPointLines.Add(line);
+                        continue;
+                    }
+                    if (currentHitObject)
+                    {
+                        info.HitObjectLines.Add(new(line, false));
+                        continue;
+                    }
+
+                    string[] split = line.Split(":", 2, StringSplitOptions.TrimEntries);
+                    if (split.Length < 2)
+                    {
+                        continue;
+                    }
+                    switch (split[0])
+                    {
+                        case "PreviewTime":
+                            info.PreviewTime = int.Parse(split[1]);
+                            break;
+                        case "StackLeniency":
+                            info.StackLeniency = float.Parse(split[1]);
+                            break;
+                        case "HPDrainRate":
+                            info.HPDrainRate = float.Parse(split[1]);
+                            break;
+                        case "CircleSize":
+                            info.CircleSize = float.Parse(split[1]);
+                            break;
+                        case "OverallDifficulty":
+                            info.OverallDifficulty = float.Parse(split[1]);
+                            break;
+                        case "ApproachRate":
+                            info.ApproachRate = float.Parse(split[1]);
+                            break;
+                        case "SliderMultiplier":
+                            info.SliderMultiplier = double.Parse(split[1]);
+                            break;
+                        case "SliderTickRate":
+                            info.SliderTickRate = double.Parse(split[1]);
+                            break;
+                        case "Bookmarks":
+                            info.Bookmarks = split[1].Split(',').Select(int.Parse).ToArray();
+                            break;
+                    }
+                }
+
+                info.Filename = Path.GetFileName(info.Filename);
+                string? containingFolder = Path.GetDirectoryName(info.Filename);
+                if (containingFolder != null)
+                    info.ContainingFolder = containingFolder;
+                info.NumControlPoints = info.ControlPointLines.Count;
+                info.NumObjects = info.HitObjectLines.Count;
+                info.IsFull = true;
+                return BuildNewBeatmapWithFilePath(info, path, out var _);
             }
             catch (Exception ex)
             {

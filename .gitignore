@@ -367,3 +367,5 @@ FodyWeavers.xsd
 /StableCompatLib/StableCompatLib.dll.nam
 /StableCompatLib/StableCompatLib.dll.til
 /StableCompatLib/StableCompatLib.o
+/StableCompatLib/StableCompatLib.exe
+/StableCompatLib/.vs

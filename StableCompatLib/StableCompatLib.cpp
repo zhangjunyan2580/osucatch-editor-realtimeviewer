@@ -45,7 +45,7 @@ extern "C" {
         return (float) sqrt((double) ((LD) x * x + (LD) y * y));
     }
 
-    __declspec(dllexport) bool isStraightLine(float ax, float ay, float bx, float by, float cx, float cy) {
+    __declspec(dllexport) int isStraightLine(float ax, float ay, float bx, float by, float cx, float cy) {
         LD p1 = ((LD) bx - (LD) ax) * ((LD) cy - (LD) ay);
         LD p2 = ((LD) cx - (LD) ax) * ((LD) by - (LD) ay);
         return p1 - p2 == 0;
@@ -63,7 +63,7 @@ extern "C" {
     }
 
     LD __stdcall tempCircleTAt(float x, float y, float centerx, float centery) {
-        return tempAtan2(y - centery, x - centerx);
+        return tempAtan2((double) y - (double) centery, (double) x - (double) centerx);
     }
 
     __declspec(dllexport) void __stdcall circleThroughPoints(
@@ -155,16 +155,28 @@ extern "C" {
         *y = (float) (0.5f * ((LD) ay + (LD) by));
     }
 
+    __declspec(dllexport) double __stdcall absSubMul(double a, double b, float c) {
+        return (double) fabsl(((LD) a - (LD) b) * (LD) c);
+    }
+
+    __declspec(dllexport) void lerp(float ax, float ay, float bx, float by, float t, float *x, float *y)
+    {
+        *x = (float) ((LD) ax + ((LD) bx - (LD) ax) * (LD) t);
+        *y = (float) ((LD) ay + ((LD) by - (LD) ay) * (LD) t);
+    }
+
+    __declspec(dllexport) void catmullRom(
+        float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
+        float t, float *x, float *y)
+    {
+        LD X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, X3 = x3, Y3 = y3, X4 = x4, Y4 = y4;
+        LD T = t, T2 = T * T, T3 = T2 * T;
+        *x = (float) (0.5f * (2.f * X2 + (-X1 + X3) * T) + (2.f * X1 - 5.f * X2 + 4.f * X3 - X4) * T2 + (-X1 + 3.f * X2 - 3.f * X3 + X4) * T3);
+        *y = (float) (0.5f * (2.f * Y2 + (-Y1 + Y3) * T) + (2.f * Y1 - 5.f * Y2 + 4.f * Y3 - Y4) * T2 + (-Y1 + 3.f * Y2 - 3.f * Y3 + Y4) * T3);
+    }
+
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     return TRUE;
 }
-
-// #include <stdio.h>
-
-// int main() {
-//     float ax = 492, ay = 335, bx = 492.004517f, by = 334.99646f, cx = 492.009033f, cy = 334.99292f;
-//     printf("%d", (int) flatJudge(ax, ay, bx, by, cx, cy));
-//     return 0;
-// }
