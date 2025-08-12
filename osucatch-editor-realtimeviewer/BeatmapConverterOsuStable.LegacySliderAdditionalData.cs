@@ -66,12 +66,12 @@ namespace osucatch_editor_realtimeviewer
 
             public List<Segment> CurveSegmentPath = new List<Segment>();
 
-            public LegacySliderAdditionalData(IBeatmap beatmap, JuiceStream slider)
+            public LegacySliderAdditionalData(IBeatmap beatmap, JuiceStream slider, bool flip)
             {
                 StartTime = (int)slider.StartTime;
                 Position = new(slider.OriginalX, slider.Y);
 
-                compute(beatmap, slider);
+                compute(beatmap, slider, flip);
             }
 
             private static double computeVelocity(
@@ -116,15 +116,18 @@ namespace osucatch_editor_realtimeviewer
             [DllImport("StableCompatLib.dll", EntryPoint = "linearInterpolation")]
             private static extern double LinearInterpolation(double x, double y, double t);
 
-            private List<Vector2> rebuildCurvePoints(Vector2 offset, SliderPath path)
+            private List<Vector2> rebuildCurvePoints(Vector2 offset, SliderPath path, bool flip)
             {
                 List<Vector2> curvePoints = new();
                 for (int i = 0; i < path.ControlPoints.Count; i++)
                 {
-                    PathControlPoint curvePoint = path.ControlPoints[i];
-                    curvePoints.Add(offset + curvePoint.Position);
-                    if (i > 0 && curvePoint.Type != null)
-                        curvePoints.Add(offset + curvePoint.Position);
+                    PathControlPoint controlPoint = path.ControlPoints[i];
+                    Vector2 curvePoint = offset + controlPoint.Position;
+                    if (flip)
+                        curvePoint.Y = 384 - curvePoint.Y;
+                    curvePoints.Add(curvePoint);
+                    if (i > 0 && controlPoint.Type != null)
+                        curvePoints.Add(curvePoint);
                 }
                 return curvePoints;
             }
@@ -147,6 +150,10 @@ namespace osucatch_editor_realtimeviewer
             private static extern float Distance0(float ax, float ay, float bx, float by);
 
             private static float Distance(Vector2 a, Vector2 b) => Distance0(a.X, a.Y, b.X, b.Y);
+
+            // Returns abs((a - b) * c).
+            [DllImport("StableCompatLib.dll", EntryPoint = "absSubMul")]
+            private static extern double AbsSubMul(double a, double b, float c);
 
             public Vector2 GetPositionByLength(float length)
             {
@@ -195,7 +202,7 @@ namespace osucatch_editor_realtimeviewer
                 return GetPositionByLength(lengthRequired);
             }
 
-            private void compute(IBeatmap beatmap, JuiceStream slider)
+            private void compute(IBeatmap beatmap, JuiceStream slider, bool flip)
             {
                 double sliderComboPointDistance = (100 * beatmap.Difficulty.SliderMultiplier) / beatmap.Difficulty.SliderTickRate;
 
@@ -213,7 +220,7 @@ namespace osucatch_editor_realtimeviewer
 
                 // The first control point should have a non-null PathType
                 PathType pathType = pathData.ControlPoints[0].Type ?? PathType.LINEAR;
-                List<Vector2> curvePoints = rebuildCurvePoints(new Vector2(slider.OriginalX, slider.Y), pathData);
+                List<Vector2> curvePoints = rebuildCurvePoints(new Vector2(slider.OriginalX, slider.Y), pathData, flip);
 
                 const int subSegmentCount = 50;
 
@@ -229,8 +236,8 @@ namespace osucatch_editor_realtimeviewer
 
                             for (int k = 0; k < subSegmentCount; k++)
                                 path.Add(new Segment(
-                                    Vector2.CatmullRom(v1, v2, v3, v4, (float)k / subSegmentCount),
-                                    Vector2.CatmullRom(v1, v2, v3, v4, (float)(k + 1) / subSegmentCount)
+                                    LegacyMathHelper.CatmullRomStableCompat(v1, v2, v3, v4, (float)k / subSegmentCount),
+                                    LegacyMathHelper.CatmullRomStableCompat(v1, v2, v3, v4, (float)(k + 1) / subSegmentCount)
                                 ));
                         }
                         break;
@@ -302,7 +309,8 @@ namespace osucatch_editor_realtimeviewer
 
                         LegacyMathHelper.CircleThroughPointsStableCompat(p1, p2, p3, out center, out radius, out startAngle, out endAngle);
 
-                        CurveLength = Math.Abs((endAngle - startAngle) * radius);
+                        // CurveLength = Math.Abs((endAngle - startAngle) * radius);
+                        CurveLength = AbsSubMul(endAngle, startAngle, radius);
                         int segments = (int)(CurveLength * 0.125f);
 
                         Vector2 lastPoint = p1;

@@ -14,14 +14,16 @@ namespace osucatch_editor_realtimeviewer
             private LegacyRandom random = new(1337);
             private List<PalpableCatchHitObject> palpableObjects = new();
             private bool isHardRock;
+            private bool isConversionMapping;
             private IBeatmap beatmap;
 
             private float lastStartX;
             private int lastStartTime;
 
-            public HitObjectManagerCatch(IBeatmap beatmap, int mods)
+            public HitObjectManagerCatch(IBeatmap beatmap, int mods, bool isConversionMapping)
             {
                 isHardRock = mods == (1 << 4);
+                this.isConversionMapping = isConversionMapping;
                 this.beatmap = beatmap;
             }
 
@@ -117,7 +119,7 @@ namespace osucatch_editor_realtimeviewer
 
             internal List<PalpableCatchHitObject> AddJuiceStream(JuiceStream juiceStream)
             {
-                var hitObjects = ConvertSlider(beatmap, juiceStream, out LegacySliderAdditionalData data);
+                var hitObjects = ConvertSlider(beatmap, juiceStream, out LegacySliderAdditionalData data, isHardRock && !isConversionMapping);
 
                 lastStartX = juiceStream.OriginalX + juiceStream.Path.ControlPoints.Last().Position.X;
                 lastStartTime = data.StartTime;
@@ -152,7 +154,7 @@ namespace osucatch_editor_realtimeviewer
                 initialiseHyperDash(catcherWidth, palpableObjects);
             }
 
-            public List<PalpableCatchHitObject> ConvertSlider(IBeatmap beatmap, JuiceStream juiceStream, out LegacySliderAdditionalData sliderData)
+            public List<PalpableCatchHitObject> ConvertSlider(IBeatmap beatmap, JuiceStream juiceStream, out LegacySliderAdditionalData sliderData, bool flip)
             {
 
                 List<PalpableCatchHitObject> palpableHitObjects = new();
@@ -165,7 +167,7 @@ namespace osucatch_editor_realtimeviewer
                     IsSelected = juiceStream.IsSelected
                 });
 
-                sliderData = new(beatmap, juiceStream);
+                sliderData = new(beatmap, juiceStream, flip);
 
                 int lastTime = (int)juiceStream.StartTime;
 
